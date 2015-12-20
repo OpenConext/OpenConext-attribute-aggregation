@@ -1,9 +1,48 @@
 @import "toolkit";
 
 .header {
-  border-top: 1px solid #eee;
-  display: flex; // testing Autoprefixer
-  font-size: inherit;
-  margin-top: 20px;
-  padding-top: 20px;
+  padding: 25px 30px 10px;
+  background: white;
+  border-bottom: 2px solid $blue;
+  @include clearfix;
+}
+
+// Main app title
+.title {
+  background: url(../../images/logo@2x.png) no-repeat left center;
+  background-size: 160px 50px;
+  height: 50px;
+  float: left;
+  font-size: 26.5px;
+  line-height: 29px;
+  -webkit-font-smoothing: antialiased;
+
+  a {
+    color: $blue;
+    text-decoration: none;
+    padding-left: 190px;
+    &:hover {
+      color: $blue;
+      text-decoration: none;
+    }
+  }
+}
+
+.logo {
+  width: 26px;
+  height: 26px;
+  float: right;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+.meta {
+  float: right;
+}
+
+.name {
+  color: $blue;
+  margin-right: 40px;
+  float: left;
+  line-height: 32px;
 }

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+    "values": [
+      "test"
+    ],
+    "source": "aa2"
+  },
+  {
+    "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
+    "values": [
+      "test"
+    ],
+    "source": "aa1"
+  },
+  {
+    "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+    "values": [
+      "test"
+    ],
+    "source": "aa1"
+  }
+]

@@ -1,0 +1,54 @@
+authorities:
+  - {
+      id: "aa1",
+      description: "description1",
+      endpoint: "http://localhost:8889",
+      user: "user",
+      password: "secret",
+      timeOut: 100,
+      attributes: [
+        {
+          name: "urn:mace:dir:attribute-def:eduPersonOrcid",
+          caseExact: True,
+          description: "The ORCID is a persistent digital identifier that distinguishes the account holder from every other researcher.",
+          multiValued: False,
+          mutability: "readOnly",
+          required: False,
+          returned: "default",
+          type: "string",
+          uniqueness: "none"
+        },
+        {
+          name: "urn:mace:dir:attribute-def:eduPersonEntitlement",
+          caseExact: True,
+          description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
+          multiValued: False,
+          mutability: "readOnly",
+          required: False,
+          returned: "default",
+          type: "string",
+          uniqueness: "none"
+        }
+      ]
+    }
+  - {
+      id: "aa2",
+      description: "description2",
+      endpoint: "http://localhost:8889",
+      user: "john.doe",
+      password: "secret",
+      timeOut: 500,
+      attributes: [
+        {
+          name: "urn:mace:dir:attribute-def:eduPersonEntitlement",
+          caseExact: True,
+          description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
+          multiValued: True,
+          mutability: "readOnly",
+          required: False,
+          returned: "default",
+          type: "string",
+          uniqueness: "none",
+        }
+      ]
+    }

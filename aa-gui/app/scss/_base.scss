@@ -1,6 +1,19 @@
-/* _base.scss */
+@import "variables";
+
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,300");
 
 html, body {
   margin: 0;
   min-height: 100%;
+
+  font-family: "Roboto", Sans-serif;
+  font-weight: 400;
+  font-size: 14px;
 }
+
+a {
+  color: $blue;
+}
+
+

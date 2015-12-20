@@ -1,5 +1,3 @@
-import styles from './_Aggregators.scss';
-
 import React from 'react';
 
 //import API from '../util/API';
@@ -12,7 +10,7 @@ export default class Aggregators extends React.Component {
 
   render() {
     return (
-      <div className={styles.aggregators}>
+      <div className="">
         <p>Aggregators</p>
       </div>
     );

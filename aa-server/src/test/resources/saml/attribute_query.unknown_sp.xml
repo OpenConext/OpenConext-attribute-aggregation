@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"
+            xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+            xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">
+    <S:Body>
+        <samlp:AttributeQuery ID="id" IssueInstant="2014-10-22T23:23:35Z" Version="2.0">
+            <saml:Issuer>http://unknown-sp</saml:Issuer>
+            <saml:Subject>
+                <saml:NameID>j.doe@example.com</saml:NameID>
+            </saml:Subject>
+        </samlp:AttributeQuery>
+    </S:Body>
+</S:Envelope>

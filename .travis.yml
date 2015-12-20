@@ -1,0 +1,11 @@
+language: java
+jdk:
+  - oraclejdk8
+services:
+  - mysql
+before_install:
+  - pip install --user codecov
+  - mysql -e "create database IF NOT EXISTS aaserver; grant all on aaserver.* to 'root';" -uroot
+after_success:
+  - codecov
+

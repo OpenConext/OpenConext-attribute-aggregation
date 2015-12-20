@@ -1,0 +1,27 @@
+@import "toolkit";
+
+.navigation {
+  border-top: 1px solid darken($border, 10);
+  padding-left: 20px;
+  overflow: hidden;
+
+  @include clearfix;
+
+  ul {
+    list-style-type: none;
+  }
+  li {
+    float: left;
+    margin-left: 20px;
+
+    &:last-child {
+      float: right;
+      margin-right: 20px;
+    }
+  }
+  a {
+    display: block;
+    line-height: 40px;
+    text-decoration: none;
+  }
+}

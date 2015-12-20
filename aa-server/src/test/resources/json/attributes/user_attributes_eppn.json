@@ -1,0 +1,9 @@
+[
+  {
+    "name": "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+    "values": [
+      "test"
+    ],
+    "source": "aa1"
+  }
+]

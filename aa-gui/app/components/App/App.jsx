@@ -1,31 +1,25 @@
-import styles from './_App.scss';
-
-import React from 'react';
+import React from 'react'
+import { render } from 'react-dom'
+import { Link } from 'react-router'
 
 import API from '../../util/API';
 
 import Header from '../Header/Header';
-import Body from '../Body/Body';
+import Navigation from '../Navigation/Navigation';
 import Footer from '../Footer/Footer';
 
 export default class App extends React.Component {
 
-  constructor(props) {
-    super(props);
-    console.log('constructor APP');
-    this.state = {items: []};
-  }
-
-  componentDidMount() {
-    console.log('componentDidMount APP');
-    API.getItems().then((items) => { this.setState({items: items}); });
+  constructor(props, context) {
+    super(props, context);
   }
 
   render() {
     return (
-      <div className={styles.app}>
+      <div className="">
         <Header />
-        <Body items={this.state.items} />
+        <Navigation />
+        {this.props.children}
         <Footer />
       </div>
     );

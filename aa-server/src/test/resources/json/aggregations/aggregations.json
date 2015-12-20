@@ -1,0 +1,121 @@
+[
+  {
+    "id": 1,
+    "name": "test aggregation",
+    "serviceProviders": [
+      {
+        "id": 1,
+        "entityId": "http://mock-sp",
+        "name": "Mujina Mock SP",
+        "description": "Mujina Mock SP"
+      }
+    ],
+    "attributes": [
+      {
+        "id": 1,
+        "attributeAuthorityId": "aa1",
+        "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
+        "caseExact": false,
+        "multiValued": false,
+        "required": false
+      }
+    ],
+    "userIdentifier": "admin",
+    "userDisplayName": "John Doe",
+    "created": 1451119514000
+  },
+  {
+    "id": 39,
+    "name": "test2-aggregation",
+    "serviceProviders": [
+      {
+        "id": 1,
+        "entityId": "http://mock-sp",
+        "name": "Mujina Mock SP",
+        "description": "Mujina Mock SP"
+      },
+      {
+        "id": 30,
+        "entityId": "https://oidc.test.surfconext.nl",
+        "name": "OpenConext OIDC Test",
+        "description": "OpenConext OIDC Test"
+      }
+    ],
+    "attributes": [
+      {
+        "id": 1,
+        "attributeAuthorityId": "aa1",
+        "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
+        "caseExact": false,
+        "multiValued": false,
+        "required": false
+      },
+      {
+        "id": 56,
+        "attributeAuthorityId": "aa1",
+        "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+        "caseExact": false,
+        "multiValued": false,
+        "required": false
+      },
+      {
+        "id": 55,
+        "attributeAuthorityId": "aa2",
+        "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+        "caseExact": false,
+        "multiValued": false,
+        "required": false
+      }
+    ],
+    "userIdentifier": "saml2_user",
+    "userDisplayName": "John Doe",
+    "created": 1451810464000
+  },
+  {
+    "id": 40,
+    "name": "test3-aggregation",
+    "serviceProviders": [
+      {
+        "id": 1,
+        "entityId": "http://mock-sp",
+        "name": "Mujina Mock SP",
+        "description": "Mujina Mock SP"
+      },
+      {
+        "id": 30,
+        "entityId": "https://oidc.test.surfconext.nl",
+        "name": "OpenConext OIDC Test",
+        "description": "OpenConext OIDC Test"
+      }
+    ],
+    "attributes": [
+      {
+        "id": 1,
+        "attributeAuthorityId": "aa1",
+        "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
+        "caseExact": false,
+        "multiValued": false,
+        "required": false
+      },
+      {
+        "id": 56,
+        "attributeAuthorityId": "aa1",
+        "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+        "caseExact": false,
+        "multiValued": false,
+        "required": false
+      },
+      {
+        "id": 55,
+        "attributeAuthorityId": "aa2",
+        "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+        "caseExact": false,
+        "multiValued": false,
+        "required": false
+      }
+    ],
+    "userIdentifier": "saml2_user",
+    "userDisplayName": "John Doe",
+    "created": 1451810464000
+  }
+]

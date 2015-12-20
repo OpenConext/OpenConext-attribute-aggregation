@@ -8,7 +8,7 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>pdp</name>
+    <name>aa</name>
     <description>Attribute Aggregation</description>
 
     <parent>
@@ -22,7 +22,6 @@
         <module>aa-server</module>
         <module>aa-gui</module>
     </modules>
-
 
     <scm>
         <connection>scm:git:git@github.com:oharsta/OpenConext-aa.git</connection>

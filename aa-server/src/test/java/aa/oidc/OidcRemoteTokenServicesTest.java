@@ -1,0 +1,67 @@
+package aa.oidc;
+
+import aa.oauth.AbstractRemoteTokenServicesTest;
+import aa.oauth.DecisionResourceServerTokenServices;
+import org.junit.Test;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+
+import java.util.UUID;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static java.util.stream.IntStream.range;
+import static org.junit.Assert.assertFalse;
+
+public class OidcRemoteTokenServicesTest extends AbstractRemoteTokenServicesTest {
+
+  @Override
+  protected DecisionResourceServerTokenServices getRemoteTokenServices() {
+    return new OidcRemoteTokenServices("http://localhost:" + PORT + "/introspect", "clientId", "secret");
+  }
+
+  @Override
+  protected void stubCallToAuthorisationEndpoint(String responseJson) {
+    stubFor(get(urlPathEqualTo("/introspect")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody(responseJson)));
+  }
+
+  @Override
+  protected String getUnspecifiedNameId() {
+    return "urn:collab:person:example.com:admin";
+  }
+
+  @Override
+  protected String getClientId() {
+    return "http@//mock-sp";
+  }
+
+  @Override
+  protected String getSuccesCheckTokenJsonPath() {
+    return "json/oidc/introspect.success.json";
+  }
+
+  @Override
+  protected String getFailureCheckTokenJsonPath() {
+    return "json/oidc/introspect.failure.json";
+  }
+
+  @Override
+  protected String getErrorCheckTokenJsonPath() {
+    return "json/oidc/introspect.error.json";
+  }
+
+  @Override
+  protected String getSuccesCheckTokenClientCredentialsJsonPath() {
+    return "json/oidc/introspect.client_credentials.json";
+  }
+
+  @Test(expected = InvalidTokenException.class)
+  public void testLoadAuthenticationFailure() throws Exception {
+    introspect(getFailureCheckTokenJsonPath());
+  }
+
+  @Test
+  public void testCanHandle() {
+    range(0, 10).forEach(nbr -> assertFalse(getSubject().canHandle(UUID.randomUUID().toString())));
+  }
+
+
+}

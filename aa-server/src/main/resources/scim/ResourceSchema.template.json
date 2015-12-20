@@ -1,0 +1,31 @@
+{
+  "description": "Attributes for SP1",
+  "id": "urn:ietf:params:scim:schemas:extension:x-surfnet:sp1",
+  "mutability": "readOnly",
+  "name": "SP1",
+  "returned": "default",
+  "attributes": [
+    {
+      "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
+      "caseExact": true,
+      "description": "The ORCID is a persistent digital identifier that distinguishes the account holder from every other researcher.",
+      "multiValued": true,
+      "mutability": "readOnly",
+      "required": false,
+      "returned": "default",
+      "type": "string",
+      "uniqueness": "none"
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+      "caseExact": true,
+      "description": "URI (either URN or URL) that indicates a set of rights to specific resources",
+      "multiValued": true,
+      "mutability": "readOnly",
+      "required": false,
+      "returned": "default",
+      "type": "string",
+      "uniqueness": "none"
+    }
+  ]
+}

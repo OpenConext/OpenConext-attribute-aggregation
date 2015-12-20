@@ -1,0 +1,21 @@
+{
+  "description": "Attributes for http://mock-sp",
+  "id": "urn:ietf:params:scim:schemas:extension:x-surfnet:http://mock-sp",
+  "name": "http://mock-sp",
+  "mutability": "readOnly",
+  "returned": "default",
+  "attributes": [
+    {
+      "attributeAuthorityId": "aa1",
+      "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
+      "caseExact": true,
+      "description": "The ORCID is a persistent digital identifier that distinguishes the account holder from every other researcher.",
+      "multiValued": false,
+      "mutability": "readOnly",
+      "required": false,
+      "returned": "default",
+      "type": "string",
+      "uniqueness": "none"
+    }
+  ]
+}
