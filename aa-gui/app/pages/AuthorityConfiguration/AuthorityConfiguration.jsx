@@ -2,17 +2,17 @@ import React from 'react';
 
 import API from '../../util/API';
 
-export default class Playground extends React.Component {
+export default class AuthorityConfiguration extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    API.getServiceProviders((json) => this.state = json);
+    API.getAuthorityConfiguration((json) => this.state = json);
   }
 
   render() {
     return (
       <div className="">
-        <p>Playground</p><i className="fa fa-edit"></i>
+        <p>Authorities</p><i className="fa fa-edit"></i>
         <p>{this.state}</p>
       </div>
     );

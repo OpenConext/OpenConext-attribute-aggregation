@@ -1,4 +1,4 @@
-import { browserHistory } from 'react-router';
+import history from 'history';
 
 var checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
@@ -20,19 +20,27 @@ var doFetch = (url, callback) => {
   })
     .then(checkStatus)
     .then(res => res.json())
-    .then(json => callback(json))
-    .catch(ex => browserHistory.replace('/error'));
+    .then(json => callback(json));
+    //todo 'react-router' is in flux on hwo to navigate outside components
+    //.catch(ex => history.replace('/error'));
 };
 
 export default {
 
   getAggregations(callback) {
-    return doFetch('/aa/api/aggregations', callback);
+    return doFetch('/aa/api/internal/aggregations', callback);
   },
 
-  getAuthorities(callback) {
-    return doFetch('/aa/api/authorities', callback);
-  }
+  getAggregation(id, callback) {
+    return doFetch('/aa/api/internal/aggregation/' + id, callback);
+  },
 
+  getAuthorityConfiguration(callback) {
+    return doFetch('/aa/api/internal/authorityConfiguration', callback);
+  },
+
+  getServiceProviders(callback) {
+    return doFetch('/aa/api/internal/serviceProviders', callback);
+  }
 
 };

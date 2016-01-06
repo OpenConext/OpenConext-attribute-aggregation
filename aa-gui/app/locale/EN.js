@@ -3,11 +3,18 @@ export default {
   lang: 'en',
   name: 'English',
   select_locale: 'Select English',
-  'header': {
-    'title': 'Attribute Aggregation',
-    'links': {
+  header: {
+    title: 'Attribute Aggregation',
+    links: {
       'help_html': '<a href="https://github.com/OpenConext/OpenConext-pdp#policy-limitations" target="_blank">Help</a>'
     }
+  },
+  navigation: {
+    aggregations: 'Aggregations',
+    authorities: 'Authorities',
+    playground: 'Playground',
+    about: 'About',
+    aggregation: '+ New Aggregation'
   },
   footer: {
     surfnet_html: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',

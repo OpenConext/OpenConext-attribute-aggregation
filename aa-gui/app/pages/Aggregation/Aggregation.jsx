@@ -2,17 +2,21 @@ import React from 'react';
 
 import API from '../../util/API';
 
-export default class Aggregations extends React.Component {
+export default class Aggregation extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {aggregations: []};
-    API.getAggregations((json) => this.setState({aggregations: json}));
+    let id = this.props.params.id;
+    if (id !== 'new') {
+      API.getAggregation((id, json) => this.state = json);
+    } else {
+      this.state = {};
+    }
+
   }
 
   handleAboutClick = (e) => {
     e.stopPropagation();
-    e.preventDefault();
     this.props.history.replace('/about');
   };
 
@@ -20,10 +24,8 @@ export default class Aggregations extends React.Component {
     return (
       <div className="">
         <a href="#" onClick={this.handleAboutClick}>about-link</a>
-        <p>Aggregations</p>
-        <div>{this.state.aggregations.map((aggregation) => {
-          return (<p key={aggregation.id}>{aggregation.name}</p>);
-        })}</div>
+        <p>Aggregation</p>
+        <p>{this.state}</p>
       </div>
     );
   }
