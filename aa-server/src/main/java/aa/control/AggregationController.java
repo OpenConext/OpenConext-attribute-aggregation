@@ -54,7 +54,7 @@ public class AggregationController {
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "/internal/aggregation")
-  public void saveAggregation(@RequestBody Aggregation aggregation) {
+  public Aggregation saveAggregation(@RequestBody Aggregation aggregation) {
     aggregationValidator.validate(configuration, serviceRegistry, aggregation);
 
     aggregation.setServiceProviders(aggregation.getServiceProviders().stream().map(this::serviceProviderOrExists).collect(toSet()));
@@ -64,9 +64,11 @@ public class AggregationController {
     aggregation.setUserDisplayName(federatedUser.getDisplayName());
     aggregation.setUserIdentifier(federatedUser.getUid());
 
-    this.aggregationRepository.save(aggregation);
+    Aggregation saved = this.aggregationRepository.save(aggregation);
 
-    LOG.debug("Saved aggregation {}", aggregation);
+    LOG.debug("Saved aggregation {}", saved);
+    return saved;
+
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/internal/aggregation/{id}")
@@ -83,17 +85,20 @@ public class AggregationController {
   }
 
   @RequestMapping(method = RequestMethod.PUT, value = "/internal/aggregation")
-  public void updateAggregation(@RequestBody Aggregation aggregation) {
-    this.saveAggregation(aggregation);
+  public Aggregation updateAggregation(@RequestBody Aggregation aggregation) {
+    Aggregation saved = this.saveAggregation(aggregation);
     this.serviceProviderRepository.deleteOrphanedServiceProviders();
+    return saved;
   }
 
   @RequestMapping(method = RequestMethod.DELETE, value = "/internal/aggregation/{id}")
-  public void deleteAggregation(@PathVariable Long id) {
-    this.aggregationRepository.delete(id);
+  public Aggregation deleteAggregation(@PathVariable Long id) {
+    Aggregation aggregation = aggregationRepository.findOne(id);
+    this.aggregationRepository.delete(aggregation);
     LOG.debug("Deleted Aggregation with ID {}", id);
     int deleted = this.serviceProviderRepository.deleteOrphanedServiceProviders();
     LOG.debug("Deleted {} orphaned ServiceProviders", deleted);
+    return aggregation;
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/internal/aggregations")

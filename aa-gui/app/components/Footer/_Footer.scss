@@ -5,7 +5,7 @@
   padding-left: 20px;
   overflow: hidden;
 
-  @include clearfix;
+  @include clearFix;
 
   ul {
     list-style-type: none;

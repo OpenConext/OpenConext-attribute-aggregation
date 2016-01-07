@@ -1,6 +1,6 @@
 /* _mixins.scss */
 
-@mixin clearfix {
+@mixin clearFix {
   &:after {
     content: "";
     display: table;

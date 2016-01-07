@@ -4,12 +4,15 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,300");
 
 html, body {
-  margin: 0;
-  min-height: 100%;
+  background: #EFEFEE;
 
   font-family: "Roboto", Sans-serif;
   font-weight: 400;
   font-size: 14px;
+  line-height: 20px;
+
+  color: #2b3f44;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {

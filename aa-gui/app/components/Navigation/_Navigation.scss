@@ -6,6 +6,10 @@
   overflow: hidden;
   position: relative;
 
+  ul {
+    margin: 0px;
+  }
+
   li {
     float: left;
     list-style: none;
@@ -19,6 +23,7 @@
         margin-right: 10px;
         border: solid 1px white;
         border-radius: 5px;
+        font-size: 16px;
       }
     }
   }

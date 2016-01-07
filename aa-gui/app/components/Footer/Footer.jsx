@@ -10,9 +10,9 @@ export default class Footer extends React.Component {
     return (
       <footer className={styles.footer}>
         <ul>
-          <li dangerouslySetInnerHTML={{__html: i18n.t("footer.surfnet_html") }}></li>
-          <li dangerouslySetInnerHTML={{__html: i18n.t("footer.terms_html") }}></li>
-          <li dangerouslySetInnerHTML={{__html: i18n.t("footer.contact_html") }}></li>
+          <li dangerouslySetInnerHTML={{__html: i18n.t("footer.surfnetHtml") }}></li>
+          <li dangerouslySetInnerHTML={{__html: i18n.t("footer.termsHtml") }}></li>
+          <li dangerouslySetInnerHTML={{__html: i18n.t("footer.contactHtml") }}></li>
         </ul>
       </footer>
     );

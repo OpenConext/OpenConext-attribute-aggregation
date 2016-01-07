@@ -41,7 +41,8 @@
     "spin": "^0.0.1",
     "es6-promise": "latest",
     "whatwg-fetch": "latest",
-    "font-awesome": "^4.5.0"
+    "font-awesome": "^4.5.0",
+    "react-data-components": "^0.6.0"
   },
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",
@@ -79,6 +80,7 @@
     "postcss-loader": "^0.5.1",
     "react-addons-test-utils": "^0.14.3",
     "react-hot-loader": "^1.2.8",
+    "react-tooltip": "^0.9.8",
     "rimraf": "^2.4.1",
     "sass-loader": "^3.1.2",
     "sinon": "^1.15.4",

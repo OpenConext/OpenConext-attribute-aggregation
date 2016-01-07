@@ -1,0 +1,10 @@
+@import "toolkit";
+
+.aggregation {
+  padding: 25px 30px 10px;
+  background: white;
+  border-radius: $br;
+  @include clearFix;
+
+
+}

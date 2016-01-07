@@ -15,15 +15,18 @@ export default class Header extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      dropDownActive: false
+      user: {
+        displayNmae : ''
+      }
     };
+    API.getUser((json) => this.setState({user: json}));
   }
 
   renderMeta = () => {
     return (
       <header className={styles.meta}>
         <div className={styles.name}>
-        Welkom John Doe
+          {i18n.t("header.welcome",{name: this.state.user.displayName})}
         </div>
         <LanguageSelector />
         <a href='https://github.com/oharsta/OpenConext-attribute-aggregation' target='_blank'>
