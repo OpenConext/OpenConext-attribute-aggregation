@@ -4,6 +4,8 @@ import React from 'react';
 
 import i18n from 'i18next';
 
+import Utils from '../../util/Utils';
+
 let en = i18n.getFixedT('en');
 let nl = i18n.getFixedT('nl');
 
@@ -29,15 +31,12 @@ export default class LanguageSelector extends React.Component {
     );
   };
 
-  handleChooseLocale = (locale) => {
-    return (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      i18n.changeLanguage(locale, (err, t) => {
-        // resources have been loaded
-      });
-      this.setState({lang: locale});
-    }
+  handleChooseLocale = (locale) => (e) => {
+    Utils.stop(e);
+    i18n.changeLanguage(locale, (err, t) => {
+      // resources have been loaded
+    });
+    this.setState({lang: locale});
   };
 
   render() {

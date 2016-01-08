@@ -1,0 +1,25 @@
+@import "toolkit";
+
+@mixin auth {
+  margin: 15px 10px;
+
+  em {
+    display: block;
+    font-size: small;
+    margin-left: 20px;
+  }
+}
+
+.authority {
+  border-left: 2px solid $light-grey;
+  @include auth;
+}
+
+.authority_selected {
+  border-left: 2px solid $blue;
+  @include auth;
+}
+
+.authority_link {
+  padding: 20px;
+}

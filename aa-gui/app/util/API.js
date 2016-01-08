@@ -1,13 +1,6 @@
-import history from 'history';
-
-// HTML5 history, recommended
 import createBrowserHistory from 'history/lib/createBrowserHistory'
 
-// Hash history
-import createHashHistory from 'history/lib/createHashHistory'
-
-// Memory history
-import createMemoryHistory from 'history/lib/createMemoryHistory'
+const history = createBrowserHistory();
 
 class API {
 
@@ -17,7 +10,7 @@ class API {
 
   checkStatus = (response) => {
     if (response.status >= 200 && response.status < 300) {
-      this.csrfToken = response.headers.get('X-CSRF-TOKEN')
+      this.csrfToken = response.headers.get('X-CSRF-TOKEN');
       return response
     } else {
       var error = new Error(response.statusText);
@@ -39,10 +32,7 @@ class API {
       .then(this.checkStatus)
       .then(res => res.json())
       .then(json => callback(json))
-      //todo use history - but how without mixin
-      .catch(ex => {
-        window.location = "/#/error"
-      });
+      .catch(ex => history.replace('/#/error'));
   };
 
   getAggregations(callback) {

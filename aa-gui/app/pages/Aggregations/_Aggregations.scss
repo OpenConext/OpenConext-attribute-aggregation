@@ -1,22 +1,21 @@
 @import "toolkit";
 
-.aggregations {
-
-  padding: 25px 30px 10px;
-  margin: 25px 30px 10px;
-  background: white;
-
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
-  border-radius: $br;
-
-  border: none #fff;
-  border-top-style: solid;
-}
-
 .container {
 
   caption, label, select {
     display: none;
+  }
+
+  label + input {
+    width: 30%;
+    border-radius: $br;
+    margin-bottom: 10px;
+    line-height: 20px;
+    display: inline;
+    border: 1px solid $light-grey;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
+    border-radius: $br;
+
   }
 
   div > ul {
@@ -34,13 +33,6 @@
     }
   }
 
-  input {
-    width: 100%;
-    border-radius: $br;
-    margin-bottom: 20px;
-    line-height: 20px;
-  }
-
   table {
     margin-top: 20px;
     width: 100%;
@@ -54,6 +46,10 @@
 
   table td {
     vertical-align: top;
+
+    &:last-child {
+      text-align: right;
+    }
   }
 
   .sort-icon:after {

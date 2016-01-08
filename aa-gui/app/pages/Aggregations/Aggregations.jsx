@@ -8,10 +8,7 @@ import Flash from '../../components/Flash/Flash';
 
 let { DataTable } = require('react-data-components');
 
-const stop = (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-}
+import Utils from '../../util/Utils';
 
 export default class Aggregations extends React.Component {
 
@@ -27,7 +24,7 @@ export default class Aggregations extends React.Component {
   }
 
   handleShowAggregation = (aggregation) => (e) => {
-    stop(e);
+    Utils.stop(e);
     this.props.history.replace('/aggregation/' + aggregation.id);
   };
 
@@ -43,7 +40,7 @@ export default class Aggregations extends React.Component {
   };
 
   renderServiceProviders = (val, row) => <ul className={styles.attributes}>{row.serviceProviders.map((sp) =>
-    <li key={sp.name}>{sp.name}</li>)}</ul>;
+    <li key={sp.name}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</li>)}</ul>;
 
   renderAttributes = (val, row) => <ul className={styles.attributes}>{row.attributes.map((attr) =>
     <li key={attr.name}>{attr.attributeAuthorityId} <i className="fa fa-arrow-right"></i> {attr.name}</li>)}</ul>;
@@ -59,10 +56,10 @@ export default class Aggregations extends React.Component {
 
   render() {
     let columns = [
-      {title: i18n.t('aggregations.name'), prop: 'name', width: '20%'},
+      {title: i18n.t('aggregations.name'), prop: 'name', width: '15%'},
       {title: i18n.t('aggregations.serviceProviders'), render: this.renderServiceProviders, width: '35%'},
       {title: i18n.t('aggregations.attributes'), render: this.renderAttributes, width: '35%'},
-      {title: i18n.t('aggregations.actions'), render: this.renderActions, width: '10%'}
+      {title: i18n.t('aggregations.actions'), render: this.renderActions, width: '15%'}
     ];
 
     //migrate to https://github.com/facebook/fixed-data-table/blob/master/examples/SortExample.js ???
@@ -70,7 +67,7 @@ export default class Aggregations extends React.Component {
       <div>
         <Flash message={this.state.flash}/>
         <div className={styles.mod_container}>
-          <div className={styles.aggregations}>
+          <div className={styles.mod_center}>
             <DataTable
               className={styles.container}
               keys={['id']}
@@ -85,15 +82,5 @@ export default class Aggregations extends React.Component {
       </div>
     );
   }
-
-
-  //handleAboutClick = (e) => {
-  //  e.stopPropagation();
-  //  e.preventDefault();
-  //  this.props.history.replace('/about');
-  //};
-//
-
-
 }
 

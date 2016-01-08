@@ -2,6 +2,8 @@ import React from 'react';
 
 import styles from './_Flash.scss';
 
+import Utils from '../../util/Utils';
+
 export default class Flash extends React.Component {
 
   constructor(props, context) {
@@ -10,8 +12,7 @@ export default class Flash extends React.Component {
   }
 
   close = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    Utils.stop(e);
     this.setState({display: false})
   };
 
