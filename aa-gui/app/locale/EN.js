@@ -27,6 +27,20 @@ export default {
     confirmation: 'Are you sure you want to delete aggregation {{name}}?',
     deleted: 'Successfully deleted aggregation {{name}}'
   },
+  authority: {
+    endpoint: 'Endpoint',
+    userName: 'Username',
+    attributes: 'Attributes',
+    name: 'Name',
+    caseExact: 'Case insensitive',
+    description: 'Description',
+    multiValued: 'Multi valued',
+    mutability: 'Mutability',
+    required: 'Required',
+    returned: 'Returned',
+    type: 'Type',
+    uniqueness: 'Uniqueness'
+  },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',
     termsHtml: '<a href="https://wiki.surfnet.nl/display/conextsupport/Terms+of+Service+%28EN%29" target="_blank">Terms of Service</a>',

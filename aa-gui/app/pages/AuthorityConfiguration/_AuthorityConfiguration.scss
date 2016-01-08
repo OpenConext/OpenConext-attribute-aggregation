@@ -1,6 +1,6 @@
 @import "toolkit";
 
-@mixin auth {
+.auth {
   margin: 15px 10px;
 
   em {
@@ -11,13 +11,14 @@
 }
 
 .authority {
+  @extend .auth;
   border-left: 2px solid $light-grey;
-  @include auth;
+
 }
 
 .authority_selected {
+  @extend .auth;
   border-left: 2px solid $blue;
-  @include auth;
 }
 
 .authority_link {

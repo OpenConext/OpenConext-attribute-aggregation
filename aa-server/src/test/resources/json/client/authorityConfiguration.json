@@ -1,0 +1,58 @@
+{
+  "authorities": [
+    {
+      "id": "aa1",
+      "description": "description1",
+      "endpoint": "http://localhost:8889",
+      "user": "user",
+      "attributes": [
+        {
+          "attributeAuthorityId": "aa1",
+          "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
+          "caseExact": true,
+          "description": "The ORCID is a persistent digital identifier that distinguishes the account holder from every other researcher.",
+          "multiValued": false,
+          "mutability": "readOnly",
+          "required": false,
+          "returned": "default",
+          "type": "string",
+          "uniqueness": "none"
+        },
+        {
+          "attributeAuthorityId": "aa1",
+          "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+          "caseExact": true,
+          "description": "URI (either URN or URL) that indicates a set of rights to specific resources.",
+          "multiValued": false,
+          "mutability": "readOnly",
+          "required": false,
+          "returned": "default",
+          "type": "string",
+          "uniqueness": "none"
+        }
+      ],
+      "timeOut": 100
+    },
+    {
+      "id": "aa2",
+      "description": "description2",
+      "endpoint": "http://localhost:8889",
+      "user": "john.doe",
+      "attributes": [
+        {
+          "attributeAuthorityId": "aa2",
+          "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+          "caseExact": true,
+          "description": "URI (either URN or URL) that indicates a set of rights to specific resources.",
+          "multiValued": true,
+          "mutability": "readOnly",
+          "required": false,
+          "returned": "default",
+          "type": "string",
+          "uniqueness": "none"
+        }
+      ],
+      "timeOut": 500
+    }
+  ]
+}

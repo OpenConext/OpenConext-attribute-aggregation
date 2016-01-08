@@ -2,8 +2,12 @@ import styles from './_AuthorityConfiguration.scss';
 
 import React from 'react';
 
+import i18n from 'i18next';
+
 import API from '../../util/API';
 import Utils from '../../util/Utils';
+
+const attributeKeys = ['name', 'caseExact', 'description', 'multiValued', 'mutability', 'required', 'returned', 'type', 'uniqueness']
 
 export default class AuthorityConfiguration extends React.Component {
 
@@ -36,10 +40,45 @@ export default class AuthorityConfiguration extends React.Component {
 
   renderAuthority() {
     var selectedAuthority = this.state.selectedAuthority;
-    return selectedAuthority ?
-      <div>{selectedAuthority.description}</div> :
-      <div></div>
+    return selectedAuthority ? this.renderAuthorityDetails(selectedAuthority) : <div></div>
   }
+
+  renderAuthorityDetails(authority) {
+    return (
+      <table>
+        <tbody>
+        <tr>
+          <td>{i18n.t('authority.description')}</td>
+          <td>{authority.description}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{i18n.t('authority.endpoint')}</td>
+          <td>{authority.endpoint}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{i18n.t('authority.userName')}</td>
+          <td>{authority.user}</td>
+          <td></td>
+        </tr>
+        {authority.attributes.map(this.renderAttribute)}
+        </tbody>
+      </table>
+    );
+  }
+
+  renderAttribute(attribute) {
+    var valueToString = (val) => val !== undefined && val !== null ? val.toString() : '';
+    return attributeKeys.map((key) =>
+      <tr key={attribute.id}>
+        <td></td>
+        <td>{i18n.t('authority.' + key)}</td>
+        <td>{valueToString(attribute[key])}</td>
+      </tr>
+    )
+  }
+
 
   render() {
     return (

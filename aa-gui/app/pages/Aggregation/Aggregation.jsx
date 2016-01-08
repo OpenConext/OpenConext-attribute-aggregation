@@ -27,11 +27,12 @@ export default class Aggregation extends React.Component {
   };
 
   render() {
-    return (
+    var name = this.state.aggregation.name;
+      return (
       <div className="">
         <a href="#" onClick={this.handleAboutClick}>about-link</a>
         <p>Aggregation</p>
-        <p>{this.state.aggregation.name}</p>
+        <p>{name ? name : 'new'}</p>
         <p>{this.state.serviceProviders.length}</p>
       </div>
     );
