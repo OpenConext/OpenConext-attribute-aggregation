@@ -45,38 +45,34 @@ export default class AuthorityConfiguration extends React.Component {
 
   renderAuthorityDetails(authority) {
     return (
-      <table>
-        <tbody>
-        <tr>
-          <td>{i18n.t('authority.description')}</td>
-          <td>{authority.description}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>{i18n.t('authority.endpoint')}</td>
-          <td>{authority.endpoint}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>{i18n.t('authority.userName')}</td>
-          <td>{authority.user}</td>
-          <td></td>
-        </tr>
-        {authority.attributes.map(this.renderAttribute)}
-        </tbody>
-      </table>
+      <div>
+        <p>{i18n.t('authority.description')}</p>
+        <p>{authority.description}</p>
+        <p>{i18n.t('authority.endpoint')}</p>
+        <p>{authority.endpoint}</p>
+        <p>{i18n.t('authority.userName')}</p>
+        <p>{authority.user}</p>
+        {this.renderAttributes(authority.attributes)}
+      </div>
     );
+  }
+
+  renderAttributes(attributes) {
+    return (
+      <div>
+        <p>{i18n.t('authority.attributes')}</p>
+        {attributes.map(this.renderAttribute)}
+      </div>
+    )
   }
 
   renderAttribute(attribute) {
     var valueToString = (val) => val !== undefined && val !== null ? val.toString() : '';
     return attributeKeys.map((key) =>
-      <tr key={attribute.id}>
-        <td></td>
-        <td>{i18n.t('authority.' + key)}</td>
-        <td>{valueToString(attribute[key])}</td>
-      </tr>
-    )
+      <div>
+        <p key={attribute.id}>{i18n.t('authority.' + key)}</p>
+        <p>{valueToString(attribute[key])}</p>
+      </div>)
   }
 
 
@@ -84,6 +80,7 @@ export default class AuthorityConfiguration extends React.Component {
     return (
       <div className={styles.mod_container}>
         <div className={styles.mod_left}>
+          <p>{i18n.t('authority.authorities')}</p>
           {this.state.authorities.map((authority) => this.renderAuthorityLink(authority))}
         </div>
         <div className={styles.mod_right}>

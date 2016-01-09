@@ -28,6 +28,7 @@ export default {
     deleted: 'Successfully deleted aggregation {{name}}'
   },
   authority: {
+    authorities: 'Attribute authorities',
     endpoint: 'Endpoint',
     userName: 'Username',
     attributes: 'Attributes',
