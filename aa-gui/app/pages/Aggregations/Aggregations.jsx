@@ -15,7 +15,7 @@ export default class Aggregations extends React.Component {
     this.state = {
       aggregations: [],
       filteredAggregations: [],
-      sorted: {name: 'Name', order: 'desc'}
+      sorted: {name: 'Name', order: 'down'}
     };
 
     API.getAggregations((json) => {
@@ -77,13 +77,16 @@ export default class Aggregations extends React.Component {
     if (e) {
       Utils.stop(e);
     }
+    if (column.sort === undefined) {
+      return
+    }
     var sortFunction = this['sortBy' + column.sort];
     var sortedAggregations = aggregations.sort(sortFunction);
     var currentSort = this.state.sorted.name;
-    var newOrder = 'desc';
+    var newOrder = 'down';
     if (currentSort === column.sort) {
-      newOrder = this.state.sorted.order === 'desc' ? 'asc' : 'desc';
-      if (newOrder === 'asc') {
+      newOrder = this.state.sorted.order === 'down' ? 'up' : 'down';
+      if (newOrder === 'up') {
         sortedAggregations = sortedAggregations.reverse();
       }
     }
@@ -97,11 +100,7 @@ export default class Aggregations extends React.Component {
 
   iconClassName(column) {
     var sorted = this.state.sorted;
-    if (sorted.name === column.sort) {
-      return 'fa fa-sort-' + sorted.order + ' ' + styles.sorted;
-    } else if (column.sort) {
-      return 'fa fa-sort ' + styles.to_sort;
-    }
+    return sorted.name === column.sort ? 'fa fa-arrow-' + sorted.order + ' ' + styles.sorted : styles.to_sort;
   }
 
   render() {

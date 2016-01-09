@@ -81,15 +81,10 @@
 .sort {
   float: right;
   margin-right: 15px;
-  line-height: 20px;
+  margin-top: 3px;
 }
 
 .sorted {
   @extend .sort;
   color: white;
-}
-
-.to_sort {
-  @extend .sort;
-  color: darken($light-grey, 10);
 }
