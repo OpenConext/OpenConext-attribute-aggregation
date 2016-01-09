@@ -6,8 +6,6 @@ import i18n from 'i18next';
 import API from '../../util/API';
 import Flash from '../../components/Flash/Flash';
 
-let { DataTable } = require('react-data-components');
-
 import Utils from '../../util/Utils';
 
 export default class Aggregations extends React.Component {
@@ -15,11 +13,12 @@ export default class Aggregations extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      aggregations: []
+      aggregations: [],
+      filteredAggregations: []
     };
 
     API.getAggregations((json) => {
-      this.setState({aggregations: json});
+      this.setState({aggregations: json, filteredAggregations: json});
     });
   }
 
@@ -39,44 +38,69 @@ export default class Aggregations extends React.Component {
     }
   };
 
-  renderServiceProviders = (val, row) => <ul className={styles.attributes}>{row.serviceProviders.map((sp) =>
-    <li key={sp.name}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</li>)}</ul>;
+  renderServiceProviders = (aggregation) => <div className={styles.attributes}>{aggregation.serviceProviders.map((sp) =>
+    <p key={sp.name}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</p>)}</div>;
 
-  renderAttributes = (val, row) => <ul className={styles.attributes}>{row.attributes.map((attr) =>
-    <li key={attr.name}>{attr.attributeAuthorityId} <i className="fa fa-arrow-right"></i> {attr.name}</li>)}</ul>;
+  renderAttributes = (aggregation) => <div className={styles.attributes}>{aggregation.attributes.map((attr) =>
+    <p key={attr.name}>{attr.attributeAuthorityId} <i className="fa fa-arrow-right"></i> {attr.name}</p>)}</div>;
 
-  renderActions = (val, row) => (<div>
-    <a href="#" onClick={this.handleShowAggregation(row)}
+  renderActions = (aggregation) => (<div>
+    <a href="#" onClick={this.handleShowAggregation(aggregation)}
        data-tip={i18n.t("aggregations.edit")}><ReactTooltip /> <i className="fa fa-edit"></i>
     </a>
-    <a href="#" data-tip={i18n.t("aggregations.delete")} onClick={this.handleDeleteAggregation(row)}>
+    <a href="#" data-tip={i18n.t("aggregations.delete")} onClick={this.handleDeleteAggregation(aggregation)}>
       <ReactTooltip /> <i className="fa fa-remove"></i>
     </a>
   </div>);
 
+  search = (e) => {
+    let input = e.target.value;
+    if (input === undefined || input === null || input.trim().length === 0) {
+      this.setState({filteredAggregations: this.state.aggregations});
+    } else {
+      this.setState({filteredAggregations: this.filterAggregations(input.toLowerCase())});
+    }
+  };
+
+  filterAggregations(input) {
+    var ts = this.state.aggregations.filter((aggregation) =>
+      aggregation.name.toLowerCase().includes(input)
+      || aggregation.serviceProviders.filter((sp) => sp.name ? sp.name.toLowerCase().includes(input) : sp.entityId.toLowerCase().includes(input)).length > 0
+      || aggregation.attributes.filter((attr) => attr.name.toLowerCase().includes(input) || attr.attributeAuthorityId.toLowerCase().includes(input)).length > 0
+    );
+    return ts
+  }
+
+
   render() {
     let columns = [
-      {title: i18n.t('aggregations.name'), prop: 'name', width: '15%'},
-      {title: i18n.t('aggregations.serviceProviders'), render: this.renderServiceProviders, width: '35%'},
-      {title: i18n.t('aggregations.attributes'), render: this.renderAttributes, width: '35%'},
-      {title: i18n.t('aggregations.actions'), render: this.renderActions, width: '15%'}
+      i18n.t('aggregations.name'), i18n.t('aggregations.serviceProviders'), i18n.t('aggregations.attributes'), i18n.t('aggregations.actions')
     ];
-
-    //migrate to https://github.com/facebook/fixed-data-table/blob/master/examples/SortExample.js ???
     return (
       <div>
         <Flash message={this.state.flash}/>
         <div className={styles.mod_container}>
+          <input className={styles.input} placeholder=" Search..." type="text" onChange={this.search}/>
           <div className={styles.mod_center}>
-            <DataTable
-              className={styles.container}
-              keys={['id']}
-              columns={columns}
-              initialData={this.state.aggregations}
-              initialPageLength={20}
-              initialSortBy={{ prop: 'name', order: 'descending' }}
-              pageLengthOptions={[ 5, 20, 50 ]}
-            />
+            <table className={styles.table}>
+              <thead>
+              <tr>
+                {columns.map((column) => <th key={column}>{column}</th>)}
+              </tr>
+              </thead>
+              <tbody>
+              {this.state.filteredAggregations.map((aggregation) =>
+                <tr key={aggregation.name}>
+                  <td>{aggregation.name}</td>
+                  <td>{this.renderServiceProviders(aggregation)}</td>
+                  <td>{this.renderAttributes(aggregation)}</td>
+                  <td>{this.renderActions(aggregation)}</td>
+                </tr>
+              )}
+              {this.state.filteredAggregations.length === 0 ?
+                <tr><td><em className={styles.no_data}>No aggregations</em></td><td></td></tr> : <tr></tr>}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

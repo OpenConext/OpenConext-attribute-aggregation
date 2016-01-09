@@ -1,88 +1,72 @@
 @import "toolkit";
 
-.container {
+.input {
+  padding: 3px;
+  margin: 0 0 15px 0px;
+  display: block;
+  width: 100%;
+  border-radius: $br;
+  line-height: 20px;
+  font-size: 16px;
+  border: 1px solid $light-grey;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
+  box-sizing: border-box;
+}
 
-  caption, label, select {
-    display: none;
-  }
+.table {
+  width: 100%;
 
-  label + input {
-    width: 30%;
-    border-radius: $br;
-    margin-bottom: 10px;
-    line-height: 20px;
-    display: inline;
-    border: 1px solid $light-grey;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
-    border-radius: $br;
-
-  }
-
-  div > ul {
-    //for now
-    display: none;
-
-    margin: 0;
-    list-style-type: none;
-    padding: 0;
-    float: none;
-
-    li {
-      display: inline-block;
-      margin: 0 10px;
-    }
-  }
-
-  table {
-    margin-top: 20px;
-    width: 100%;
-  }
-
-  table th {
+  th {
     border-bottom: 1px solid #EFEFEE;
     cursor: pointer;
     text-align: left;
+
+    &:first-child {
+      width: 15%;
+    }
+    &:nth-child(2) {
+      width: 35%;
+    }
+    &:nth-child(3) {
+      width: 35%;
+    }
+    &:last-child {
+      width: 15%;
+    }
   }
 
-  table td {
+  td {
     vertical-align: top;
 
     &:last-child {
       text-align: right;
     }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
   }
 
-  .sort-icon:after {
-    float: right;
-    color: hsl(20, 0%, 70%);
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  tr:nth-child(even) {
+    background: lighten($light-grey, 5);
   }
-  .sort-icon.sort-ascending:after {
-    content: '\f0de';
-  }
-  .sort-icon.sort-descending:after {
-    content: '\f0dd';
-  }
-  .sort-icon.sort-none:after {
-    content: '\f0dc';
-  }
-
 }
 
 .attributes {
   margin: 0;
-  padding: 0 0 0 16px;
+  padding: 0;
 
   i {
     margin-left: 5px;
     margin-right: 5px;
     font-size: smaller;
   }
+}
+
+.no_data {
+  display: inline-block;
+  margin-top: 20px;
 }
 
 
