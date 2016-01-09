@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.util.List;
 
 import static aa.util.StreamUtils.listFromIterable;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AggregationRepositoryTest extends AbstractIntegrationTest {
 
@@ -15,6 +17,12 @@ public class AggregationRepositoryTest extends AbstractIntegrationTest {
     List<Aggregation> aggregations = listFromIterable(aggregationRepository.findAll());
 
     assertAggregations(aggregations);
+  }
+
+  @Test
+  public void existsByName() throws Exception {
+    assertTrue(aggregationRepository.existsByName("TEST AGGREGATION"));
+    assertFalse(aggregationRepository.existsByName("nope"));
   }
 
 }

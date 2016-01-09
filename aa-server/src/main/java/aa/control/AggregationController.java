@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static aa.util.StreamUtils.listFromIterable;
 import static java.util.stream.Collectors.toSet;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping(headers = {"Content-Type=application/json"}, produces = {"application/json"})
@@ -53,7 +54,7 @@ public class AggregationController {
     this.serviceRegistry = serviceRegistry;
   }
 
-  @RequestMapping(method = RequestMethod.POST, value = "/internal/aggregation")
+  @RequestMapping(method = POST, value = "/internal/aggregation")
   public Aggregation saveAggregation(@RequestBody Aggregation aggregation) {
     aggregationValidator.validate(configuration, serviceRegistry, aggregation);
 
@@ -71,7 +72,7 @@ public class AggregationController {
 
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/internal/aggregation/{id}")
+  @RequestMapping(method = GET, value = "/internal/aggregation/{id}")
   public Aggregation getAggregation(@PathVariable Long id) {
     Aggregation aggregation = this.aggregationRepository.findOne(id);
     if (aggregation == null) {
@@ -84,14 +85,14 @@ public class AggregationController {
     return aggregation;
   }
 
-  @RequestMapping(method = RequestMethod.PUT, value = "/internal/aggregation")
+  @RequestMapping(method = PUT, value = "/internal/aggregation")
   public Aggregation updateAggregation(@RequestBody Aggregation aggregation) {
     Aggregation saved = this.saveAggregation(aggregation);
     this.serviceProviderRepository.deleteOrphanedServiceProviders();
     return saved;
   }
 
-  @RequestMapping(method = RequestMethod.DELETE, value = "/internal/aggregation/{id}")
+  @RequestMapping(method = DELETE, value = "/internal/aggregation/{id}")
   public Aggregation deleteAggregation(@PathVariable Long id) {
     Aggregation aggregation = aggregationRepository.findOne(id);
     this.aggregationRepository.delete(aggregation);
@@ -101,7 +102,7 @@ public class AggregationController {
     return aggregation;
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/internal/aggregations")
+  @RequestMapping(method = GET, value = "/internal/aggregations")
   public List<Aggregation> aggregations() {
     List<Aggregation> aggregations = listFromIterable(this.aggregationRepository.findAll());
     aggregations.forEach(aggregation -> aggregation.getServiceProviders().forEach(this::addMetaDataInformation));
@@ -109,6 +110,11 @@ public class AggregationController {
     LOG.debug("Returning all aggregations {}", aggregations);
 
     return aggregations;
+  }
+
+  @RequestMapping(method = GET, value = "/internal/aggregationExistsByName")
+  public boolean aggregationExistsByName(@RequestParam("name") String name) {
+    return aggregationRepository.existsByName(name);
   }
 
   private void addMetaDataInformation(ServiceProvider serviceProvider) {

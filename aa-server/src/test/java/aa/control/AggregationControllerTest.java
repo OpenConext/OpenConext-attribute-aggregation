@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,8 +24,7 @@ import java.util.Set;
 import static aa.util.StreamUtils.listFromIterable;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.springframework.http.HttpMethod.*;
 
 @WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
@@ -53,7 +53,6 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
 
     List<String> authorities = fromDbAggregation.getAttributes().stream().map(Attribute::getAttributeAuthorityId).sorted().collect(toList());
     assertEquals(Arrays.asList("aa1", "aa1", "aa2"), authorities);
-
   }
 
   @Test
@@ -114,12 +113,6 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
     assertEquals(3, aggregation.getAttributes().size());
   }
 
-  private ResponseEntity<List<Aggregation>> findAllAggregations() throws URISyntaxException {
-    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/aggregations"));
-    return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Aggregation>>() {
-    });
-  }
-
   @Test
   public void testAggregationBadRequest() throws Exception {
     ResponseEntity<String> result = postAggregation(
@@ -130,6 +123,24 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
             new ServiceProvider("http://mock-sp")), POST);
 
     assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+  }
+
+  @Test
+  public void testAggregationExistsByName() throws Exception {
+    assertTrue(aggregationExistsByName("TEST AGGREGATION"));
+    assertFalse(aggregationExistsByName("nope"));
+  }
+
+  private boolean aggregationExistsByName(String name) {
+    URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationExistsByName").queryParam("name", name).build().encode().toUri();
+    RequestEntity requestEntity = new RequestEntity(headers, GET, uri);
+    return restTemplate.exchange(requestEntity, Boolean.class).getBody();
+  }
+
+  private ResponseEntity<List<Aggregation>> findAllAggregations() throws URISyntaxException {
+    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/aggregations"));
+    return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Aggregation>>() {
+    });
   }
 
   private Aggregation findAggregationById(Long id) throws URISyntaxException {
