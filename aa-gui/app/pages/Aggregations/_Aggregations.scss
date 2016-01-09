@@ -4,7 +4,8 @@
   padding: 3px;
   margin: 0 0 15px 0px;
   display: block;
-  width: 100%;
+  width: 20%;
+  min-width: 320px;
   border-radius: $br;
   line-height: 20px;
   font-size: 16px;
@@ -16,10 +17,16 @@
 .table {
   width: 100%;
 
+  thead {
+    background: $blue;
+    color: white;
+  }
+
   th {
     border-bottom: 1px solid #EFEFEE;
     cursor: pointer;
     text-align: left;
+    padding: 4px;
 
     &:first-child {
       width: 15%;
@@ -32,11 +39,13 @@
     }
     &:last-child {
       width: 15%;
+      cursor: default;
     }
   }
 
   td {
     vertical-align: top;
+    padding: 4px;
 
     &:last-child {
       text-align: right;
@@ -67,4 +76,20 @@
 .no_data {
   display: inline-block;
   margin-top: 20px;
+}
+
+.sort {
+  float: right;
+  margin-right: 15px;
+  line-height: 20px;
+}
+
+.sorted {
+  @extend .sort;
+  color: white;
+}
+
+.to_sort {
+  @extend .sort;
+  color: darken($light-grey, 10);
 }

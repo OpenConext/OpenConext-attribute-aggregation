@@ -15,11 +15,12 @@ export default class Aggregations extends React.Component {
     this.state = {
       aggregations: [],
       filteredAggregations: [],
-      sorted: {name: 'name', order: 'asc'}
+      sorted: {name: 'Name', order: 'desc'}
     };
 
     API.getAggregations((json) => {
-      this.setState({aggregations: json, filteredAggregations: json});
+      var aggregations = json.sort((a, b) => a.name.localeCompare(b.name));
+      this.setState({aggregations: aggregations, filteredAggregations: aggregations});
     });
   }
 
@@ -76,28 +77,38 @@ export default class Aggregations extends React.Component {
     if (e) {
       Utils.stop(e);
     }
-    return aggregations;
+    var sortFunction = this['sortBy' + column.sort];
+    var sortedAggregations = aggregations.sort(sortFunction);
+    var currentSort = this.state.sorted.name;
+    var newOrder = 'desc';
+    if (currentSort === column.sort) {
+      newOrder = this.state.sorted.order === 'desc' ? 'asc' : 'desc';
+      if (newOrder === 'asc') {
+        sortedAggregations = sortedAggregations.reverse();
+      }
+    }
+    this.setState({filteredAggregations: sortedAggregations, sorted: {name: column.sort, order: newOrder}})
   };
+
+  sortByName = (a, b) =>  a.name.localeCompare(b.name);
+  sortByServiceProviders = (a, b) => this.serviceProviderName(a.serviceProviders[0]).localeCompare(this.serviceProviderName(b.serviceProviders[0]));
+  sortByAttributes = (a, b) => a.attributes[0].name.localeCompare(b.attributes[0].name);
+  serviceProviderName = (sp) => sp.name ? sp.name : sp.entityId;
 
   iconClassName(column) {
     var sorted = this.state.sorted;
-    return sorted.name === column.sort ? 'fa fa-sort-' + sorted.order : column.sort ? 'fa fa-sort' : '';
-  }
-
-  iconStyle(column) {
-    var sorted = this.state.sorted;
-    return sorted.name === column.sort ? {
-      color: '#a2a2a2', float: 'right', marginRight: '10px'
-    } : column.sort ? {
-      color: '#efefee', float: 'right', marginRight: '10px'
-    } : {};
+    if (sorted.name === column.sort) {
+      return 'fa fa-sort-' + sorted.order + ' ' + styles.sorted;
+    } else if (column.sort) {
+      return 'fa fa-sort ' + styles.to_sort;
+    }
   }
 
   render() {
     let columns = [
-      {title: i18n.t('aggregations.name'), sort: 'name'},
-      {title: i18n.t('aggregations.serviceProviders'), sort: 'serviceProviders'},
-      {title: i18n.t('aggregations.attributes'), sort: 'attributes'},
+      {title: i18n.t('aggregations.name'), sort: 'Name'},
+      {title: i18n.t('aggregations.serviceProviders'), sort: 'ServiceProviders'},
+      {title: i18n.t('aggregations.attributes'), sort: 'Attributes'},
       {title: i18n.t('aggregations.actions')}
     ];
     return (
@@ -110,8 +121,8 @@ export default class Aggregations extends React.Component {
               <thead>
               <tr>
                 {columns.map((column) =>
-                  <th key={column.title}>
-                    {column.title}<i className={this.iconClassName(column)} style={this.iconStyle(column)}></i>
+                  <th key={column.title} onClick={this.sort(column, this.state.filteredAggregations)}>
+                    {column.title}<i className={this.iconClassName(column)}></i>
                   </th>)}
               </tr>
               </thead>
