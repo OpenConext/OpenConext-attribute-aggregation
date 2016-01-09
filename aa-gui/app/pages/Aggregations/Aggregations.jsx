@@ -14,7 +14,8 @@ export default class Aggregations extends React.Component {
     super(props, context);
     this.state = {
       aggregations: [],
-      filteredAggregations: []
+      filteredAggregations: [],
+      sorted: {name: 'name', order: 'asc'}
     };
 
     API.getAggregations((json) => {
@@ -71,10 +72,33 @@ export default class Aggregations extends React.Component {
     return ts
   }
 
+  sort = (column, aggregations) => (e) => {
+    if (e) {
+      Utils.stop(e);
+    }
+    return aggregations;
+  };
+
+  iconClassName(column) {
+    var sorted = this.state.sorted;
+    return sorted.name === column.sort ? 'fa fa-sort-' + sorted.order : column.sort ? 'fa fa-sort' : '';
+  }
+
+  iconStyle(column) {
+    var sorted = this.state.sorted;
+    return sorted.name === column.sort ? {
+      color: '#a2a2a2', float: 'right', marginRight: '10px'
+    } : column.sort ? {
+      color: '#efefee', float: 'right', marginRight: '10px'
+    } : {};
+  }
 
   render() {
     let columns = [
-      i18n.t('aggregations.name'), i18n.t('aggregations.serviceProviders'), i18n.t('aggregations.attributes'), i18n.t('aggregations.actions')
+      {title: i18n.t('aggregations.name'), sort: 'name'},
+      {title: i18n.t('aggregations.serviceProviders'), sort: 'serviceProviders'},
+      {title: i18n.t('aggregations.attributes'), sort: 'attributes'},
+      {title: i18n.t('aggregations.actions')}
     ];
     return (
       <div>
@@ -85,7 +109,10 @@ export default class Aggregations extends React.Component {
             <table className={styles.table}>
               <thead>
               <tr>
-                {columns.map((column) => <th key={column}>{column}</th>)}
+                {columns.map((column) =>
+                  <th key={column.title}>
+                    {column.title}<i className={this.iconClassName(column)} style={this.iconStyle(column)}></i>
+                  </th>)}
               </tr>
               </thead>
               <tbody>
@@ -98,7 +125,10 @@ export default class Aggregations extends React.Component {
                 </tr>
               )}
               {this.state.filteredAggregations.length === 0 ?
-                <tr><td><em className={styles.no_data}>No aggregations</em></td><td></td></tr> : <tr></tr>}
+                <tr>
+                  <td><em className={styles.no_data}>No aggregations</em></td>
+                  <td></td>
+                </tr> : <tr></tr>}
               </tbody>
             </table>
           </div>
