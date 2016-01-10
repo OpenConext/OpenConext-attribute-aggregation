@@ -15,7 +15,7 @@ export default class AuthorityConfiguration extends React.Component {
     super(props, context);
     this.state = {
       authorities: [],
-      selectedAuthority: undefined
+      selectedAuthority: {attributes: []}
     };
     API.getAuthorityConfiguration((json) => this.setState(
       {authorities: json.authorities, selectedAuthority: json.authorities[0]}
@@ -28,31 +28,29 @@ export default class AuthorityConfiguration extends React.Component {
   };
 
   renderAuthorityLink(authority) {
-    let style = this.state.selectedAuthority && this.state.selectedAuthority.id === authority.id ?
-      styles.authority_selected : styles.authority;
-    return (
-      <div key={authority.id} className={style}>
-        <a href="#" className={styles.authority_link}
-           onClick={this.handleShowAuthority(authority)}>{authority.id}</a>
-        <em>{authority.description}</em>
-      </div>)
+    var currentAuthority = this.state.selectedAuthority && this.state.selectedAuthority.id === authority.id;
+    let style = currentAuthority ? styles.authority_selected : styles.authority_link;
+    return currentAuthority ?
+      <p key={authority.id} className={style}>{authority.id}</p> :
+      <a key={authority.id} href="#" className={style}
+         onClick={this.handleShowAuthority(authority)}>{authority.id}</a>;
   }
 
   renderAuthority() {
-    var selectedAuthority = this.state.selectedAuthority;
-    return selectedAuthority ? this.renderAuthorityDetails(selectedAuthority) : <div></div>
-  }
-
-  renderAuthorityDetails(authority) {
+    var authority = this.state.selectedAuthority;
     return (
       <div>
-        <p>{i18n.t('authority.description')}</p>
-        <p>{authority.description}</p>
-        <p>{i18n.t('authority.endpoint')}</p>
-        <p>{authority.endpoint}</p>
-        <p>{i18n.t('authority.userName')}</p>
-        <p>{authority.user}</p>
+        <p className={styles.title}>{authority.id}</p>
+        <div className={styles.authority_details}>
+          <span>{i18n.t('authority.description')}</span>
+          <p>{authority.description}</p>
+          <span>{i18n.t('authority.endpoint')}</span>
+          <p>{authority.endpoint}</p>
+          <span>{i18n.t('authority.userName')}</span>
+          <p>{authority.user}</p>
+        </div>
         {this.renderAttributes(authority.attributes)}
+
       </div>
     );
   }
@@ -67,7 +65,7 @@ export default class AuthorityConfiguration extends React.Component {
   }
 
   renderAttribute(attribute) {
-    var valueToString = (val) => val !== undefined && val !== null ? val.toString() : '';
+    const valueToString = (val) => val !== undefined && val !== null ? val.toString() : '';
     return attributeKeys.map((key) =>
       <div>
         <p key={attribute.id}>{i18n.t('authority.' + key)}</p>
@@ -79,11 +77,11 @@ export default class AuthorityConfiguration extends React.Component {
   render() {
     return (
       <div className={styles.mod_container}>
-        <div className={styles.mod_left}>
-          <p>{i18n.t('authority.authorities')}</p>
+        <div className={styles.mod_left_authorities}>
+          <p className={styles.title}>{i18n.t('authority.authorities')}</p>
           {this.state.authorities.map((authority) => this.renderAuthorityLink(authority))}
         </div>
-        <div className={styles.mod_right}>
+        <div className={styles.mod_right_authorities}>
           {this.renderAuthority()}
         </div>
 

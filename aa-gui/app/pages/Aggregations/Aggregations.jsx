@@ -74,17 +74,13 @@ export default class Aggregations extends React.Component {
   }
 
   sort = (column, aggregations) => (e) => {
-    if (e) {
-      Utils.stop(e);
-    }
-    if (column.sort === undefined) {
+    Utils.stop(e);
+    if (column.sortFunction === undefined) {
       return
     }
-    var sortFunction = this['sortBy' + column.sort];
-    var sortedAggregations = aggregations.sort(sortFunction);
-    var currentSort = this.state.sorted.name;
+    var sortedAggregations = aggregations.sort(column.sortFunction);
     var newOrder = 'down';
-    if (currentSort === column.sort) {
+    if (this.state.sorted.name === column.sort) {
       newOrder = this.state.sorted.order === 'down' ? 'up' : 'down';
       if (newOrder === 'up') {
         sortedAggregations = sortedAggregations.reverse();
@@ -95,7 +91,12 @@ export default class Aggregations extends React.Component {
 
   sortByName = (a, b) =>  a.name.localeCompare(b.name);
   sortByServiceProviders = (a, b) => this.serviceProviderName(a.serviceProviders[0]).localeCompare(this.serviceProviderName(b.serviceProviders[0]));
-  sortByAttributes = (a, b) => a.attributes[0].name.localeCompare(b.attributes[0].name);
+  sortByAttributes = (a, b) => {
+    var aA = a.attributes[0];
+    var bA = b.attributes[0];
+    return aA.attributeAuthorityId !== bA.attributeAuthorityId ?
+      aA.attributeAuthorityId.localeCompare(bA.attributeAuthorityId) : aA.name.localeCompare(bA.name)
+  };
   serviceProviderName = (sp) => sp.name ? sp.name : sp.entityId;
 
   iconClassName(column) {
@@ -103,11 +104,19 @@ export default class Aggregations extends React.Component {
     return sorted.name === column.sort ? 'fa fa-arrow-' + sorted.order + ' ' + styles.sorted : styles.to_sort;
   }
 
+  renderEmptyAggregations() {
+    return this.state.filteredAggregations.length === 0 ?
+      <tr>
+        <td><em className={styles.no_data}>No aggregations</em></td>
+        <td></td>
+      </tr> : <tr></tr>
+  }
+
   render() {
     let columns = [
-      {title: i18n.t('aggregations.name'), sort: 'Name'},
-      {title: i18n.t('aggregations.serviceProviders'), sort: 'ServiceProviders'},
-      {title: i18n.t('aggregations.attributes'), sort: 'Attributes'},
+      {title: i18n.t('aggregations.name'), sort: 'Name', sortFunction: this.sortByName},
+      {title: i18n.t('aggregations.serviceProviders'), sort: 'ServiceProviders', sortFunction: this.sortByServiceProviders },
+      {title: i18n.t('aggregations.attributes'), sort: 'Attributes', sortFunction: this.sortByAttributes},
       {title: i18n.t('aggregations.actions')}
     ];
     return (
@@ -134,11 +143,7 @@ export default class Aggregations extends React.Component {
                   <td>{this.renderActions(aggregation)}</td>
                 </tr>
               )}
-              {this.state.filteredAggregations.length === 0 ?
-                <tr>
-                  <td><em className={styles.no_data}>No aggregations</em></td>
-                  <td></td>
-                </tr> : <tr></tr>}
+              {this.renderEmptyAggregations()}
               </tbody>
             </table>
           </div>

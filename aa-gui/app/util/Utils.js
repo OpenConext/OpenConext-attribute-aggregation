@@ -1,8 +1,10 @@
 export default {
 
   stop(e) {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e !== undefined && e !== null) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   }
 
 }

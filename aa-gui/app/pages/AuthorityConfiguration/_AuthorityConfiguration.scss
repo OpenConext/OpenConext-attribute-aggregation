@@ -1,26 +1,62 @@
 @import "toolkit";
 
-.auth {
-  margin: 15px 10px;
-
-  em {
-    display: block;
-    font-size: small;
-    margin-left: 20px;
-  }
+.mod_left_authorities {
+  @extend .mod_left;
+  width: 24%;
+  padding: 0;
 }
 
-.authority {
-  @extend .auth;
-  border-left: 2px solid $light-grey;
-
+.mod_right_authorities {
+  @extend .mod_right;
+  width: 74%;
+  padding: 0;
 }
 
-.authority_selected {
-  @extend .auth;
-  border-left: 2px solid $blue;
+.title {
+  background: $blue;
+  color: white;
+  margin: 0;
+  padding: 10px;
+  font-size: 16px;
+  border-top-left-radius: $br;
+  border-top-right-radius: $br;
 }
 
 .authority_link {
-  padding: 20px;
+  border-bottom: 1px solid $light-grey;
+  padding: 10px;
+  margin: 0;
+  display: block;
+  position: relative;
+}
+
+.authority_selected {
+  @extend .authority_link;
+
+  &:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 2px;
+    content: "";
+    background-color: $blue;
+  }
+}
+
+.authority_details {
+  span {
+    display: block;
+    margin: 15px 0 5px 10px;
+    color: darken($medium-grey, 20)
+  }
+  p {
+    padding: 5px;
+    margin: 0 0 0 10px;
+    border-radius: $br;
+    width: 40%;
+    min-width: 250px;
+    border: 1px solid $light-grey;
+    background: lighten($light-grey, 5);
+  }
 }
