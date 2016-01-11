@@ -3,6 +3,10 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic");
 @import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,300");
 
+*, :after, :before {
+  box-sizing: border-box;
+}
+
 html, body {
   background: $light-grey;
 

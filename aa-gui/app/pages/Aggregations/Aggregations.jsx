@@ -44,7 +44,7 @@ export default class Aggregations extends React.Component {
     <p key={sp.name}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</p>)}</div>;
 
   renderAttributes = (aggregation) => <div className={styles.attributes}>{aggregation.attributes.map((attr) =>
-    <p key={attr.name}>{attr.attributeAuthorityId} <i className="fa fa-arrow-right"></i> {attr.name}</p>)}</div>;
+    <p key={attr.name}>{attr.name} <em>from</em> {attr.attributeAuthorityId}</p>)}</div>;
 
   renderActions = (aggregation) => (<div className={styles.actions}>
     <a href="#" onClick={this.handleShowAggregation(aggregation)}
@@ -83,6 +83,7 @@ export default class Aggregations extends React.Component {
       newOrder = this.state.sorted.order === 'down' ? 'up' : 'down';
       if (newOrder === 'up') {
         sortedAggregations = sortedAggregations.reverse();
+        sortedAggregations.forEach((agg) => agg.attributes.reverse());
       }
     }
     this.setState({filteredAggregations: sortedAggregations, sorted: {name: column.sort, order: newOrder}})
@@ -91,10 +92,10 @@ export default class Aggregations extends React.Component {
   sortByName = (a, b) =>  a.name.localeCompare(b.name);
   sortByServiceProviders = (a, b) => this.serviceProviderName(a.serviceProviders[0]).localeCompare(this.serviceProviderName(b.serviceProviders[0]));
   sortByAttributes = (a, b) => {
-    var aA = a.attributes[0];
-    var bA = b.attributes[0];
-    return aA.attributeAuthorityId !== bA.attributeAuthorityId ?
-      aA.attributeAuthorityId.localeCompare(bA.attributeAuthorityId) : aA.name.localeCompare(bA.name)
+    var aA = a.attributes.sort((a1,a2)=> a1.name.localeCompare(a2.name))[0];
+    var bA = b.attributes.sort((b1,b2)=> b1.name.localeCompare(b2.name))[0];
+    return aA.name !== bA.name ?
+      aA.name.localeCompare(bA.name) : aA.attributeAuthorityId.localeCompare(bA.attributeAuthorityId)
   };
   serviceProviderName = (sp) => sp.name ? sp.name : sp.entityId;
 
@@ -146,7 +147,7 @@ export default class Aggregations extends React.Component {
       <div>
         <Flash message={this.state.flash}/>
         <div className={styles.mod_container}>
-          <input className={styles.input} placeholder=" Search..." type="text" onChange={this.search}/>
+          <input className={styles.search} placeholder=" Search..." type="text" onChange={this.search}/>
           {this.renderAggregationsTable()}
         </div>
       </div>

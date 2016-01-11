@@ -2,28 +2,29 @@
 
 .mod_left_authorities {
   @extend .mod_left;
-  width: 24%;
+  @media screen and (max-width: $large) {
+    width: 100%;
+  }
+  @media screen and (min-width: $large) {
+    width: 24%;
+  }
   padding: 0;
 }
 
 .mod_right_authorities {
   @extend .mod_right;
-  width: 74%;
+  @media screen and (max-width: $large) {
+    width: 100%;
+  }
+  @media screen and (min-width: $large) {
+    width: 74%;
+  }
   padding: 0;
-}
-
-.title {
-  background: $blue;
-  color: white;
-  margin: 0;
-  padding: 10px;
-  font-size: 16px;
-  border-top-left-radius: $br;
-  border-top-right-radius: $br;
 }
 
 .authority_link {
   border-bottom: 1px solid $light-grey;
+  background: lighten($light-grey, 5);
   padding: 10px;
   margin: 0;
   display: block;
@@ -32,6 +33,7 @@
 
 .authority_selected {
   @extend .authority_link;
+  background: white;
 
   &:before {
     position: absolute;
@@ -45,6 +47,7 @@
 }
 
 .authority_details {
+
   span {
     display: block;
     margin: 15px 0 5px 10px;
@@ -55,8 +58,40 @@
     margin: 0 0 0 10px;
     border-radius: $br;
     width: 40%;
-    min-width: 250px;
+    min-width: 400px;
     border: 1px solid $light-grey;
     background: lighten($light-grey, 5);
   }
 }
+
+.header {
+  background: lighten($light-grey, 5);
+  border-bottom: 2px solid $light-grey;
+  font-weight: bolder;
+  margin: 0;
+  padding: 10px;
+  border-top-left-radius: $br;
+  border-top-right-radius: $br;
+}
+
+.attribute {
+  background: lighten($light-grey, 5);
+  border-top: 1px solid $light-grey;
+  border-bottom: 1px solid $light-grey;
+  margin: 20px 0 10px 0;
+  padding: 10px;
+  font-size: 14px;
+  span {
+    margin: 0
+  }
+  em {
+    display: inline-block;
+    margin-left: 10px;
+  }
+}
+
+.attributeDetails {
+  margin-left: 15px;
+}
+
+

@@ -32,7 +32,7 @@ export default {
     authorities: 'Attribute Authorities',
     endpoint: 'Endpoint',
     userName: 'Username',
-    attributes: 'Attributes',
+    attribute: 'Attribute',
     name: 'Name',
     caseExact: 'Case insensitive',
     description: 'Description',
@@ -42,6 +42,17 @@ export default {
     returned: 'Returned',
     type: 'Type',
     uniqueness: 'Uniqueness'
+  },
+  aggregation : {
+    name: 'Name',
+    serviceProviders: 'Service Provider(s)',
+    attributes: 'Attributes',
+    update: 'Update {{name}}',
+    create: 'Create new aggregation',
+    created: 'Created by {{name}} on {{date}}',
+    submit: 'Submit',
+    cancel: 'Cancel',
+    aboutTitle: 'What are aggregations'
   },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',

@@ -9,9 +9,7 @@
 }
 
 @mixin panel {
-  padding: 25px 30px 10px;
   background: white;
-
   box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
   border-radius: $br;
   border: none #fff;

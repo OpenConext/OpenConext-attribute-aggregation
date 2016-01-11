@@ -5,18 +5,15 @@
   overflow: hidden;
 }
 
-.mod_center {
-  @include panel
-}
-
 .mod_left {
   @media screen and (max-width: $large) {
     float: none;
     margin-top: 10px;
+    width: 100%;
   }
   @media screen and (min-width: $large) {
     float: left;
-    width: 44%;
+    width: 49%;
   }
   @include panel
 }
@@ -25,10 +22,11 @@
   @media screen and (max-width: $large) {
     float: none;
     margin-top: 10px;
+    width: 100%;
   }
   @media screen and (min-width: $large) {
     float: right;
-    width: 44%;
+    width: 49%;
   }
   @include panel
 }

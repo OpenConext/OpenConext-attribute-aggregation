@@ -38,7 +38,7 @@
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-router": "1.0.3",
-    "spin": "^0.0.1",
+    "react-spinner": "^0.2.3",
     "es6-promise": "latest",
     "whatwg-fetch": "latest",
     "font-awesome": "^4.5.0",

@@ -1,0 +1,74 @@
+.button {
+  background: $blue;
+  padding: 7px 15px;
+  border: 1px solid $blue;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+
+  &:hover {
+    background: darken($blue, 10);
+    text-decoration: underline;
+  }
+
+  i {
+    margin-right: 10px;
+  }
+
+}
+
+.button_white {
+  @extend .button;
+  color: $blue;
+  background-color: white;
+
+  &:hover {
+    background: darken(white,10)
+  }
+}
+
+.button_submit {
+  @extend .button;
+  width: 180px;
+}
+
+.button_disabled {
+  @extend .button;
+
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
+.button_submit_disabled {
+  @extend .button_disabled;
+  width: 180px;
+}
+
+.button_full {
+  @extend .button;
+  width: 80%;
+  margin: 20px;
+}
+
+.button_narrow {
+  @extend .button;
+  padding: 3px 10px;
+}
+
+.button_cancel {
+  @extend .button;
+  background: white;
+  color: $medium-grey;
+  border: 1px solid $medium-grey;
+  margin-left: 15px;
+  &:hover {
+    background: darken(white, 10);
+    text-decoration: underline;
+  }
+
+}
+
+

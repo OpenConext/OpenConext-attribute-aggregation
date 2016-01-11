@@ -1,10 +1,71 @@
 @import "toolkit";
+@import "buttons";
 
-.aggregation {
-  padding: 25px 30px 10px;
-  background: white;
-  border-radius: $br;
-  @include clearFix;
+.mod_container_aggregation {
+  @extend .mod_container;
+  @include panel;
+  margin: 30px auto;
+  padding: 0;
+  max-width: 1000px;
+}
 
+.header {
+  font-size: large;
+  border-bottom: 1px solid $light-grey;
+  padding: 40px 300px 25px 40px;
+  position: relative;
+
+  em {
+    position: absolute;
+    right: 10px;
+    font-size: small;
+    color: $dark-grey;
+  }
+}
+
+.success {
+  padding: 30px 70px 30px 40px;
+  border-bottom: 1px solid $light-grey;
+  position: relative;
+
+  &:before {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    bottom: 20px;
+    width: 6px;
+    content: "";
+    background-color: $blue;
+  }
+
+  label {
+    margin: 5px 0px;
+    color: $blue;
+    display: block;
+  }
+
+  input {
+    margin: 5px 0px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid $medium-grey;
+    min-width: 100%;
+    font-size: 100%;
+  }
 
 }
+
+.failure {
+  @extend .success;
+
+  &:before {
+    background-color: $medium-grey;
+  }
+
+}
+
+.actions {
+  padding: 30px 70px 10px 40px;
+}
+
+

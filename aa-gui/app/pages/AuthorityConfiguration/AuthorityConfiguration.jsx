@@ -7,7 +7,7 @@ import i18n from 'i18next';
 import API from '../../util/API';
 import Utils from '../../util/Utils';
 
-const attributeKeys = ['name', 'caseExact', 'description', 'multiValued', 'mutability', 'required', 'returned', 'type', 'uniqueness']
+const attributeKeys = ['caseExact', 'description', 'multiValued', 'mutability', 'required', 'returned', 'type', 'uniqueness']
 
 export default class AuthorityConfiguration extends React.Component {
 
@@ -39,18 +39,16 @@ export default class AuthorityConfiguration extends React.Component {
   renderAuthority() {
     var authority = this.state.selectedAuthority;
     return (
-      <div>
-        <p className={styles.title}>{authority.id}</p>
-        <div className={styles.authority_details}>
-          <span>{i18n.t('authority.description')}</span>
-          <p>{authority.description}</p>
-          <span>{i18n.t('authority.endpoint')}</span>
-          <p>{authority.endpoint}</p>
-          <span>{i18n.t('authority.userName')}</span>
-          <p>{authority.user}</p>
-        </div>
+      <div className={styles.authority_details}>
+        <section className={styles.header}>{authority.id}</section>
+        <span>{i18n.t('authority.description')}</span>
+        <p>{authority.description}</p>
+        <span>{i18n.t('authority.endpoint')}</span>
+        <p>{authority.endpoint}</p>
+        <span>{i18n.t('authority.userName')}</span>
+        <p>{authority.user}</p>
         {this.renderAttributes(authority.attributes)}
-
+        <span/>
       </div>
     );
   }
@@ -58,7 +56,6 @@ export default class AuthorityConfiguration extends React.Component {
   renderAttributes(attributes) {
     return (
       <div>
-        <p>{i18n.t('authority.attributes')}</p>
         {attributes.map(this.renderAttribute)}
       </div>
     )
@@ -66,11 +63,17 @@ export default class AuthorityConfiguration extends React.Component {
 
   renderAttribute(attribute) {
     const valueToString = (val) => val !== undefined && val !== null ? val.toString() : '';
-    return attributeKeys.map((key) =>
-      <div>
-        <p key={attribute.id}>{i18n.t('authority.' + key)}</p>
-        <p>{valueToString(attribute[key])}</p>
-      </div>)
+    return (
+      <div key={attribute.attributeAuthorityId + '-' + attribute.name}>
+        <section className={styles.attribute}>{i18n.t('authority.attribute')}<em>{attribute.name}</em></section>
+        {attributeKeys.map((key) =>
+          <div key={attribute.name + '-' + key} className={styles.attributeDetails}>
+            <span>{i18n.t('authority.' + key)}</span>
+            <p>{valueToString(attribute[key])}</p>
+          </div>)
+        }
+      </div>
+    );
   }
 
 
@@ -78,7 +81,7 @@ export default class AuthorityConfiguration extends React.Component {
     return (
       <div className={styles.mod_container}>
         <div className={styles.mod_left_authorities}>
-          <p className={styles.title}>{i18n.t('authority.authorities')}</p>
+          <section className={styles.header}>{i18n.t('authority.authorities')}</section>
           {this.state.authorities.map((authority) => this.renderAuthorityLink(authority))}
         </div>
         <div className={styles.mod_right_authorities}>
