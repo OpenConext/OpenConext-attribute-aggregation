@@ -46,7 +46,7 @@ export default class Aggregations extends React.Component {
   renderAttributes = (aggregation) => <div className={styles.attributes}>{aggregation.attributes.map((attr) =>
     <p key={attr.name}>{attr.attributeAuthorityId} <i className="fa fa-arrow-right"></i> {attr.name}</p>)}</div>;
 
-  renderActions = (aggregation) => (<div>
+  renderActions = (aggregation) => (<div className={styles.actions}>
     <a href="#" onClick={this.handleShowAggregation(aggregation)}
        data-tip={i18n.t("aggregations.edit")}><ReactTooltip /> <i className="fa fa-edit"></i>
     </a>
@@ -65,12 +65,11 @@ export default class Aggregations extends React.Component {
   };
 
   filterAggregations(input) {
-    var ts = this.state.aggregations.filter((aggregation) =>
+    return this.state.aggregations.filter((aggregation) =>
       aggregation.name.toLowerCase().includes(input)
       || aggregation.serviceProviders.filter((sp) => sp.name ? sp.name.toLowerCase().includes(input) : sp.entityId.toLowerCase().includes(input)).length > 0
       || aggregation.attributes.filter((attr) => attr.name.toLowerCase().includes(input) || attr.attributeAuthorityId.toLowerCase().includes(input)).length > 0
-    );
-    return ts
+    )
   }
 
   sort = (column, aggregations) => (e) => {
@@ -104,49 +103,51 @@ export default class Aggregations extends React.Component {
     return sorted.name === column.sort ? 'fa fa-arrow-' + sorted.order + ' ' + styles.sorted : styles.to_sort;
   }
 
-  renderEmptyAggregations() {
-    return this.state.filteredAggregations.length === 0 ?
-      <tr>
-        <td><em className={styles.no_data}>No aggregations</em></td>
-        <td></td>
-      </tr> : <tr></tr>
-  }
-
-  render() {
+  renderAggregationsTable() {
     let columns = [
       {title: i18n.t('aggregations.name'), sort: 'Name', sortFunction: this.sortByName},
-      {title: i18n.t('aggregations.serviceProviders'), sort: 'ServiceProviders', sortFunction: this.sortByServiceProviders },
+      {
+        title: i18n.t('aggregations.serviceProviders'),
+        sort: 'ServiceProviders',
+        sortFunction: this.sortByServiceProviders
+      },
       {title: i18n.t('aggregations.attributes'), sort: 'Attributes', sortFunction: this.sortByAttributes},
       {title: i18n.t('aggregations.actions')}
     ];
+    if (this.state.filteredAggregations.length !== 0) {
+      return (<table className={styles.table}>
+        <thead>
+        <tr>
+          {columns.map((column) =>
+            <th key={column.title} onClick={this.sort(column, this.state.filteredAggregations)}>
+              {column.title}<i className={this.iconClassName(column)}></i>
+            </th>)}
+        </tr>
+        </thead>
+        <tbody>
+        {this.state.filteredAggregations.map((aggregation) =>
+          <tr key={aggregation.name}>
+            <td>{aggregation.name}</td>
+            <td>{this.renderServiceProviders(aggregation)}</td>
+            <td>{this.renderAttributes(aggregation)}</td>
+            <td>{this.renderActions(aggregation)}</td>
+          </tr>
+        )}
+
+        </tbody>
+      </table>)
+    } else {
+      return <div><em className={styles.no_data}>{i18n.t('aggregations.no_found')}</em></div>
+    }
+  }
+
+  render() {
     return (
       <div>
         <Flash message={this.state.flash}/>
         <div className={styles.mod_container}>
           <input className={styles.input} placeholder=" Search..." type="text" onChange={this.search}/>
-          <div className={styles.mod_center}>
-            <table className={styles.table}>
-              <thead>
-              <tr>
-                {columns.map((column) =>
-                  <th key={column.title} onClick={this.sort(column, this.state.filteredAggregations)}>
-                    {column.title}<i className={this.iconClassName(column)}></i>
-                  </th>)}
-              </tr>
-              </thead>
-              <tbody>
-              {this.state.filteredAggregations.map((aggregation) =>
-                <tr key={aggregation.name}>
-                  <td>{aggregation.name}</td>
-                  <td>{this.renderServiceProviders(aggregation)}</td>
-                  <td>{this.renderAttributes(aggregation)}</td>
-                  <td>{this.renderActions(aggregation)}</td>
-                </tr>
-              )}
-              {this.renderEmptyAggregations()}
-              </tbody>
-            </table>
-          </div>
+          {this.renderAggregationsTable()}
         </div>
       </div>
     );

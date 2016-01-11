@@ -25,7 +25,8 @@ export default {
     edit: 'Edit',
     delete: 'Delete',
     confirmation: 'Are you sure you want to delete aggregation {{name}}?',
-    deleted: 'Successfully deleted aggregation {{name}}'
+    deleted: 'Successfully deleted aggregation {{name}}',
+    no_found: 'No aggregations found'
   },
   authority: {
     authorities: 'Attribute Authorities',
