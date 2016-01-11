@@ -1,7 +1,6 @@
 package aa.repository;
 
 import aa.model.Attribute;
-import aa.model.ServiceProvider;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

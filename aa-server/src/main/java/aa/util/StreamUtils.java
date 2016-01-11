@@ -30,7 +30,7 @@ public class StreamUtils {
     );
   }
 
-  public static  <T> List<T> iteratorToList(Iterator<T> iterator) {
+  public static <T> List<T> iteratorToList(Iterator<T> iterator) {
     return stream(spliteratorUnknownSize(iterator, ORDERED), false).collect(toCollection(ArrayList::new));
   }
 

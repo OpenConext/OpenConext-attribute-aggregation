@@ -15,9 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.InputStream;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class CachedRemoteTokenServicesTest {

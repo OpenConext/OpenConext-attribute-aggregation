@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
 /**
- * EngineBlock calls the AttributeAggregatorController and we don't want to use OAuth for this as
+ * EngineBlock / Dashboard calls the AttributeAggregatorController and we don't want to use OAuth for this as
  * they are trusted clients
  */
 public class BasicAuthenticationManager implements AuthenticationManager {

@@ -10,7 +10,6 @@ import Utils from '../../util/Utils'
 export default class Aggregation extends React.Component {
 
   constructor(props, context) {
-    console.log('Aggregation constructor');
     super(props, context);
     this.state = {aggregation: {}, serviceProviders: [], errors: {}};
     API.getServiceProviders((json) => this.setState({serviceProviders: json}));
@@ -106,7 +105,7 @@ export default class Aggregation extends React.Component {
     var title = aggregation.id ? i18n.t('aggregation.update', {name: aggregation.name}) : i18n.t("aggregation.create");
     var subtitle = aggregation.id ? i18n.t('aggregation.created', {
       name: aggregation.userDisplayName,
-      date: moment(aggregation.created).format('LL')
+      date: moment(aggregation.created).format('LLLL')
     }) : '';
 
     return (

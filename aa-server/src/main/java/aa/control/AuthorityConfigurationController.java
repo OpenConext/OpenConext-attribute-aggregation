@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(headers = {"Content-Type=application/json"}, produces = {"application/json"})
 public class AuthorityConfigurationController {
 
-  private final AuthorityResolver authorityResolver;
+  private final AuthorityConfiguration configuration;
 
   @Autowired
   public AuthorityConfigurationController(AuthorityResolver authorityResolver) {
-    this.authorityResolver = authorityResolver;
+    this.configuration = authorityResolver.getConfiguration();
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/internal/authorityConfiguration")
   public AuthorityConfiguration authorityConfiguration() {
-    return authorityResolver.getConfiguration();
+    return configuration;
   }
 
 }

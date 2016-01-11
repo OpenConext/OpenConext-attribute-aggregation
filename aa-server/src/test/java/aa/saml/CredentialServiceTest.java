@@ -4,12 +4,11 @@ import org.junit.Test;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class CredentialServiceTest {
 

@@ -24,7 +24,7 @@
       border-bottom: 2px solid $light-grey;
       cursor: pointer;
       text-align: left;
-      padding: 4px;
+      padding: 8px;
       background: lighten($light-grey, 5);
       font-weight: bolder;
 
@@ -49,7 +49,7 @@
   tbody {
     td {
       vertical-align: top;
-      padding: 4px;
+      padding: 8px;
 
       &:last-child {
         text-align: right;

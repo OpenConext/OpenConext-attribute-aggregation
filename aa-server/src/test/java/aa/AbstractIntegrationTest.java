@@ -30,13 +30,16 @@ import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.FAIL_ON_
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
 /**
- * Override the @WebIntegrationTest annotation if you don't want to have mock shibboleth headers (e.g. you want to impersonate EB or other identity).
+ * Override the @WebIntegrationTest annotation if you don't want to have mock shibboleth headers (e.g. you want to
+ * impersonate EB or other identity).
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev",
+    "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 @Transactional
-@Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed.sql"}, config = @SqlConfig(errorMode = FAIL_ON_ERROR, transactionMode = ISOLATED))
+@Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed.sql"},
+    config = @SqlConfig(errorMode = FAIL_ON_ERROR, transactionMode = ISOLATED))
 public abstract class AbstractIntegrationTest {
 
   protected static final String spEntityID = "http://mock-sp";

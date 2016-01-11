@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.*;
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.EAGER;
 
 @Entity(name = "aggregations")
 public class Aggregation {

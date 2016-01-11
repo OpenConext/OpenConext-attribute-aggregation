@@ -1,26 +1,20 @@
 package aa.control;
 
 import aa.AbstractIntegrationTest;
-import aa.model.*;
-import aa.util.StreamUtils;
+import aa.model.UserAttribute;
+import aa.model.UserAttributes;
 import org.junit.Test;
-import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
-import static aa.util.StreamUtils.listFromIterable;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 @WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})

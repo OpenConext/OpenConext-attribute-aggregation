@@ -84,7 +84,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
   /**
    * Protect endpoints for the internal API with Shibboleth AbstractPreAuthenticatedProcessingFilter.
    * <p/>
-   * Protect the internal endpoint for EB with basic authentication.
+   * Protect the internal endpoint for EB and Dashbaord with basic authentication.
    * <p/>
    * Protect all other endpoints - except the public ones - with OAuth2 with support for both Authz and OIDC.
    * <p/>

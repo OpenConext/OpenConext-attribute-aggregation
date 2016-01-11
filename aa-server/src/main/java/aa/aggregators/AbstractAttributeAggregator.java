@@ -20,10 +20,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static aa.util.StreamUtils.singletonOptionalCollector;
 import static java.util.stream.Collectors.toSet;
 
 public abstract class AbstractAttributeAggregator implements AttributeAggregator {
