@@ -42,7 +42,7 @@
     "es6-promise": "latest",
     "whatwg-fetch": "latest",
     "font-awesome": "^4.5.0",
-    "react-data-components": "^0.6.0"
+    "react-select": "^1.0.0-beta8"
   },
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",

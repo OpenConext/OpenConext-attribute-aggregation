@@ -3,6 +3,7 @@ import styles from './_Aggregation.scss'
 import React from 'react'
 import i18n from 'i18next'
 import moment from 'moment'
+import Select from 'react-select'
 
 import API from '../../util/API'
 import Utils from '../../util/Utils'
@@ -11,7 +12,7 @@ export default class Aggregation extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {aggregation: {}, serviceProviders: [], errors: {}};
+    this.state = {aggregation: {serviceProviders: [], attributes: []}, serviceProviders: [], errors: {}};
     API.getServiceProviders((json) => this.setState({serviceProviders: json}));
     let id = props.params.id;
     if (id !== 'new') {
@@ -54,7 +55,7 @@ export default class Aggregation extends React.Component {
     return (
       <div className={style}>
         <label htmlFor='name'>{i18n.t('aggregation.name')}</label>
-        <input type="text" name="name" value={aggregation.name}
+        <input className={styles.input} type="text" name="name" value={aggregation.name}
                onChange={handleOnChange}/>
       </div>
     );
@@ -62,14 +63,32 @@ export default class Aggregation extends React.Component {
 
   renderServiceProviders() {
     var aggregation = this.state.aggregation;
-    let handleOnChange = (e) => this.setState({aggregation: {serviceProviders: e.target.value}});
-
-    var style = Utils.isEmpty(aggregation.serviceProviders) ? styles.failure : styles.success;
+    let handleOnChange = (val) => {
+      if (val !== undefined) {
+        //let selectedServiceProviders = val.map((sp) => sp.entityId)
+        this.setState({aggregation: {serviceProviders: val}})
+      }
+    };
+    let value = this.state.aggregation.serviceProviders
+    let options = this.state.serviceProviders.map((sp) => {
+      return {value: sp.entityId, label: sp.name}
+    });
+    let style = Utils.isEmpty(aggregation.serviceProviders) ? styles.failure : styles.success;
     return (
       <div className={style}>
         <label htmlFor='serviceProviders'>{i18n.t('aggregation.serviceProviders')}</label>
-        <input type="text" name="serviceProviders" value={aggregation.name}
-               onChange={handleOnChange}/>
+        <Select
+          name='serviceProviders'
+          labelKey='name'
+          valueKey='entityId'
+          value={this.state.aggregation.serviceProviders.map((sp) => sp.entityId).join(',')}
+          delimiter=','
+          options={this.state.serviceProviders}
+          onChange={handleOnChange}
+          multi={true}
+          placeholder='Select one or more ServiceProviders'
+
+        />
       </div>
     );
   }

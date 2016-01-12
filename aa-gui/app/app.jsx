@@ -2,6 +2,7 @@ import './favicon.ico';
 import './index.html';
 import 'babel-core/polyfill';
 import 'normalize.css/normalize.css';
+
 import './scss/app.scss';
 
 require('font-awesome-webpack');

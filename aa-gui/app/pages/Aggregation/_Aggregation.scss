@@ -44,15 +44,15 @@
     display: block;
   }
 
-  input {
-    margin: 5px 0px;
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid $medium-grey;
-    min-width: 100%;
-    font-size: 100%;
-  }
+}
 
+.input {
+  margin: 5px 0px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid $medium-grey;
+  min-width: 100%;
+  font-size: 100%;
 }
 
 .failure {
