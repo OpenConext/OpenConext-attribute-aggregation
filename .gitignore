@@ -1,6 +1,5 @@
 node_modules
-aa-gui/build/*
-!build/css/react-select.css
+build
 *.log*
 .DS_Store
 .idea

@@ -14,10 +14,10 @@
   },
   "scripts": {
     "build": "NODE_ENV=production npm run webpack",
-    "clean": "rimraf $npm_package_config_buildDir && mkdir $npm_package_config_buildDir",
+    "clean": "rimraf $npm_package_config_buildDir && mkdir $npm_package_config_buildDir && mkdir $npm_package_config_buildDir/css",
     "env": "env",
     "lint": "eslint --ext .js --ext .jsx ./app ./webpack && echo No linting errors.",
-    "prebuild": "npm run clean",
+    "prebuild": "npm run clean && cp ./node_modules/react-select/dist/react-select.css ./$npm_package_config_buildDir/css/",
     "prestart": "npm install",
     "pretest": "npm install && npm run lint",
     "pretest-travis": "npm install && npm run lint",
