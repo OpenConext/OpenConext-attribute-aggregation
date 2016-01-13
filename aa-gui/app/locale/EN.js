@@ -54,7 +54,8 @@ export default {
     authority: 'Attribute Authority',
     attributes: 'Attribute(s)',
     new_authority: "Add a new authority...",
-    new_attribute: "Add new attribute...."
+    new_attribute: "Add new attribute....",
+    cancel: "Are you sure you want to cancel the update?"
   },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',

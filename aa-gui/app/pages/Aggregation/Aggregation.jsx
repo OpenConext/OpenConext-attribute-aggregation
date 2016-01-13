@@ -49,12 +49,15 @@ export default class Aggregation extends React.Component {
   handleSubmit = (e) => {
     Utils.stop(e);
     //todd call to API
+    let aggregation = this.state.aggregation;
+    API.saveAggregation(aggregation, (json) => this.props.history.replace('/aggregations'))
   };
 
   handleCancel = (e) => {
     Utils.stop(e);
-    //add confirmation popup
-    this.props.history.replace('/aggregations');
+    if (confirm(i18n.t("aggregation.cancel", {name: aggregation.name}))) {
+      this.props.history.replace('/aggregations');
+    }
   };
 
   updateAggregationState(newPartialState) {
@@ -109,20 +112,52 @@ export default class Aggregation extends React.Component {
     this.updateAggregationState({attributes: newAttributes})
   };
 
+  handleAttributeChange = (authorityId) => (e) => {
+    let attributeName = e.target.value;
+    //find the configured attribute by authorityId and name
+    let configuredAttributesForAuthority = this.state.authorities.find((authority) => authority.id === authorityId).attributes;
+    let configuredAttribute = configuredAttributesForAuthority.find((attribute) => attribute.name === attributeName);
+
+    //shallow copy
+    let newAttribute = Object.assign({}, configuredAttribute)
+
+    let mergedAttributes = update(this.state.aggregation.attributes, {$push: [newAttribute]});
+    this.updateAggregationState({attributes: mergedAttributes})
+  }
+
   handleAuthorityChange = (e) => {
     let authorityId = e.target.value;
-    let authority = this.state.authorities.filter((authority) => authority.id === authorityId)[0];
+    let authority = this.state.authorities.find((authority) => authority.id === authorityId);
     let newAttributes = authority.attributes.map((attribute) => Object.assign({}, attribute));
 
+    //add by default all attributes of the authority - user can delete the individual attributes
     let mergedAttributes = update(this.state.aggregation.attributes, {$push: newAttributes});
     this.updateAggregationState({attributes: mergedAttributes})
   };
+
+  /*
+   * notSelectedAttributesGroupedByAuthority is an object which has authorityId keys
+   * with as value the remaining - e.g. not selected - attributes
+   */
+  renderAttributesSelect(authorityId, notSelectedAttributesGroupedByAuthority) {
+    let attributes = notSelectedAttributesGroupedByAuthority[authorityId];
+    return Utils.isEmpty(attributes) ? <div></div> :
+      <div>
+        <select className={styles.select_attribute} value='' onChange={this.handleAttributeChange(authorityId)}>
+          <option value="" disabled="disabled">{i18n.t("aggregation.new_attribute")}</option>
+          {
+            attributes.map((attribute) => <option value={attribute.name}
+                                                        key={attribute.name}>{attribute.name}</option>)
+          }
+        </select>
+      </div>
+  }
 
   renderAuthoritySelect(authorityOptions) {
     return Utils.isEmpty(authorityOptions) ? <div></div> :
       <div>
         <label htmlFor='attributes'>{i18n.t('aggregation.authority')}</label>
-        <select className={styles.select} value="" onChange={this.handleAuthorityChange}>
+        <select className={styles.select_authority} value='' onChange={this.handleAuthorityChange}>
           <option value="" disabled="disabled">{i18n.t("aggregation.new_authority")}</option>
           {
             authorityOptions.map((authority) => <option value={authority.id}
@@ -135,9 +170,20 @@ export default class Aggregation extends React.Component {
   renderAttributes() {
     let attributes = this.state.aggregation.attributes;
 
+
     //we display the current authorities / attributes
     let attributesGroupedByAuthority = _.groupBy(attributes, 'attributeAuthorityId');
-    let currentAuthorities = Object.keys(attributesGroupedByAuthority)
+    let currentAuthorities = Object.keys(attributesGroupedByAuthority).sort();
+
+    //for every authority currently selected we need to display a drop-down with the remaining (if any) attributes
+    let notSelectedAttributesGroupedByAuthority = currentAuthorities.reduce((initialValue, authorityId) => {
+      let currentAttributes = attributesGroupedByAuthority[authorityId];
+      let configuredAttributes = this.state.authorities.find((auth) => auth.id === authorityId).attributes;
+
+      let notSelectedAttributes = configuredAttributes.filter((attr) => currentAttributes.find((curr) => curr.name === attr.name) === undefined);
+      initialValue[authorityId] = notSelectedAttributes;
+      return initialValue
+    },{});
 
     //we need the authorities / attributes not yet linked to this aggregation
     let authorityOptions = this.state.authorities.filter((authority) => !currentAuthorities.includes(authority.id))
@@ -155,7 +201,7 @@ export default class Aggregation extends React.Component {
               </a>
               <div className={styles.attributes}>
                 <label>{i18n.t('aggregation.attributes')}</label>
-                {attributesGroupedByAuthority[authorityId].map((attribute)=> {
+                {attributesGroupedByAuthority[authorityId].sort((a1,a2) => a1.name.localeCompare(a2.name)).map((attribute)=> {
                   return (
                     <div key={authorityId + '-' + attribute.name} className={styles.attribute}>
                       <input className={styles.input_disabled} type="text" name={authorityId + '-' + attribute.name}
@@ -168,6 +214,7 @@ export default class Aggregation extends React.Component {
                     </div>
                   )
                 })}
+                {this.renderAttributesSelect(authorityId, notSelectedAttributesGroupedByAuthority)}
               </div>
             </div>
           )

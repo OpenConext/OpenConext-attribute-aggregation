@@ -1,6 +1,7 @@
 import styles from './_Aggregations.scss';
 
 import React from 'react';
+import ReactDom from 'react-dom';
 import ReactTooltip from 'react-tooltip';
 import i18n from 'i18next';
 import API from '../../util/API';
@@ -24,13 +25,15 @@ export default class Aggregations extends React.Component {
     });
   }
 
+  componentDidUpdate = () => document.body.scrollTop = document.documentElement.scrollTop = 0;
+
   handleShowAggregation = (aggregation) => (e) => {
     Utils.stop(e);
     this.props.history.replace('/aggregation/' + aggregation.id);
   };
 
   handleDeleteAggregation = (aggregation) => (e) => {
-    stop(e);
+    Utils.stop(e);
     if (confirm(i18n.t("aggregations.confirmation", {name: aggregation.name}))) {
       API.deleteAggregation(aggregation.id, () =>
         API.getAggregations((json) => {
@@ -41,10 +44,11 @@ export default class Aggregations extends React.Component {
   };
 
   renderServiceProviders = (aggregation) => <div className={styles.attributes}>{aggregation.serviceProviders.map((sp) =>
-    <p key={sp.name}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</p>)}</div>;
+    <p key={sp.entityId}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</p>)}</div>;
 
   renderAttributes = (aggregation) => <div className={styles.attributes}>{aggregation.attributes.map((attr) =>
-    <p key={attr.name}>{attr.name} <em>from</em> {attr.attributeAuthorityId}</p>)}</div>;
+    <p key={attr.attributeAuthorityId + '-' + attr.name}>{attr.name} <em>from</em> {attr.attributeAuthorityId}
+    </p>)}</div>;
 
   renderActions = (aggregation) => (<div className={styles.actions}>
     <a href="#" onClick={this.handleShowAggregation(aggregation)}
@@ -77,23 +81,28 @@ export default class Aggregations extends React.Component {
     if (column.sortFunction === undefined) {
       return
     }
-    var sortedAggregations = aggregations.sort(column.sortFunction);
-    var newOrder = 'down';
+    let sortedAggregations = aggregations.sort(column.sortFunction);
+    let newOrder = 'down';
     if (this.state.sorted.name === column.sort) {
       newOrder = this.state.sorted.order === 'down' ? 'up' : 'down';
       if (newOrder === 'up') {
         sortedAggregations = sortedAggregations.reverse();
         sortedAggregations.forEach((agg) => agg.attributes.reverse());
+        sortedAggregations.forEach((agg) => agg.serviceProviders.reverse());
       }
     }
     this.setState({filteredAggregations: sortedAggregations, sorted: {name: column.sort, order: newOrder}})
   };
 
   sortByName = (a, b) =>  a.name.localeCompare(b.name);
-  sortByServiceProviders = (a, b) => this.serviceProviderName(a.serviceProviders[0]).localeCompare(this.serviceProviderName(b.serviceProviders[0]));
+  sortByServiceProviders = (a, b) => {
+    let aSP = a.serviceProviders.sort((sp1, sp2) => this.serviceProviderName(sp1).localeCompare(this.serviceProviderName(sp2)))[0]
+    let bSP = b.serviceProviders.sort((sp1, sp2) => this.serviceProviderName(sp1).localeCompare(this.serviceProviderName(sp2)))[0]
+    this.serviceProviderName(aSP).localeCompare(this.serviceProviderName(bSP))
+  }
   sortByAttributes = (a, b) => {
-    var aA = a.attributes.sort((a1,a2)=> a1.name.localeCompare(a2.name))[0];
-    var bA = b.attributes.sort((b1,b2)=> b1.name.localeCompare(b2.name))[0];
+    let aA = a.attributes.sort((a1, a2)=> a1.name.localeCompare(a2.name))[0];
+    let bA = b.attributes.sort((b1, b2)=> b1.name.localeCompare(b2.name))[0];
     return aA.name !== bA.name ?
       aA.name.localeCompare(bA.name) : aA.attributeAuthorityId.localeCompare(bA.attributeAuthorityId)
   };
@@ -147,7 +156,10 @@ export default class Aggregations extends React.Component {
       <div>
         <Flash message={this.state.flash}/>
         <div className={styles.mod_container}>
-          <input className={styles.search} placeholder=" Search..." type="text" onChange={this.search}/>
+          <div className={styles.search_container}>
+            <i className="fa fa-search"></i>
+            <input placeholder="Search..." type="text" onChange={this.search}/>
+          </div>
           {this.renderAggregationsTable()}
         </div>
       </div>

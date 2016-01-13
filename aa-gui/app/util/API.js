@@ -2,6 +2,8 @@ import createBrowserHistory from 'history/lib/createBrowserHistory'
 
 const history = createBrowserHistory();
 
+import Utils from './Utils'
+
 class API {
 
   constructor() {
@@ -19,8 +21,8 @@ class API {
     }
   };
 
-  doFetch = (url, callback, method = 'get') => {
-    fetch(url, {
+  doFetch = (url, callback, method = 'get', form) => {
+    var options = {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -28,7 +30,11 @@ class API {
       },
       method: method,
       credentials: 'same-origin'
-    })
+      };
+      if (form && (method === 'post' || method === 'put')) {
+        options.body = JSON.stringify(form);
+      }
+      fetch(url, options)
       .then(this.checkStatus)
       .then(res => res.json())
       .then(json => callback(json))
@@ -59,6 +65,10 @@ class API {
     return this.doFetch('/aa/api/internal/aggregation/' + id, callback, 'delete');
   }
 
+  saveAggregation(aggregation, callback) {
+    let method = Utils.isEmpty(aggregation.id) ? 'post' : 'put';
+    return this.doFetch('/aa/api/internal/aggregation', callback, method, aggregation);
+  }
 }
 
 export default new API()

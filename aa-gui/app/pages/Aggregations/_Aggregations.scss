@@ -1,17 +1,30 @@
 @import "toolkit";
 
-.search {
-  padding: 3px;
+.search_container {
+
+  position: relative;
   margin: 0 0 15px 0px;
-  display: block;
-  width: 20%;
-  min-width: 320px;
-  border-radius: $br;
-  line-height: 20px;
-  font-size: 16px;
-  border: 1px solid $light-grey;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
-  box-sizing: border-box;
+
+  i {
+    color: #8A7070;
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    font-size: 14px;
+  }
+
+  input {
+    padding: 3px 3px 3px 25px;
+    display: block;
+    width: 20%;
+    min-width: 320px;
+    border-radius: $br;
+    line-height: 20px;
+    font-size: 16px;
+    border: 1px solid $light-grey;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
+    box-sizing: border-box;
+  }
 }
 
 .table {
