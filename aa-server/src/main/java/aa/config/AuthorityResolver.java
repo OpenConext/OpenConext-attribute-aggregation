@@ -2,6 +2,7 @@ package aa.config;
 
 import aa.model.Attribute;
 import aa.model.AttributeAuthorityConfiguration;
+import aa.model.RequiredInputAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class AuthorityResolver {
 
     TypeDescription attributeAuthorityDescription = new TypeDescription(AttributeAuthorityConfiguration.class);
     authorityConfigurationDescription.putListPropertyType("attributes", Attribute.class);
+    authorityConfigurationDescription.putListPropertyType("requiredInputAttributes", RequiredInputAttribute.class);
 
     constructor.addTypeDescription(authorityConfigurationDescription);
     constructor.addTypeDescription(attributeAuthorityDescription);

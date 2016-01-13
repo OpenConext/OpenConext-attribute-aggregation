@@ -14,6 +14,7 @@ public class AttributeAuthorityConfiguration {
   @JsonIgnore
   private String password;
   private List<Attribute> attributes;
+  private List<RequiredInputAttribute> requiredInputAttributes;
   private int timeOut;
 
   public AttributeAuthorityConfiguration() {
@@ -82,6 +83,14 @@ public class AttributeAuthorityConfiguration {
 
   public void setTimeOut(int timeOut) {
     this.timeOut = timeOut;
+  }
+
+  public List<RequiredInputAttribute> getRequiredInputAttributes() {
+    return requiredInputAttributes;
+  }
+
+  public void setRequiredInputAttributes(List<RequiredInputAttribute> requiredInputAttributes) {
+    this.requiredInputAttributes = requiredInputAttributes;
   }
 
   @Override

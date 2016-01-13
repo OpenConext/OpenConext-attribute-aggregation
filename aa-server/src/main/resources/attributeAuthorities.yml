@@ -29,6 +29,11 @@ authorities:
           type: "string",
           uniqueness: "none"
         }
+      ],
+      requiredInputAttributes: [
+        {
+        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
+        }
       ]
     }
   - {
@@ -49,6 +54,11 @@ authorities:
           returned: "default",
           type: "string",
           uniqueness: "none",
+        }
+      ],
+      requiredInputAttributes: [
+        {
+        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
         }
       ]
     }

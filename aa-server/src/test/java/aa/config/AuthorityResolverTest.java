@@ -34,6 +34,8 @@ public class AuthorityResolverTest {
 
   private void assertAuthority(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     attributeAuthorityConfiguration.getAttributes().forEach(attribute -> this.assertAttribute(attributeAuthorityConfiguration, attribute));
+    assertEquals(1, attributeAuthorityConfiguration.getRequiredInputAttributes().size());
+    assertEquals("urn:mace:dir:attribute-def:eduPersonPrincipalName", attributeAuthorityConfiguration.getRequiredInputAttributes().get(0).getName());
   }
 
   private void assertAttribute(AttributeAuthorityConfiguration attributeAuthorityConfiguration, Attribute attribute) {
