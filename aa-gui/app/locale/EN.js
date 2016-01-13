@@ -32,6 +32,7 @@ export default {
     authorities: 'Attribute Authorities',
     endpoint: 'Endpoint',
     userName: 'Username',
+    requiredInputAttributes: 'Required input attributes',
     attribute: 'Attribute',
     name: 'Name',
     caseExact: 'Case insensitive',
@@ -55,7 +56,15 @@ export default {
     attributes: 'Attribute(s)',
     new_authority: "Add a new authority...",
     new_attribute: "Add new attribute....",
-    cancel: "Are you sure you want to cancel the update?"
+    cancel: "Cancel",
+    cancel_question: "Are you sure you want to leave this page?"
+  },
+  playground : {
+    title: 'AGGREGATION PLAYGROUND',
+    aboutTitle: 'How to use the Playground?',
+    aggregations: 'Aggregations',
+    aggregationsInfo: 'Optional - the selected aggregation is only used to set defaults for the Service Provider and the required attributes',
+    serviceProvider: 'Service Provider'
   },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',

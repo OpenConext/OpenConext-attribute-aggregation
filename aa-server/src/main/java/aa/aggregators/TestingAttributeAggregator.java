@@ -15,7 +15,6 @@ import static java.util.stream.Collectors.toList;
 public class TestingAttributeAggregator extends AbstractAttributeAggregator {
 
   private final boolean useEndpoint;
-  private List<String> attributeKeys = Collections.singletonList("urn:mace:dir:attribute-def:eduPersonPrincipalName");
 
   public TestingAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration,
                                     boolean useEndpoint) {
@@ -40,8 +39,4 @@ public class TestingAttributeAggregator extends AbstractAttributeAggregator {
     }
   }
 
-  @Override
-  public List<String> attributeKeysRequired() {
-    return attributeKeys;
-  }
 }

@@ -7,15 +7,16 @@ import i18n from 'i18next';
 import API from '../../util/API';
 import Utils from '../../util/Utils';
 
-const attributeKeys = ['caseExact', 'description', 'multiValued', 'mutability', 'required', 'returned', 'type', 'uniqueness']
+const attributeKeys = ['description', 'caseExact', 'multiValued', 'mutability', 'required', 'returned', 'type', 'uniqueness']
 
 export default class AuthorityConfiguration extends React.Component {
 
   constructor(props, context) {
     super(props, context);
+    let authorities = [{requiredInputAttributes: [], attributes: []}];
     this.state = {
-      authorities: [],
-      selectedAuthority: {attributes: []}
+      authorities: authorities,
+      selectedAuthority: authorities[0]
     };
     API.getAuthorityConfiguration((json) => this.setState(
       {authorities: json.authorities, selectedAuthority: json.authorities[0]}
@@ -43,10 +44,13 @@ export default class AuthorityConfiguration extends React.Component {
         <section className={styles.header}>{authority.id}</section>
         <span>{i18n.t('authority.description')}</span>
         <p>{authority.description}</p>
+        <span>{i18n.t('authority.requiredInputAttributes')}</span>
+        <ul>{authority.requiredInputAttributes.map((attr)=>
+          <li key={authority.id + '-' + attr.name}>{attr.name}</li>
+        )}
+        </ul>
         <span>{i18n.t('authority.endpoint')}</span>
         <p>{authority.endpoint}</p>
-        <span>{i18n.t('authority.userName')}</span>
-        <p>{authority.user}</p>
         {this.renderAttributes(authority.attributes)}
         <span/>
       </div>
@@ -64,7 +68,7 @@ export default class AuthorityConfiguration extends React.Component {
   renderAttribute(attribute) {
     const valueToString = (val) => val !== undefined && val !== null ? val.toString() : '';
     return (
-      <div key={attribute.attributeAuthorityId + '-' + attribute.name}>
+      <div key={attribute.attributeAuthorityId + '_' + attribute.name}>
         <section className={styles.attribute}>{i18n.t('authority.attribute')}<em>{attribute.name}</em></section>
         {attributeKeys.map((key) =>
           <div key={attribute.name + '-' + key} className={styles.attributeDetails}>

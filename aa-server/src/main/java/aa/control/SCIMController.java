@@ -13,13 +13,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -76,6 +82,18 @@ public class SCIMController {
   public String resourceType() {
     return resourceTypeJson;
   }
+
+  @RequestMapping(method = RequestMethod.GET, value = "internal/v1/Schema")
+  public Schema internalSchema(@RequestParam("serviceProviderEntityId") String serviceProviderEntityId) {
+    String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
+    OAuth2Request oauth2Request = new OAuth2Request(Collections.emptyMap(), clientId,
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities(), true, Collections.emptySet(),
+        Collections.emptySet(), null, Collections.emptySet(),
+        Collections.emptyMap());
+    OAuth2Authentication authentication = new OAuth2Authentication(oauth2Request, null);
+    return schema(authentication);
+  }
+
 
   @RequestMapping(method = RequestMethod.GET, value = "v1/Schema")
   public Schema schema(OAuth2Authentication authentication) {

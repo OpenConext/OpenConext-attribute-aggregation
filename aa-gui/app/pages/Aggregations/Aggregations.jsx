@@ -19,6 +19,10 @@ export default class Aggregations extends React.Component {
       sorted: {name: 'Name', order: 'down'}
     };
 
+    this.fetchAggregations();
+  }
+
+  fetchAggregations() {
     API.getAggregations((json) => {
       var aggregations = json.sort((a, b) => a.name.localeCompare(b.name));
       this.setState({aggregations: aggregations, filteredAggregations: aggregations});
@@ -35,11 +39,7 @@ export default class Aggregations extends React.Component {
   handleDeleteAggregation = (aggregation) => (e) => {
     Utils.stop(e);
     if (confirm(i18n.t("aggregations.confirmation", {name: aggregation.name}))) {
-      API.deleteAggregation(aggregation.id, () =>
-        API.getAggregations((json) => {
-          this.setState({aggregations: json, flash: i18n.t('aggregations.deleted', {name: aggregation.name})});
-        })
-      )
+      API.deleteAggregation(aggregation.id, () => this.fetchAggregations())
     }
   };
 

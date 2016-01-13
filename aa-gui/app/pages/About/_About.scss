@@ -1,12 +1,21 @@
-.about {
-  padding: 5px 70px 10px 40px;
-  margin: 25px 0 0;
+@import "toolkit";
 
-  h1 {
-    font-size: 28px;
-    padding: 0;
-    color: $blue;
-    margin: 0 0 10px 0px;
-    font-weight: 300;
+.mod_container_about {
+  @extend .mod_container;
+  @include panel;
+
+  max-width: 1000px;
+
+  @media screen and (min-width: $large) {
+    margin: 30px auto;
   }
+  @media screen and (max-width: $large) {
+    margin: 0 auto;
+  }
+
+  img {
+    display: block;
+    margin: 0 auto;
+  }
+
 }

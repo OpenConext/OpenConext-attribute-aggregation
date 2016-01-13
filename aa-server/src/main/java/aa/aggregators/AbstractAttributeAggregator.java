@@ -1,6 +1,7 @@
 package aa.aggregators;
 
 import aa.model.AttributeAuthorityConfiguration;
+import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public abstract class AbstractAttributeAggregator implements AttributeAggregator {
@@ -31,9 +33,11 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
   private final AttributeAuthorityConfiguration attributeAuthorityConfiguration;
 
   private final RestTemplate restTemplate;
+  private final List<String> attributeKeysRequired;
 
   public AbstractAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     this.attributeAuthorityConfiguration = attributeAuthorityConfiguration;
+    this.attributeKeysRequired = attributeAuthorityConfiguration.getRequiredInputAttributes().stream().map(RequiredInputAttribute::getName).collect(toList());
     try {
       this.restTemplate = new RestTemplate(getRequestFactory());
     } catch (MalformedURLException e) {
@@ -41,7 +45,10 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
   }
 
-  public abstract List<String> attributeKeysRequired() ;
+  @Override
+  public List<String> attributeKeysRequired() {
+    return attributeKeysRequired;
+  }
 
   @Override
   public Optional<String> cacheKey(List<UserAttribute> input) {

@@ -4,6 +4,13 @@ public class RequiredInputAttribute {
 
   private String name;
 
+  public RequiredInputAttribute() {
+  }
+
+  public RequiredInputAttribute(String name) {
+    this.name = name;
+  }
+
   public String getName() {
     return name;
   }

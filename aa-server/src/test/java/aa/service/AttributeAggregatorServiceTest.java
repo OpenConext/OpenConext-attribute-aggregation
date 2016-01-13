@@ -48,6 +48,7 @@ public class AttributeAggregatorServiceTest {
     attributeAuthorityConfiguration.setAttributes(singletonList(attribute));
     attributeAuthorityConfiguration.setEndpoint("http://localhost:8889");
     attributeAuthorityConfiguration.setId("aa1");
+    attributeAuthorityConfiguration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute("urn:mace:dir:attribute-def:eduPersonPrincipalName")));
 
     AuthorityConfiguration configuration = new AuthorityConfiguration(singletonList(attributeAuthorityConfiguration));
     AttributeAggregatorService subject =

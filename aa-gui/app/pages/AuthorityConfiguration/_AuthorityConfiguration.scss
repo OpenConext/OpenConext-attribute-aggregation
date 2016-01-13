@@ -57,10 +57,14 @@
     padding: 5px;
     margin: 0 0 0 10px;
     border-radius: $br;
-    width: 40%;
+    width: 50%;
     min-width: 400px;
     border: 1px solid $light-grey;
     background: lighten($light-grey, 5);
+  }
+  ul {
+    @extend p;
+    list-style-type: none;
   }
 }
 

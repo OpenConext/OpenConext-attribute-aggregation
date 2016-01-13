@@ -1,0 +1,33 @@
+@import "toolkit";
+@import "buttons";
+@import "forms";
+
+.mod_left_playground {
+  @extend .mod_left;
+}
+
+.mod_right_playground {
+  @extend .mod_right;
+}
+
+.header {
+  font-size: 28px;
+  color: $blue;
+  margin: 25px 0 0;
+}
+
+.header_title {
+  @extend .header;
+  padding: 5px 70px 10px 40px;
+  border-bottom: 2px solid $light-grey;
+}
+
+.about {
+  padding: 5px 70px 10px 40px;
+}
+
+.info {
+  font-size: 12px;
+  display: inline-block;
+  margin-bottom: 5px;
+}

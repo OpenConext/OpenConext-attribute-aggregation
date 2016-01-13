@@ -48,14 +48,13 @@ export default class Aggregation extends React.Component {
 
   handleSubmit = (e) => {
     Utils.stop(e);
-    //todd call to API
     let aggregation = this.state.aggregation;
     API.saveAggregation(aggregation, (json) => this.props.history.replace('/aggregations'))
   };
 
   handleCancel = (e) => {
     Utils.stop(e);
-    if (confirm(i18n.t("aggregation.cancel", {name: aggregation.name}))) {
+    if (confirm(i18n.t("aggregation.cancel_question"))) {
       this.props.history.replace('/aggregations');
     }
   };

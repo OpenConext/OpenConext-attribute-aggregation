@@ -1,5 +1,6 @@
 @import "toolkit";
 @import "buttons";
+@import "forms";
 
 .mod_container_aggregation {
   @extend .mod_container;
@@ -23,52 +24,6 @@
   }
 }
 
-.success {
-  padding: 30px 70px 30px 40px;
-  border-bottom: 1px solid $light-grey;
-  position: relative;
-
-  &:before {
-    position: absolute;
-    top: 20px;
-    left: 0;
-    bottom: 20px;
-    width: 6px;
-    content: "";
-    background-color: $blue;
-  }
-
-  label {
-    margin: 5px 0px;
-    color: $blue;
-    display: block;
-  }
-
-}
-
-.input {
-  margin: 5px 0px;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid $medium-grey;
-  min-width: 100%;
-  font-size: 100%;
-}
-
-.input_disabled {
-  @extend .input;
-  background-color: $light-grey;
-}
-
-.failure {
-  @extend .success;
-
-  &:before {
-    background-color: $medium-grey;
-  }
-
-}
-
 .actions {
   padding: 30px 70px 10px 40px;
 }
@@ -86,11 +41,16 @@
 }
 
 .remove_authority {
-  color: #8A7070;
+  color: $medium-grey;
   position: absolute;
   right: 6px;
   top: 34px;
-  font-size: 18px;
+  font-size: 12px;
+
+  &:hover {
+    color: $remove-red
+  }
+
 }
 .remove_attribute {
   @extend .remove_authority;

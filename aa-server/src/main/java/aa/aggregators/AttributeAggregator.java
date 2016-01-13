@@ -13,4 +13,6 @@ public interface AttributeAggregator {
 
   Optional<String> cacheKey(List<UserAttribute> input);
 
+  List<String> attributeKeysRequired() ;
+
 }

@@ -2,12 +2,69 @@ export default {
   code: 'NL',
   lang: 'nl',
   name: 'Nederlands',
-  select_locale: 'Selecteer Nederlands',
-  'header': {
-    'title': 'Attribuut Aggregatie',
-    'links': {
+  selectLocale: 'Select English',
+  header: {
+    title: 'Attribuut Aggregatie',
+    welcome: "Welkom {{name}}",
+    links: {
       'helpHtml': '<a href="https://github.com/OpenConext/OpenConext-pdp#policy-limitations" target="_blank">Help</a>'
     }
+  },
+  navigation: {
+    aggregations: 'Aggregaties',
+    authorities: 'Autoriteiten',
+    playground: 'Speeltuin',
+    about: 'Info',
+    aggregation: '+ Nieuwe Aggregatie'
+  },
+  aggregations: {
+    name: 'Name',
+    serviceProviders: 'Service Providers',
+    attributes: 'Attributes',
+    actions: '',
+    edit: 'Edit',
+    delete: 'Delete',
+    confirmation: 'Are you sure you want to delete aggregation {{name}}?',
+    deleted: 'Successfully deleted aggregation {{name}}',
+    no_found: 'No aggregations found'
+  },
+  authority: {
+    authorities: 'Attribute Authorities',
+    endpoint: 'Endpoint',
+    userName: 'Username',
+    requiredInputAttributes: 'Required input attributes',
+    attribute: 'Attribute',
+    name: 'Name',
+    caseExact: 'Case insensitive',
+    description: 'Description',
+    multiValued: 'Multi valued',
+    mutability: 'Mutability',
+    required: 'Required',
+    returned: 'Returned',
+    type: 'Type',
+    uniqueness: 'Uniqueness'
+  },
+  aggregation : {
+    name: 'Name',
+    serviceProviders: 'Service Provider(s)',
+    update: 'Update {{name}}',
+    create: 'Create new aggregation',
+    created: 'Created by {{name}} on {{date}}',
+    submit: 'Submit',
+    cancel: 'Cancel',
+    authority: 'Attribute Authority',
+    attributes: 'Attribute(s)',
+    new_authority: "Add a new authority...",
+    new_attribute: "Add new attribute....",
+    cancel: "Cancel",
+    cancel_question: "Are you sure you want to leave this page?"
+  },
+  playground : {
+    title: 'AGGREGATION PLAYGROUND',
+    aboutTitle: 'How to use the Playground?',
+    aggregations: 'Aggregations',
+    aggregationsInfo: 'Optional - the selected aggregation is only used to set defaults for the Service Provider and the required attributes',
+    serviceProvider: 'Service Provider'
   },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',
