@@ -46,13 +46,15 @@ export default {
   aggregation : {
     name: 'Name',
     serviceProviders: 'Service Provider(s)',
-    attributes: 'Attributes',
     update: 'Update {{name}}',
     create: 'Create new aggregation',
     created: 'Created by {{name}} on {{date}}',
     submit: 'Submit',
     cancel: 'Cancel',
-    aboutTitle: 'What are aggregations'
+    authority: 'Attribute Authority',
+    attributes: 'Attribute(s)',
+    new_authority: "Add a new authority...",
+    new_attribute: "Add new attribute...."
   },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',

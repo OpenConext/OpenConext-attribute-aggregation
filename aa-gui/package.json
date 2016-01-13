@@ -17,7 +17,7 @@
     "clean": "rimraf $npm_package_config_buildDir && mkdir $npm_package_config_buildDir && mkdir $npm_package_config_buildDir/css",
     "env": "env",
     "lint": "eslint --ext .js --ext .jsx ./app ./webpack && echo No linting errors.",
-    "prebuild": "npm run clean && cp ./node_modules/react-select/dist/react-select.css ./$npm_package_config_buildDir/css/",
+    "prebuild": "npm run clean && cp ./app/css/react-select.css ./$npm_package_config_buildDir/css/",
     "prestart": "npm install",
     "pretest": "npm install && npm run lint",
     "pretest-travis": "npm install && npm run lint",
@@ -35,14 +35,16 @@
     "imports-loader": "^0.6.5",
     "moment": "^2.10.6",
     "normalize.css": "^3.0.3",
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "react-addons-update": "^0.14.6",
     "react-router": "1.0.3",
     "react-spinner": "^0.2.3",
     "es6-promise": "latest",
     "whatwg-fetch": "latest",
     "font-awesome": "^4.5.0",
-    "react-select": "^1.0.0-beta8"
+    "react-select": "1.0.0-beta8",
+    "lodash": "^3.10.1"
   },
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",

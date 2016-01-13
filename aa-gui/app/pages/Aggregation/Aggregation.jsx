@@ -1,7 +1,9 @@
 import styles from './_Aggregation.scss'
 
 import React from 'react'
+import update from 'react-addons-update'
 import i18n from 'i18next'
+import _ from 'lodash'
 import moment from 'moment'
 import Select from 'react-select'
 
@@ -12,8 +14,15 @@ export default class Aggregation extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {aggregation: {serviceProviders: [], attributes: []}, serviceProviders: [], errors: {}};
+    this.state = {
+      aggregation: {serviceProviders: [], attributes: []},
+      serviceProviders: [],
+      authorities: [],
+      errors: {}
+    };
     API.getServiceProviders((json) => this.setState({serviceProviders: json}));
+    API.getAuthorityConfiguration((json) => this.setState({authorities: json.authorities}));
+
     let id = props.params.id;
     if (id !== 'new') {
       API.getAggregation(id, (json) => this.setState({aggregation: json}));
@@ -25,35 +34,40 @@ export default class Aggregation extends React.Component {
   }
 
   componentWillUnmount() {
-    this._mounted = true;
+    this._mounted = false;
   }
 
   componentWillReceiveProps(nextProps) {
     if (this._mounted) {
       let id = nextProps.params.id;
       if (id === 'new') {
-        this.setState({aggregation: {}});
+        this.setState({aggregation: {serviceProviders: [], attributes: []}});
       }
     }
   }
 
   handleSubmit = (e) => {
     Utils.stop(e);
-
+    //todd call to API
   };
 
   handleCancel = (e) => {
     Utils.stop(e);
+    //add confirmation popup
     this.props.history.replace('/aggregations');
   };
 
-  renderName() {
-    var aggregation = this.state.aggregation;
-    let handleOnChange = (e) => this.setState({aggregation: {name: e.target.value}});
+  updateAggregationState(newPartialState) {
+    var newState = update(this.state.aggregation, {$merge: newPartialState});
+    this.setState({aggregation: newState})
+  }
 
-    var style = Utils.isEmpty(aggregation.name) ? styles.failure : styles.success;
+  renderName() {
+    let handleOnChange = (e) => this.updateAggregationState({name: e.target.value})
+
+    var aggregation = this.state.aggregation;
     return (
-      <div className={style}>
+      <div className={Utils.isEmpty(aggregation.name) ? styles.failure : styles.success}>
         <label htmlFor='name'>{i18n.t('aggregation.name')}</label>
         <input className={styles.input} type="text" name="name" value={aggregation.name}
                onChange={handleOnChange}/>
@@ -62,20 +76,11 @@ export default class Aggregation extends React.Component {
   }
 
   renderServiceProviders() {
-    var aggregation = this.state.aggregation;
-    let handleOnChange = (val) => {
-      if (val !== undefined) {
-        //let selectedServiceProviders = val.map((sp) => sp.entityId)
-        this.setState({aggregation: {serviceProviders: val}})
-      }
-    };
-    let value = this.state.aggregation.serviceProviders
-    let options = this.state.serviceProviders.map((sp) => {
-      return {value: sp.entityId, label: sp.name}
-    });
-    let style = Utils.isEmpty(aggregation.serviceProviders) ? styles.failure : styles.success;
+    let handleOnChange = (val) => this.updateAggregationState({serviceProviders: val || []})
+
+    let aggregation = this.state.aggregation;
     return (
-      <div className={style}>
+      <div className={Utils.isEmpty(aggregation.serviceProviders) ? styles.failure : styles.success}>
         <label htmlFor='serviceProviders'>{i18n.t('aggregation.serviceProviders')}</label>
         <Select
           name='serviceProviders'
@@ -87,29 +92,98 @@ export default class Aggregation extends React.Component {
           onChange={handleOnChange}
           multi={true}
           placeholder='Select one or more ServiceProviders'
-
         />
       </div>
     );
   }
 
-  renderAttributes() {
-    var aggregation = this.state.aggregation;
-    let handleOnChange = (e) => this.setState({aggregation: {attributes: e.target.value}});
+  handleRemoveAuthority = (authorityId) => (e) => {
+    Utils.stop(e);
+    let newAttributes = this.state.aggregation.attributes.filter((attribute) => attribute.attributeAuthorityId !== authorityId);
+    this.updateAggregationState({attributes: newAttributes})
+  };
 
-    var style = Utils.isEmpty(aggregation.attributes) ? styles.failure : styles.success;
+  handleRemoveAttribute = (authorityId, attributeName) => (e) => {
+    Utils.stop(e);
+    let newAttributes = this.state.aggregation.attributes.filter((attribute) => attribute.attributeAuthorityId !== authorityId || attribute.name !== attributeName);
+    this.updateAggregationState({attributes: newAttributes})
+  };
+
+  handleAuthorityChange = (e) => {
+    let authorityId = e.target.value;
+    let authority = this.state.authorities.filter((authority) => authority.id === authorityId)[0];
+    let newAttributes = authority.attributes.map((attribute) => Object.assign({}, attribute));
+
+    let mergedAttributes = update(this.state.aggregation.attributes, {$push: newAttributes});
+    this.updateAggregationState({attributes: mergedAttributes})
+  };
+
+  renderAuthoritySelect(authorityOptions) {
+    return Utils.isEmpty(authorityOptions) ? <div></div> :
+      <div>
+        <label htmlFor='attributes'>{i18n.t('aggregation.authority')}</label>
+        <select className={styles.select} value="" onChange={this.handleAuthorityChange}>
+          <option value="" disabled="disabled">{i18n.t("aggregation.new_authority")}</option>
+          {
+            authorityOptions.map((authority) => <option value={authority.id}
+                                                        key={authority.id}>{authority.id}</option>)
+          }
+        </select>
+      </div>
+  }
+
+  renderAttributes() {
+    let attributes = this.state.aggregation.attributes;
+
+    //we display the current authorities / attributes
+    let attributesGroupedByAuthority = _.groupBy(attributes, 'attributeAuthorityId');
+    let currentAuthorities = Object.keys(attributesGroupedByAuthority)
+
+    //we need the authorities / attributes not yet linked to this aggregation
+    let authorityOptions = this.state.authorities.filter((authority) => !currentAuthorities.includes(authority.id))
+
     return (
-      <div className={style}>
-        <label htmlFor='attributes'>{i18n.t('aggregation.attributes')}</label>
-        <input type="text" name="attributes" value={aggregation.name}
-               onChange={handleOnChange}/>
+      <div className={Utils.isEmpty(attributes) ? styles.failure : styles.success}>
+        {currentAuthorities.map((authorityId) => {
+          return (
+            <div key={authorityId} className={styles.authority}>
+              <label htmlFor={authorityId}>{i18n.t('aggregation.authority')}</label>
+              <input className={styles.input_disabled} type="text" name={authorityId} value={authorityId}
+                     disabled="disabled"/>
+              <a href="#" onClick={this.handleRemoveAuthority(authorityId)} className={styles.remove_authority}>
+                <i className="fa fa-remove"></i>
+              </a>
+              <div className={styles.attributes}>
+                <label>{i18n.t('aggregation.attributes')}</label>
+                {attributesGroupedByAuthority[authorityId].map((attribute)=> {
+                  return (
+                    <div key={authorityId + '-' + attribute.name} className={styles.attribute}>
+                      <input className={styles.input_disabled} type="text" name={authorityId + '-' + attribute.name}
+                             value={attribute.name}
+                             disabled="disabled"/>
+                      <a href="#" onClick={this.handleRemoveAttribute(authorityId, attribute.name)}
+                         className={styles.remove_attribute}>
+                        <i className="fa fa-remove"></i>
+                      </a>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
+        {this.renderAuthoritySelect(authorityOptions)}
       </div>
     );
   }
 
-  renderActions() {
+  validAggregation() {
     var aggregation = this.state.aggregation;
-    let submitStyle = Utils.isEmpty(aggregation.name) ? styles.button_submit_disabled : styles.button_submit;
+    return !Utils.isEmpty(aggregation.name) && !Utils.isEmpty(aggregation.attributes) && !Utils.isEmpty(aggregation.serviceProviders)
+  }
+
+  renderActions() {
+    let submitStyle = this.validAggregation() ? styles.button_submit : styles.button_submit_disabled;
     return (
       <div className={styles.actions}>
         <a className={submitStyle} href="#"

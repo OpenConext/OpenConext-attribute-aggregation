@@ -55,6 +55,11 @@
   font-size: 100%;
 }
 
+.input_disabled {
+  @extend .input;
+  background-color: $light-grey;
+}
+
 .failure {
   @extend .success;
 
@@ -68,4 +73,34 @@
   padding: 30px 70px 10px 40px;
 }
 
+.select {
+  border: 1px solid $medium-grey;
+  background: white;
+  height: 30px;
+  width: 100%;
+}
+
+.remove_authority {
+  color: #8A7070;
+  position: absolute;
+  right: 6px;
+  top: 34px;
+  font-size: 18px;
+}
+.remove_attribute {
+  @extend .remove_authority;
+  right: 6px;
+  top: 9px;
+}
+
+.attributes {
+  margin-left: 30px;
+}
+
+.authority {
+  position: relative;
+}
+.attribute {
+  @extend .authority;
+}
 
