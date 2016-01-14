@@ -14,15 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -34,6 +32,7 @@ import java.util.stream.Collectors;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -83,19 +82,15 @@ public class SCIMController {
     return resourceTypeJson;
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "internal/v1/Schema")
+  @RequestMapping(method = RequestMethod.GET, value = "/internal/v1/Schema")
   public Schema internalSchema(@RequestParam("serviceProviderEntityId") String serviceProviderEntityId) {
     String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
-    OAuth2Request oauth2Request = new OAuth2Request(Collections.emptyMap(), clientId,
-        SecurityContextHolder.getContext().getAuthentication().getAuthorities(), true, Collections.emptySet(),
-        Collections.emptySet(), null, Collections.emptySet(),
-        Collections.emptyMap());
+    OAuth2Request oauth2Request = getOAuth2Request(clientId);
     OAuth2Authentication authentication = new OAuth2Authentication(oauth2Request, null);
     return schema(authentication);
   }
 
-
-  @RequestMapping(method = RequestMethod.GET, value = "v1/Schema")
+  @RequestMapping(method = RequestMethod.GET, value = "/v1/Schema")
   public Schema schema(OAuth2Authentication authentication) {
     String clientId = authentication.getOAuth2Request().getClientId();
     String serviceProviderEntityId = serviceProviderTranslationService.translateClientId(clientId);
@@ -121,7 +116,22 @@ public class SCIMController {
     return schema;
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "v1/Me")
+  @RequestMapping(method = RequestMethod.POST, value = "/internal/v1/Me")
+  public Map<String, Object> internalMe(@RequestParam("serviceProviderEntityId") String serviceProviderEntityId, @RequestBody Map<String, String> inputParameters) {
+    String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
+    OAuth2Request oauth2Request = getOAuth2Request(clientId);
+
+    String principal = inputParameters.get("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
+    String eduPersonPrincipalName = inputParameters.get("urn:mace:dir:attribute-def:eduPersonPrincipalName");
+    String schacHomeOrganization = inputParameters.get("urn:mace:terena.org:attribute-def:schacHomeOrganization");
+
+    FederatedUserAuthenticationToken userAuthentication = new FederatedUserAuthenticationToken( eduPersonPrincipalName,  schacHomeOrganization,  principal, "N/A", AuthorityUtils.createAuthorityList("ROLE_USER"));
+
+    OAuth2Authentication authentication = new OAuth2Authentication(oauth2Request, userAuthentication);
+    return me(authentication);
+  }
+
+  @RequestMapping(method = RequestMethod.GET, value = "/v1/Me")
   public Map<String, Object> me(OAuth2Authentication authentication) {
     String clientId = authentication.getOAuth2Request().getClientId();
     String serviceProviderEntityId = serviceProviderTranslationService.translateClientId(clientId);
@@ -133,12 +143,14 @@ public class SCIMController {
     List<UserAttribute> input = getUserAttributes(authentication);
     List<UserAttribute> userAttributes = attributeAggregatorService.aggregate(sp.get(), input);
 
-    Map<String, Object> result = new HashMap<>();
+    Map<String, Object> result = new LinkedHashMap<>();
 
     result.put("schema", singletonList("urn:ietf:params:scim:schemas:extension:x-surfnet:" + serviceProviderEntityId));
     result.put("id", UUID.randomUUID().toString());
 
-    Map<String, List<UserAttribute>> grouped = userAttributes.stream().collect(Collectors.groupingBy(UserAttribute::getName));
+    Map<String, List<UserAttribute>> grouped = userAttributes.stream().collect(groupingBy(UserAttribute::getName));
+
+    //now populate the result Map with key UserAttribute::getName and Value the flattened List of values
     grouped.entrySet().forEach(entry -> result.put(entry.getKey(), entry.getValue().stream()
         .map(UserAttribute::getValues).flatMap(List::stream).collect(toList())));
 
@@ -166,6 +178,13 @@ public class SCIMController {
       input.add(new UserAttribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", singletonList(eduPersonPrincipalName)));
     }
     return input;
+  }
+
+  private OAuth2Request getOAuth2Request(String clientId) {
+    return new OAuth2Request(Collections.emptyMap(), clientId,
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities(), true, Collections.emptySet(),
+        Collections.emptySet(), null, Collections.emptySet(),
+        Collections.emptyMap());
   }
 
 }

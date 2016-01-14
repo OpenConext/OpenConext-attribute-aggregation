@@ -58,7 +58,33 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
+        name: "urn:mace:terena.org:attribute-def:schacHomeOrganization"
+        }
+      ]
+    }
+  - {
+      id: "aa3",
+      description: "description3",
+      endpoint: "http://localhost:8889",
+      user: "john.doe",
+      password: "secret",
+      timeOut: 500,
+      attributes: [
+        {
+          name: "urn:mace:dir:attribute-def:group",
+          caseExact: True,
+          description: "Group memberships.",
+          multiValued: True,
+          mutability: "readOnly",
+          required: False,
+          returned: "default",
+          type: "string",
+          uniqueness: "none",
+        }
+      ],
+      requiredInputAttributes: [
+        {
+        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
         }
       ]
     }

@@ -19,7 +19,7 @@ export default class AuthorityConfiguration extends React.Component {
       selectedAuthority: authorities[0]
     };
     API.getAuthorityConfiguration((json) => this.setState(
-      {authorities: json.authorities, selectedAuthority: json.authorities[0]}
+      {authorities: json.authorities.sort((a1, a2) => a1.id.localeCompare(a2.id)), selectedAuthority: json.authorities[0]}
     ));
   }
 
@@ -32,8 +32,8 @@ export default class AuthorityConfiguration extends React.Component {
     var currentAuthority = this.state.selectedAuthority && this.state.selectedAuthority.id === authority.id;
     let style = currentAuthority ? styles.authority_selected : styles.authority_link;
     return currentAuthority ?
-      <p key={authority.id} className={style}>{authority.id}</p> :
-      <a key={authority.id} href="#" className={style}
+      <p key={authority.id + 'p'} className={style}>{authority.id}</p> :
+      <a key={authority.id + 'a'} href="#" className={style}
          onClick={this.handleShowAuthority(authority)}>{authority.id}</a>;
   }
 
@@ -45,7 +45,7 @@ export default class AuthorityConfiguration extends React.Component {
         <span>{i18n.t('authority.description')}</span>
         <p>{authority.description}</p>
         <span>{i18n.t('authority.requiredInputAttributes')}</span>
-        <ul>{authority.requiredInputAttributes.map((attr)=>
+        <ul>{authority.requiredInputAttributes.map((attr) =>
           <li key={authority.id + '-' + attr.name}>{attr.name}</li>
         )}
         </ul>

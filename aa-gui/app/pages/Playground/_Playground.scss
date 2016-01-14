@@ -31,3 +31,63 @@
   display: inline-block;
   margin-bottom: 5px;
 }
+
+.user_attributes {
+
+  margin-left: 20px;
+
+  label {
+    color: darken($medium-grey, 20);
+  }
+
+}
+
+.playground_actions {
+  padding: 30px 70px 10px 40px;
+  a {
+    margin-left: 15px;
+  }
+}
+
+.playground_result {
+  color: white;
+  background-color: $green;
+  border-top-left-radius: $br;
+  border-top-right-radius: $br;
+  section {
+    i {
+      font-size: 48px;
+      padding: 15px 20px;
+    }
+    article {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+    }
+    h1 {
+      font-size: 20px;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+    }
+    p {
+      margin: 0;
+      color: $dark-grey;
+      background-color: $light-grey;
+      i {
+        font-size: 12px;
+      }
+    }
+  }
+  pre {
+    padding: 10px 20px;
+    background-color: white;
+    margin: 0;
+    color: $dark-grey;
+  }
+}
+
+.playground_error_result {
+  @extend .playground_result;
+  background-color: $red;
+}

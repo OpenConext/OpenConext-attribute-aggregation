@@ -1,6 +1,7 @@
 import styles from './_Playground.scss';
 
 import React from 'react'
+
 import update from 'react-addons-update'
 import i18n from 'i18next'
 import _ from 'lodash'
@@ -17,7 +18,8 @@ export default class Playground extends React.Component {
       authorities: [{requiredInputAttributes: [], attributes: []}],
       serviceProviders: [],
       aggregations: [],
-      play: {aggregation: {}, serviceProvider: {}}
+      result: undefined,
+      play: {aggregation: {}, serviceProvider: {}, inputParameters: {}}
     };
 
     API.getServiceProviders((json) => this.setState({serviceProviders: json}));
@@ -33,9 +35,17 @@ export default class Playground extends React.Component {
     this.setState({play: newState})
   }
 
+  validPlay() {
+    let play = this.state.play;
+    let isValid = (obj) =>  Object.keys(obj).length > 0;
+    return isValid(play.aggregation) && isValid(play.serviceProvider);
+  }
 
   renderAggregations() {
-    let handleOnChange = (val) => this.updatePlayState({aggregation: val || {}})
+    let handleOnChange = (val) => {
+      let entityId = val ? val.serviceProviders[0].entityId : undefined;
+      this.updatePlayState({aggregation: val || {}, serviceProvider: {entityId: entityId}, inputParameters: {}})
+    }
 
     let aggregations = this.state.aggregations;
     return (
@@ -58,13 +68,13 @@ export default class Playground extends React.Component {
   }
 
   renderServiceProviders() {
-    let handleOnChange = (val) => this.updatePlayState({serviceProvider: val || []})
+    let handleOnChange = (val) => this.updatePlayState({serviceProvider: val || {}})
 
     let play = this.state.play;
     let entityId = play.aggregation.serviceProviders ? play.aggregation.serviceProviders[0].entityId
-      : play.serviceProvider ? play.serviceProvider.entityId : undefined;
+      : play.serviceProvider.entityId ? play.serviceProvider.entityId : undefined;
     return (
-      <div className={Utils.isEmpty(play.serviceProvider) ? styles.failure : styles.success}>
+      <div className={Utils.isEmpty(entityId) ? styles.failure : styles.success}>
         <label htmlFor='serviceProvider'>{i18n.t('playground.serviceProvider')}</label>
         <Select
           name='serviceProvider'
@@ -80,24 +90,118 @@ export default class Playground extends React.Component {
     );
   }
 
-  renderInput() {
+  renderInputParameters() {
+    let handleOnChange = (e) => {
+      this.state.play.inputParameters[e.target.name] = e.target.value;
+      this.updatePlayState({inputParameters: this.state.play.inputParameters})
+    }
+    let uniqueRequiredAttributeNames = [];
+
+    var attributes = this.state.play.aggregation.attributes;
+    if (attributes) {
+      //get all required attributes from the authorities linked to the attributes of the aggration
+      let requiredAttributeNames = attributes
+        .map((attribute) => attribute.attributeAuthorityId)
+        .map((attributeAuthorityId) => this.state.authorities.find((authority) => authority.id === attributeAuthorityId).requiredInputAttributes)
+        .reduce((attr1, attr2) => attr1.concat(attr2))
+        .map((requiredInputAttribute) => requiredInputAttribute.name)
+      uniqueRequiredAttributeNames = Array.from(new Set(requiredAttributeNames));
+    }
+    //we permit empty user attributes to see empty result
+    return (
+      <div className={styles.success}>
+        <label>{i18n.t('playground.userAttributes')}</label>
+        {uniqueRequiredAttributeNames.map((name) =>
+          <div key={name} className={styles.user_attributes}>
+            <label>{name}</label>
+            <input className={styles.input} type="text" name={name} onChange={handleOnChange}
+                   value={this.state.play.inputParameters[name]}/>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  renderActions() {
+    return (
+      <div className={styles.playground_actions}>
+        <a className={this.validPlay() ? styles.button_submit : styles.button_submit_disabled} href="#"
+           onClick={this.handleMe}>{i18n.t("playground.me")}</a>
+        <a className={this.state.play.serviceProvider.entityId ? styles.button_submit : styles.button_submit_disabled}
+           href="#" onClick={this.handleSchema}>{i18n.t("playground.schema")}</a>
+        <a className={styles.button_white} href="#"
+           onClick={this.handleConfiguration}>{i18n.t("playground.service_provider_configuration")}</a>
+        <a className={styles.button_white} href="#"
+           onClick={this.handleResourceType}>{i18n.t("playground.resource_type")}</a>
+        <a className={styles.button_cancel} href="#" onClick={this.handleCancel}>{i18n.t("playground.clear")}</a>
+      </div>
+    );
+  }
+
+  handleResult = (json) => {
+    this.setState({result: json});
+  }
+
+  handleMe = (e) => {
+    Utils.stop(e);
+    API.getMe(this.handleResult, this.state.play.serviceProvider.entityId, this.state.play.inputParameters)
+  };
+
+  handleSchema = (e) => {
+    Utils.stop(e);
+    API.getSchema(this.handleResult, this.state.play.serviceProvider.entityId)
+  };
+
+  handleConfiguration = (e) => {
+    Utils.stop(e);
+    API.getServiceProviderConfiguration(this.handleResult)
+  };
+
+  handleResourceType = (e) => {
+    Utils.stop(e);
+    API.getResourceType(this.handleResult)
+  };
+
+  handleCancel = (e) => {
+    Utils.stop(e);
+    this.setState({result: undefined, play: {aggregation: {}, serviceProvider: {}, inputParameters: {}}});
+  };
+
+  renderLeft() {
     return (
       <div>
         <section className={styles.header_title}>{i18n.t('playground.title')}</section>
         {this.renderAggregations()}
         {this.renderServiceProviders()}
+        {this.renderInputParameters()}
+        {this.renderActions()}
       </div>)
   }
 
   renderRight() {
-    return this.state.play.result ? this.renderPlay() : this.renderAbout()
+    return this.state.result ? this.renderResult() : this.renderAbout()
   }
 
-  renderPlay() {
+  renderResult() {
+    let result = this.state.result;
+    let [style, icon, status] = result.error ?
+      [styles.playground_error_result, 'fa-remove', 'error'] :
+      [styles.playground_result, 'fa-check', 'ok'];
     return (
-      <div>
-        <p>Todo</p>
-      </div>)
+      <div className={style}>
+        <section>
+          <i className={'fa ' + icon}></i>
+          <article>
+            <h1>{i18n.t('playground.result_status_' + status)}</h1>
+            <em></em>
+          </article>
+          <p><i className="fa fa-file-o"></i>result.json</p>
+        </section>
+        <pre>
+          <code dangerouslySetInnerHTML={{__html: Utils.prettyPrintJson(result) }}></code>
+        </pre>
+      </div>
+    )
   }
 
   renderAbout() {
@@ -113,7 +217,7 @@ export default class Playground extends React.Component {
     return (
       <div className={styles.mod_container}>
         <div className={styles.mod_left_playground}>
-          {this.renderInput()}
+          {this.renderLeft()}
         </div>
         <div className={styles.mod_right_playground}>
           {this.renderRight()}

@@ -20,7 +20,7 @@ public class AuthorityResolverTest {
   @Test
   public void testGetConfiguration() throws Exception {
     AuthorityResolver subject = new AuthorityResolver(new DefaultResourceLoader(), "classpath:/attributeAuthorities.yml");
-    testConfiguration(subject, 2);
+    testConfiguration(subject, 3);
   }
 
   private void testConfiguration(AuthorityResolver subject, int expectedAuthorities) {
@@ -35,7 +35,6 @@ public class AuthorityResolverTest {
   private void assertAuthority(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     attributeAuthorityConfiguration.getAttributes().forEach(attribute -> this.assertAttribute(attributeAuthorityConfiguration, attribute));
     assertEquals(1, attributeAuthorityConfiguration.getRequiredInputAttributes().size());
-    assertEquals("urn:mace:dir:attribute-def:eduPersonPrincipalName", attributeAuthorityConfiguration.getRequiredInputAttributes().get(0).getName());
   }
 
   private void assertAttribute(AttributeAuthorityConfiguration attributeAuthorityConfiguration, Attribute attribute) {

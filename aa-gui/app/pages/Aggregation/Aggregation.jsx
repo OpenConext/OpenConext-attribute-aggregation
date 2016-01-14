@@ -169,8 +169,7 @@ export default class Aggregation extends React.Component {
   renderAttributes() {
     let attributes = this.state.aggregation.attributes;
 
-
-    //we display the current authorities / attributes
+    //display the current authorities / attributes
     let attributesGroupedByAuthority = _.groupBy(attributes, 'attributeAuthorityId');
     let currentAuthorities = Object.keys(attributesGroupedByAuthority).sort();
 

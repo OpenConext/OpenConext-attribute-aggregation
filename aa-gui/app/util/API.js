@@ -21,21 +21,21 @@ class API {
     }
   };
 
-  doFetch = (url, callback, method = 'get', form) => {
+  doFetch = (url, callback, method = 'get', form, checkStatus = true) => {
     var options = {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN' : this.csrfToken
+        'X-CSRF-TOKEN': this.csrfToken
       },
       method: method,
       credentials: 'same-origin'
-      };
-      if (form && (method === 'post' || method === 'put')) {
-        options.body = JSON.stringify(form);
-      }
-      fetch(url, options)
-      .then(this.checkStatus)
+    };
+    if (form && (method === 'post' || method === 'put')) {
+      options.body = JSON.stringify(form);
+    }
+    fetch(url, options)
+      .then(checkStatus ? this.checkStatus : (response) => response)
       .then(res => res.json())
       .then(json => callback(json))
       .catch(ex => history.replace('/#/error'));
@@ -69,6 +69,26 @@ class API {
     let method = Utils.isEmpty(aggregation.id) ? 'post' : 'put';
     return this.doFetch('/aa/api/internal/aggregation', callback, method, aggregation);
   }
+
+  /*
+   * The following are API calls to test the SCIMController
+   */
+  getServiceProviderConfiguration(callback) {
+    return this.doFetch('/aa/api/v1/ServiceProviderConfig', callback);
+  }
+
+  getResourceType(callback) {
+    return this.doFetch('/aa/api/v1/ResourceType', callback);
+  }
+
+  getSchema(callback, serviceProviderEntityId) {
+    return this.doFetch('/aa/api/internal/v1/Schema?serviceProviderEntityId=' + encodeURIComponent(serviceProviderEntityId), callback, 'get', {}, false);
+  }
+
+  getMe(callback, serviceProviderEntityId, inputParameters) {
+    return this.doFetch('/aa/api/internal/v1/Me?serviceProviderEntityId=' + encodeURIComponent(serviceProviderEntityId), callback, 'post', inputParameters, false);
+  }
+
 }
 
 export default new API()

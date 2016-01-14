@@ -63,8 +63,16 @@ export default {
     title: 'AGGREGATION PLAYGROUND',
     aboutTitle: 'How to use the Playground?',
     aggregations: 'Aggregations',
-    aggregationsInfo: 'Optional - the selected aggregation is only used to set defaults for the Service Provider and the required attributes',
-    serviceProvider: 'Service Provider'
+    aggregationsInfo: "The selected aggregation is required to determine the user attributes needed for the 'Me' endpoint",
+    serviceProvider: 'Service Provider',
+    userAttributes: 'User attributes',
+    me: 'Me',
+    schema: 'Schema',
+    service_provider_configuration: 'Configuration',
+    resource_type: 'Resources',
+    clear: 'Clear',
+    result_status_ok: 'Ok',
+    result_status_error: 'Error',
   },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',
