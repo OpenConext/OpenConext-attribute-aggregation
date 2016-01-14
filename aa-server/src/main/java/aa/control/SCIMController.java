@@ -13,9 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
@@ -23,11 +21,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static java.util.Arrays.asList;
@@ -85,7 +81,7 @@ public class SCIMController {
   @RequestMapping(method = RequestMethod.GET, value = "/internal/v1/Schema")
   public Schema internalSchema(@RequestParam("serviceProviderEntityId") String serviceProviderEntityId) {
     String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
-    OAuth2Request oauth2Request = getOAuth2Request(clientId);
+    OAuth2Request oauth2Request = buildOAuth2Request(clientId);
     OAuth2Authentication authentication = new OAuth2Authentication(oauth2Request, null);
     return schema(authentication);
   }
@@ -119,7 +115,7 @@ public class SCIMController {
   @RequestMapping(method = RequestMethod.POST, value = "/internal/v1/Me")
   public Map<String, Object> internalMe(@RequestParam("serviceProviderEntityId") String serviceProviderEntityId, @RequestBody Map<String, String> inputParameters) {
     String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
-    OAuth2Request oauth2Request = getOAuth2Request(clientId);
+    OAuth2Request oauth2Request = buildOAuth2Request(clientId);
 
     String principal = inputParameters.get("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
     String eduPersonPrincipalName = inputParameters.get("urn:mace:dir:attribute-def:eduPersonPrincipalName");
@@ -165,9 +161,9 @@ public class SCIMController {
   private List<UserAttribute> getUserAttributes(OAuth2Authentication authentication) {
     //convert user information to UserAttributes
     FederatedUserAuthenticationToken userAuthentication = (FederatedUserAuthenticationToken) authentication.getUserAuthentication();
-    String eduPersonPrincipalName = userAuthentication.getEduPersonPrincipalName();
-    String schacHomeOrganization = userAuthentication.getSchacHomeOrganization();
     String nameId = userAuthentication.getName();
+    String schacHomeOrganization = userAuthentication.getSchacHomeOrganization();
+    String eduPersonPrincipalName = userAuthentication.getEduPersonPrincipalName();
 
     //need ArrayList otherwise we can't add anything
     List<UserAttribute> input = new ArrayList<>(asList(
@@ -180,7 +176,7 @@ public class SCIMController {
     return input;
   }
 
-  private OAuth2Request getOAuth2Request(String clientId) {
+  private OAuth2Request buildOAuth2Request(String clientId) {
     return new OAuth2Request(Collections.emptyMap(), clientId,
         SecurityContextHolder.getContext().getAuthentication().getAuthorities(), true, Collections.emptySet(),
         Collections.emptySet(), null, Collections.emptySet(),

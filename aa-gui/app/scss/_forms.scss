@@ -46,3 +46,14 @@
   padding: 30px 70px 10px 40px;
 }
 
+.header {
+  background: lighten($light-grey, 5);
+  border-bottom: 2px solid $light-grey;
+  font-weight: bolder;
+  margin: 0;
+  padding: 10px;
+  border-top-left-radius: $br;
+  border-top-right-radius: $br;
+}
+
+

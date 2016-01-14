@@ -1,4 +1,5 @@
 @import "toolkit";
+@import "forms";
 
 .mod_left_authorities {
   @extend .mod_left;
@@ -68,16 +69,6 @@
   }
 }
 
-.header {
-  background: lighten($light-grey, 5);
-  border-bottom: 2px solid $light-grey;
-  font-weight: bolder;
-  margin: 0;
-  padding: 10px;
-  border-top-left-radius: $br;
-  border-top-right-radius: $br;
-}
-
 .attribute {
   background: lighten($light-grey, 5);
   border-top: 1px solid $light-grey;
@@ -95,7 +86,7 @@
 }
 
 .attributeDetails {
-  margin-left: 15px;
+  margin-left: 25px;
 }
 
 

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,18 +32,7 @@ public class SCIMControllerTest extends AbstractOidcIntegrationTest {
 
     Schema schema = response.getBody();
 
-    assertEquals(schema.getName(), spEntityID);
-    assertEquals(schema.getDescription(), "Attributes for " + spEntityID);
-    assertEquals(schema.getId(), "urn:ietf:params:scim:schemas:extension:x-surfnet:" + spEntityID);
-
-    assertEquals(1, schema.getAttributes().size());
-    Attribute attribute = schema.getAttributes().get(0);
-
-    assertEquals("aa1", attribute.getAttributeAuthorityId());
-    assertEquals("urn:mace:dir:attribute-def:eduPersonOrcid", attribute.getName());
-
-    //metadata
-    assertEquals("readOnly", attribute.getMutability());
+    assertSchema(schema);
   }
 
   @Test
@@ -55,7 +45,7 @@ public class SCIMControllerTest extends AbstractOidcIntegrationTest {
   @SuppressWarnings("unchecked")
   public void testServiceProviderConfiguration() throws Exception {
     Map body = restTemplate.exchange(new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/v1/ServiceProviderConfig")), Map.class).getBody();
-    assertEquals("https://aa.test.surfconext.nl/v1/ServiceProviderConfig", ((Map)body.get("meta")).get("location"));
+    assertEquals("https://aa.test.surfconext.nl/v1/ServiceProviderConfig", ((Map) body.get("meta")).get("location"));
   }
 
   @Test
@@ -63,7 +53,7 @@ public class SCIMControllerTest extends AbstractOidcIntegrationTest {
   public void testResourceType() throws Exception {
     List body = restTemplate.exchange(new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/v1/ResourceType")), List.class).getBody();
     assertEquals(1, body.size());
-    assertEquals("https://aa.test.surfconext.nl/v1/ResourceType", ((Map)((Map)body.get(0)).get("meta")).get("location"));
+    assertEquals("https://aa.test.surfconext.nl/v1/ResourceType", ((Map) ((Map) body.get(0)).get("meta")).get("location"));
   }
 
   @Test

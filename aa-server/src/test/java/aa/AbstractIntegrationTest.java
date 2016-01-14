@@ -3,6 +3,7 @@ package aa;
 
 import aa.model.Aggregation;
 import aa.model.Attribute;
+import aa.model.Schema;
 import aa.repository.AggregationRepository;
 import aa.repository.AttributeRepository;
 import aa.repository.ServiceProviderRepository;
@@ -81,6 +82,20 @@ public abstract class AbstractIntegrationTest {
     Attribute attribute = attributes.iterator().next();
     assertEquals(attribute.getName(), "urn:mace:dir:attribute-def:eduPersonOrcid");
     assertEquals(attribute.getAttributeAuthorityId(), "aa1");
+  }
+
+  protected void assertSchema(Schema schema) {
+    assertEquals(schema.getName(), spEntityID);
+    assertEquals(schema.getDescription(), "Attributes for " + spEntityID);
+    assertEquals(schema.getId(), "urn:ietf:params:scim:schemas:extension:x-surfnet:" + spEntityID);
+
+    assertEquals(1, schema.getAttributes().size());
+    Attribute attribute = schema.getAttributes().get(0);
+
+    assertEquals("aa1", attribute.getAttributeAuthorityId());
+    assertEquals("urn:mace:dir:attribute-def:eduPersonOrcid", attribute.getName());
+
+    assertEquals("readOnly", attribute.getMutability());
   }
 
   protected HttpHeaders oauthHeaders(String accessToken) {
