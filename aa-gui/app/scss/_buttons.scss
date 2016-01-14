@@ -34,6 +34,11 @@
   width: 180px;
 }
 
+.button_submit_small {
+  @extend .button;
+  width: 110px;
+}
+
 .button_disabled {
   @extend .button;
 
@@ -45,6 +50,11 @@
 .button_submit_disabled {
   @extend .button_disabled;
   width: 180px;
+}
+
+.button_submit_small_disabled {
+  @extend .button_disabled;
+  width: 110px;
 }
 
 .button_full {

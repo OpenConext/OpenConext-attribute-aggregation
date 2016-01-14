@@ -32,7 +32,7 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
+          name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
         }
       ]
     }
@@ -58,7 +58,7 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:mace:terena.org:attribute-def:schacHomeOrganization"
+          name: "urn:mace:terena.org:attribute-def:schacHomeOrganization"
         }
       ]
     }
@@ -84,7 +84,7 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+          name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
         }
       ]
     }

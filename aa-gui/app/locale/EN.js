@@ -63,7 +63,7 @@ export default {
     title: 'AGGREGATION PLAYGROUND',
     aboutTitle: 'How to use the Playground?',
     aggregations: 'Aggregations',
-    aggregationsInfo: "The selected aggregation is required to determine the user attributes needed for the 'Me' endpoint",
+    aggregationsInfo: "The selected aggregation will pick the first Service Provider linked and will also determine the user attributes needed for the 'Me' endpoint",
     serviceProvider: 'Service Provider',
     userAttributes: 'User attributes',
     me: 'Me',

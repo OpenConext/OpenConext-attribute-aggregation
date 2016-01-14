@@ -125,9 +125,9 @@ export default class Playground extends React.Component {
   renderActions() {
     return (
       <div className={styles.playground_actions}>
-        <a className={this.validPlay() ? styles.button_submit : styles.button_submit_disabled} href="#"
+        <a className={this.validPlay() ? styles.button_submit_small : styles.button_submit_small_disabled} href="#"
            onClick={this.handleMe}>{i18n.t("playground.me")}</a>
-        <a className={this.state.play.serviceProvider.entityId ? styles.button_submit : styles.button_submit_disabled}
+        <a className={this.state.play.serviceProvider.entityId ? styles.button_submit_small : styles.button_submit_small_disabled}
            href="#" onClick={this.handleSchema}>{i18n.t("playground.schema")}</a>
         <a className={styles.button_white} href="#"
            onClick={this.handleConfiguration}>{i18n.t("playground.service_provider_configuration")}</a>
@@ -207,7 +207,7 @@ export default class Playground extends React.Component {
   renderAbout() {
     return (
       <div className={styles.about}>
-        <p className={styles.header}>{i18n.t('playground.aboutTitle')}</p>
+        <p className={styles.header_playground}>{i18n.t('playground.aboutTitle')}</p>
         <p>Lorom Ipsum</p>
       </div>
     )

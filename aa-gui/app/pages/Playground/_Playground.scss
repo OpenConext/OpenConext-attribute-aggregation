@@ -10,15 +10,16 @@
   @extend .mod_right;
 }
 
-.header {
+.header_playground {
   font-size: 28px;
   color: $blue;
   margin: 25px 0 0;
+  padding: 0 0 20px 0;
 }
 
 .header_title {
-  @extend .header;
-  padding: 5px 70px 10px 40px;
+  @extend .header_playground;
+  padding: 10px 0 20px 40px;
   border-bottom: 2px solid $light-grey;
 }
 
@@ -43,7 +44,7 @@
 }
 
 .playground_actions {
-  padding: 30px 70px 10px 40px;
+  padding: 30px 10px 10px 20px;
   a {
     margin-left: 15px;
   }

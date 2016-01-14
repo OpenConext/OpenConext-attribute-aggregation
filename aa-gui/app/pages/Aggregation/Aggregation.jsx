@@ -21,7 +21,9 @@ export default class Aggregation extends React.Component {
       errors: {}
     };
     API.getServiceProviders((json) => this.setState({serviceProviders: json}));
-    API.getAuthorityConfiguration((json) => this.setState({authorities: json.authorities}));
+    API.getAuthorityConfiguration((json) => this.setState(
+      {authorities: json.authorities.sort((a1, a2) => a1.id.localeCompare(a2.id))}
+    ));
 
     let id = props.params.id;
     if (id !== 'new') {
@@ -146,7 +148,7 @@ export default class Aggregation extends React.Component {
           <option value="" disabled="disabled">{i18n.t("aggregation.new_attribute")}</option>
           {
             attributes.map((attribute) => <option value={attribute.name}
-                                                        key={attribute.name}>{attribute.name}</option>)
+                                                  key={attribute.name}>{attribute.name}</option>)
           }
         </select>
       </div>
@@ -181,7 +183,7 @@ export default class Aggregation extends React.Component {
       let notSelectedAttributes = configuredAttributes.filter((attr) => currentAttributes.find((curr) => curr.name === attr.name) === undefined);
       initialValue[authorityId] = notSelectedAttributes;
       return initialValue
-    },{});
+    }, {});
 
     //we need the authorities / attributes not yet linked to this aggregation
     let authorityOptions = this.state.authorities.filter((authority) => !currentAuthorities.includes(authority.id))
@@ -199,7 +201,7 @@ export default class Aggregation extends React.Component {
               </a>
               <div className={styles.attributes}>
                 <label>{i18n.t('aggregation.attributes')}</label>
-                {attributesGroupedByAuthority[authorityId].sort((a1,a2) => a1.name.localeCompare(a2.name)).map((attribute)=> {
+                {attributesGroupedByAuthority[authorityId].sort((a1, a2) => a1.name.localeCompare(a2.name)).map((attribute)=> {
                   return (
                     <div key={authorityId + '-' + attribute.name} className={styles.attribute}>
                       <input className={styles.input_disabled} type="text" name={authorityId + '-' + attribute.name}
