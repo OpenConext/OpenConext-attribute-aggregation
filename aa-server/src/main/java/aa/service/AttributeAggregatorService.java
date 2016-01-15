@@ -9,12 +9,14 @@ import aa.model.UserAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.function.Function.identity;
@@ -54,9 +56,15 @@ public class AttributeAggregatorService {
     //all of the unique AttributeAuthorityConfigurations for the attributes
     Set<AttributeAuthorityConfiguration> authorityConfigurations = attributes.stream().map(attribute -> configuration.getAuthorityById(attribute.getAttributeAuthorityId())).collect(toSet());
 
-    //the actual AttributeAggregators to query
+    //all of the names on input UserAttributes that at least have one non-empty value
+    List<String> inputNames = input.stream().filter(userAttribute -> userAttribute.getValues().stream().anyMatch(StringUtils::hasText))
+        .map(UserAttribute::getName).collect(toList());
+
+    //the actual AttributeAggregators to query filtered on the required input parameters
     List<AttributeAggregator> attributeAggregators = authorityConfigurations.stream()
-        .map(attributeAuthority -> aggregators.get(attributeAuthority.getId())).collect(toList());
+        .map(attributeAuthority -> aggregators.get(attributeAuthority.getId()))
+        .filter(attributeAggregator -> inputNames.containsAll(attributeAggregator.attributeKeysRequired()))
+        .collect(toList());
 
     //all aggregatedAttributes
     List<UserAttribute> aggregatedAttributes;
@@ -81,15 +89,15 @@ public class AttributeAggregatorService {
       CachedAggregate cachedAggregate = cacheKey.isPresent() ? cache.get(cacheKey.get()) : null;
       long now = System.currentTimeMillis();
       if (cachedAggregate != null && cachedAggregate.timestamp + cacheDuration > now) {
-        LOG.debug("Returning aggregate from cache {}", cachedAggregate.aggregate);
+        LOG.debug("Returning userAttributes from cache {}", cachedAggregate.aggregate);
         return cachedAggregate.aggregate;
       }
-      List<UserAttribute> aggregate = aggregator.aggregate(input);
-      if (cacheKey.isPresent()) {
-        LOG.debug("Putting aggregate in cache {} with key {}", aggregate, cacheKey);
-        cache.put(cacheKey.get(), new CachedAggregate(now, aggregate));
+      List<UserAttribute> userAttributes = aggregator.aggregate(input);
+      if (cacheKey.isPresent() && userAttributes.size() > 0) {
+        LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey);
+        cache.put(cacheKey.get(), new CachedAggregate(now, userAttributes));
       }
-      return aggregate;
+      return userAttributes;
     } catch (RuntimeException e) {
       LOG.warn("AttributeAggregator {} threw exception: {} ", aggregator, e);
       return Collections.<UserAttribute>emptyList();

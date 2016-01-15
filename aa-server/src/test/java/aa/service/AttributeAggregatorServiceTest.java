@@ -82,7 +82,8 @@ public class AttributeAggregatorServiceTest {
     Set<Attribute> attributes = this.configuration.getAuthorities().stream().map(conf -> conf.getAttributes()).flatMap(List::stream).collect(toSet());
     ServiceProvider sp = new ServiceProvider(singleton(new Aggregation(attributes)));
 
-    List<UserAttribute> result = subject.aggregate(sp, singletonList(new UserAttribute("name", singletonList("value"), "source")));
+    //to get any result we must provide the aggregate with the required UserAttribute name. See classpath:testAttributeAuthorities.yml
+    List<UserAttribute> result = subject.aggregate(sp, singletonList(new UserAttribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", singletonList("value"), "source")));
     assertEquals(expected, result.size());
   }
 

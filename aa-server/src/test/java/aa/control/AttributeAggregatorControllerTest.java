@@ -26,8 +26,14 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testAttributeAggregate() throws Exception {
-    List<UserAttribute> result = doAttributeAggregate("http://mock-sp");
+  public void testAttributeAggregateWithoutRequiredAttribute() throws Exception {
+    List<UserAttribute> result = doAttributeAggregate("http://mock-sp", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
+
+    assertEquals(0, result.size());
+  }
+  @Test
+  public void testAttributeAggregateRequiredAttributePresent() throws Exception {
+    List<UserAttribute> result = doAttributeAggregate("http://mock-sp", "urn:mace:dir:attribute-def:eduPersonPrincipalName");
 
     assertEquals(1, result.size());
 
@@ -37,16 +43,17 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     assertEquals("aa1", userAttribute.getSource());
   }
 
+
   @Test
   public void testNoServiceProvider() throws Exception {
-    List<UserAttribute> result = doAttributeAggregate("http://unknown-sp");
+    List<UserAttribute> result = doAttributeAggregate("http://unknown-sp", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
 
     assertEquals(0, result.size());
   }
 
   @SuppressWarnings("unchecked")
-  private List<UserAttribute> doAttributeAggregate(String serviceProviderEntityId) throws URISyntaxException {
-    UserAttribute input = new UserAttribute("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+  private List<UserAttribute> doAttributeAggregate(String serviceProviderEntityId, String userAttributeName) throws URISyntaxException {
+    UserAttribute input = new UserAttribute(userAttributeName,
         singletonList("urn:collab:person:example.com:admin"),
         null);
     UserAttributes userAttributes = new UserAttributes(serviceProviderEntityId, singletonList(input));
