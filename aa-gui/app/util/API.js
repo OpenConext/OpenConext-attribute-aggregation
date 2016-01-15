@@ -39,7 +39,10 @@ class API {
       options.body = JSON.stringify(form);
     }
     fetch(url, options)
-      .then(checkStatus ? this.checkStatus : (response) => response)
+      .then(checkStatus ? this.checkStatus : (response) => {
+        PubSub.publish('API', {started: false});
+        return response;
+      })
       .then(res => res.json())
       .then(json => callback(json))
       .catch(ex => history.replace('/#/error'));
