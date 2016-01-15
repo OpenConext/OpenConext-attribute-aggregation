@@ -36,7 +36,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev",
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev,aa-test",
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 @Transactional
 @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed.sql"},

@@ -17,7 +17,7 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
   @Override

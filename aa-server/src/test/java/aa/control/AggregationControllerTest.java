@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 import static org.springframework.http.HttpMethod.*;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 public class AggregationControllerTest extends AbstractIntegrationTest {
 
   @Override

@@ -7,6 +7,9 @@ import java.util.Optional;
 
 public interface AttributeAggregator {
 
+  String NAME_ID = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
+  String EDU_PERSON_ENTITLEMENT = "urn:mace:dir:attribute-def:eduPersonEntitlement ";
+
   String getAttributeAuthorityId();
 
   List<UserAttribute> aggregate(List<UserAttribute> input);

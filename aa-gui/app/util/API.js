@@ -4,6 +4,8 @@ const history = createBrowserHistory();
 
 import Utils from './Utils'
 
+import PubSub from 'pubsub-js'
+
 class API {
 
   constructor() {
@@ -11,6 +13,7 @@ class API {
   }
 
   checkStatus = (response) => {
+    PubSub.publish('API', {started: false});
     if (response.status >= 200 && response.status < 300) {
       this.csrfToken = response.headers.get('X-CSRF-TOKEN');
       return response
@@ -22,7 +25,8 @@ class API {
   };
 
   doFetch = (url, callback, method = 'get', form, checkStatus = true) => {
-    var options = {
+    PubSub.publish('API', {started: true});
+    let options = {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

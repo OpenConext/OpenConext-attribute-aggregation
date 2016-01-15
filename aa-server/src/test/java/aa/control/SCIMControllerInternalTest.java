@@ -24,7 +24,7 @@ import static org.springframework.http.HttpMethod.POST;
  * Need separate Controller because of security environment. We want ADMIN rights here and not use OAuth. We also
  * don't want CSRF headers
  */
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev,no-csrf",
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev,no-csrf,aa-test",
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 public class SCIMControllerInternalTest extends AbstractIntegrationTest {
 

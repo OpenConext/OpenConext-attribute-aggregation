@@ -1,12 +1,12 @@
-package aa.aggregators;
+package aa.aggregators.test;
 
+import aa.aggregators.AbstractAttributeAggregator;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -29,12 +29,12 @@ public class TestingAttributeAggregator extends AbstractAttributeAggregator {
           new ParameterizedTypeReference<List<UserAttribute>>() {
           }).getBody();
     } else {
-      AttributeAuthorityConfiguration authority = getAttributeAuthorityConfiguration();
-      return authority.getAttributes().stream()
+      AttributeAuthorityConfiguration configuration = getAttributeAuthorityConfiguration();
+      return configuration.getAttributes().stream()
           .map(attribute -> new UserAttribute(
               attribute.getName(),
               singletonList("urn:x-surfnet:" + getAttributeAuthorityId() + ":test"),
-              authority.getId()))
+              configuration.getId()))
           .collect(toList());
     }
   }

@@ -4,6 +4,7 @@ import i18n from '../../util/I18N';
 import API from '../../util/API';
 
 import LanguageSelector from './LanguageSelector';
+import Spinner from './Spinner';
 
 import React from 'react';
 
@@ -40,6 +41,7 @@ export default class Header extends React.Component {
     return (
       <div className={styles.header}>
         <div className={styles.title}><a href='/'>{i18n.t('header.title')}</a></div>
+        <Spinner />
         {this.renderMeta()}
       </div>
     );

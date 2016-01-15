@@ -3,6 +3,7 @@ package aa.aggregators;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
+import aa.util.StreamUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.RequestConfig;
@@ -12,19 +13,26 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 public abstract class AbstractAttributeAggregator implements AttributeAggregator {
 
@@ -34,6 +42,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
   private final RestTemplate restTemplate;
   private final List<String> attributeKeysRequired;
+  private final String attributeValueTemplate = "urn:x-surfnet:%s:%s";
 
   public AbstractAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     this.attributeAuthorityConfiguration = attributeAuthorityConfiguration;
@@ -84,6 +93,14 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  protected List<UserAttribute> mapResultsToUserAttribute(String attributeName, List<String> results) {
+    if (isEmpty(results)) {
+      return emptyList();
+    }
+    List<String> values = results.stream().map(result -> String.format(attributeValueTemplate, getAttributeAuthorityId(), result)).collect(toList());
+    return Collections.singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
   }
 
   private ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {

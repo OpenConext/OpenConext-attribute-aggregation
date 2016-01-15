@@ -1,6 +1,6 @@
 package aa.service;
 
-import aa.aggregators.TestingAttributeAggregator;
+import aa.aggregators.test.TestingAttributeAggregator;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.*;

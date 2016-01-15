@@ -7,7 +7,12 @@
   box-sizing: border-box;
 }
 
-html, body {
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  overflow-x: hidden;
+
   background: $light-grey;
 
   font-family: "Roboto", Sans-serif;
@@ -18,6 +23,7 @@ html, body {
   color: #2b3f44;
   -webkit-font-smoothing: antialiased;
 }
+
 
 a {
   color: $blue;

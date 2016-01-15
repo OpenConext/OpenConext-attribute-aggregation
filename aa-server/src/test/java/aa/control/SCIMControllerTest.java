@@ -1,6 +1,5 @@
 package aa.control;
 
-import aa.model.Attribute;
 import aa.model.Schema;
 import aa.oidc.AbstractOidcIntegrationTest;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

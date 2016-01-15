@@ -15,7 +15,7 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=acc", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=acc,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 public class ServiceRegistryControllerTest extends AbstractIntegrationTest {
 
   @Override

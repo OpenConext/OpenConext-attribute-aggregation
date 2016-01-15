@@ -39,7 +39,7 @@
     "react-dom": "^0.14.6",
     "react-addons-update": "^0.14.6",
     "react-router": "1.0.3",
-    "react-spinner": "^0.2.3",
+    "pubsub-js": "^1.5.3",
     "es6-promise": "latest",
     "whatwg-fetch": "latest",
     "font-awesome": "^4.5.0",

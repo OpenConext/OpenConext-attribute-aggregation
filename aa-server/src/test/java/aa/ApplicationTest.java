@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev", "attribute.authorities.config.path=classpath:attributeAuthorities.yml"})
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev,aa-test", "attribute.authorities.config.path=classpath:attributeAuthorities.yml"})
 public class ApplicationTest extends AbstractIntegrationTest {
 
   @Test

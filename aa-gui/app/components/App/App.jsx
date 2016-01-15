@@ -2,8 +2,6 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Link } from 'react-router'
 
-import Spinner from 'react-spinner'
-
 import API from '../../util/API';
 
 import Header from '../Header/Header';
@@ -19,7 +17,6 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <Spinner />
         <Header />
         <Navigation />
         {this.props.children}
