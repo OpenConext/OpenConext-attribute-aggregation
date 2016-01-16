@@ -9,6 +9,7 @@ import Spinner from './Spinner';
 import React from 'react';
 
 const gitHub = require('../../images/github.png');
+const pivotal = require('../../images/pivotaltracker.png');
 require('../../images/logo@2x.png');
 
 export default class Header extends React.Component {
@@ -32,6 +33,9 @@ export default class Header extends React.Component {
         <LanguageSelector />
         <a href='https://github.com/oharsta/OpenConext-attribute-aggregation' target='_blank'>
           <img className={styles.logo} src={gitHub}/>
+        </a>
+        <a href='https://www.pivotaltracker.com/n/projects/1501602' target='_blank'>
+          <img className={styles.logo} src={pivotal}/>
         </a>
       </header>
     );

@@ -25,4 +25,9 @@ public class AggregationRepositoryTest extends AbstractIntegrationTest {
     assertFalse(aggregationRepository.existsByName("nope"));
   }
 
+  @Test
+  public void existsByNameAndId() throws Exception {
+    assertFalse(aggregationRepository.existsByNameAndId("TEST AGGREGATION", 1L));
+    assertTrue(aggregationRepository.existsByNameAndId("TEST AGGREGATION", 2L));
+  }
 }

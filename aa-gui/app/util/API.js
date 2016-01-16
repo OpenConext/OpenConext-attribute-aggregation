@@ -77,6 +77,11 @@ class API {
     return this.doFetch('/aa/api/internal/aggregation', callback, method, aggregation);
   }
 
+  aggregationExistsByName(name, id, callback) {
+    return id === undefined ?
+      this.doFetch('/aa/api/internal/aggregationExistsByName?name=' + encodeURIComponent(name), callback) :
+      this.doFetch('/aa/api/internal/aggregationExistsByName?name=' + encodeURIComponent(name) + '&id=' + id, callback)
+  }
   /*
    * The following are API calls to test the SCIMController
    */

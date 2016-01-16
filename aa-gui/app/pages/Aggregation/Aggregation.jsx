@@ -67,14 +67,21 @@ export default class Aggregation extends React.Component {
   }
 
   renderName() {
-    let handleOnChange = (e) => this.updateAggregationState({name: e.target.value})
+    let aggregation = this.state.aggregation;
 
-    var aggregation = this.state.aggregation;
+    let handleOnChange = (e) => this.updateAggregationState({name: e.target.value});
+    let validateName = (e) => API.aggregationExistsByName(e.target.value.trim(), aggregation.id, (json) => {
+      this.setState({errors: {name: json}});
+    });
+
+    let errorName = this.state.errors.name ? {} :  {display: 'none'};
+
     return (
-      <div className={Utils.isEmpty(aggregation.name) ? styles.failure : styles.success}>
+      <div className={Utils.isEmpty(aggregation.name) || this.state.errors.name ? styles.failure : styles.success}>
         <label htmlFor='name'>{i18n.t('aggregation.name')}</label>
         <input className={styles.input} type="text" name="name" value={aggregation.name}
-               onChange={handleOnChange}/>
+               onChange={handleOnChange} onBlur={validateName}/>
+        <em className={styles.error} style={errorName}><sup>*</sup>{i18n.t('aggregation.name_already_exists')}</em>
       </div>
     );
   }

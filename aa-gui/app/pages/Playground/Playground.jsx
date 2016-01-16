@@ -226,7 +226,7 @@ export default class Playground extends React.Component {
     return (
       <div className={styles.about}>
         <p className={styles.header_playground}>{i18n.t('playground.aboutTitle')}</p>
-        <p>Lorom Ipsum</p>
+        <p>Todo</p>
       </div>
     )
   }

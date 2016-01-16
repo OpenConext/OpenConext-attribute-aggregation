@@ -57,7 +57,8 @@ export default {
     new_authority: "Add a new authority...",
     new_attribute: "Add new attribute....",
     cancel: "Cancel",
-    cancel_question: "Are you sure you want to leave this page?"
+    cancel_question: "Are you sure you want to leave this page?",
+    name_already_exists: 'An Aggregation with this name already exists'
   },
   playground : {
     title: 'AGGREGATION PLAYGROUND',

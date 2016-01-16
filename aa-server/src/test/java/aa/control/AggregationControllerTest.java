@@ -37,7 +37,7 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
 
   @Test
   public void testSaveAggregation() throws Exception {
-    ResponseEntity<String> result = successfulPostAggregation("test-aggregation", POST);
+    ResponseEntity<String> result = successfulPostAggregation("test-new-aggregation", POST);
 
     assertEquals(HttpStatus.OK, result.getStatusCode());
 
@@ -131,8 +131,23 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
     assertFalse(aggregationExistsByName("nope"));
   }
 
+  @Test
+  public void testAggregationExistsByNameAndId() throws Exception {
+    assertFalse(aggregationExistsByNameAndId("TEST AGGREGATION", 1L));
+    assertTrue(aggregationExistsByNameAndId("TEST AGGREGATION", 2L));
+  }
+
   private boolean aggregationExistsByName(String name) {
-    URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationExistsByName").queryParam("name", name).build().encode().toUri();
+    return aggregationExists(UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationExistsByName")
+        .queryParam("name", name).build().encode().toUri());
+  }
+
+  private boolean aggregationExistsByNameAndId(String name, Long id) {
+    return aggregationExists(UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationExistsByName")
+        .queryParam("name", name).queryParam("id", id).build().encode().toUri());
+  }
+
+  private boolean aggregationExists(URI uri) {
     RequestEntity requestEntity = new RequestEntity(headers, GET, uri);
     return restTemplate.exchange(requestEntity, Boolean.class).getBody();
   }
@@ -144,7 +159,7 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
   }
 
   private Aggregation findAggregationById(Long id) throws URISyntaxException {
-    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/aggregation/"+id));
+    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/aggregation/" + id));
     return restTemplate.exchange(requestEntity, Aggregation.class).getBody();
   }
 

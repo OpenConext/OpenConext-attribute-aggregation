@@ -113,8 +113,8 @@ public class AggregationController {
   }
 
   @RequestMapping(method = GET, value = "/internal/aggregationExistsByName")
-  public boolean aggregationExistsByName(@RequestParam("name") String name) {
-    return aggregationRepository.existsByName(name);
+  public boolean aggregationExistsByName(@RequestParam("name") String name, @RequestParam(value = "id", required = false) Long id) {
+    return id == null ? aggregationRepository.existsByName(name) : aggregationRepository.existsByNameAndId(name, id);
   }
 
   private void addMetaDataInformation(ServiceProvider serviceProvider) {
