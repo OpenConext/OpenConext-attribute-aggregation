@@ -14,7 +14,7 @@
   font-size: 28px;
   color: $blue;
   margin: 25px 0 0;
-  padding: 0 0 20px 0 ;
+  padding: 5px 70px 10px 40px;
 }
 
 .header_title {
@@ -24,7 +24,20 @@
 }
 
 .about {
-  padding: 5px 70px 10px 40px;
+
+  img {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.about_content {
+  margin-left: 40px;
+
+  p {
+
+  }
 }
 
 .info {
@@ -102,3 +115,5 @@
   @extend .playground_result;
   background-color: $red;
 }
+
+

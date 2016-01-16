@@ -10,6 +10,8 @@ import Select from 'react-select'
 import API from '../../util/API'
 import Utils from '../../util/Utils'
 
+const endpointImage = require('../../images/endpoint.001.png');
+
 export default class Playground extends React.Component {
 
   constructor(props, context) {
@@ -226,7 +228,12 @@ export default class Playground extends React.Component {
     return (
       <div className={styles.about}>
         <p className={styles.header_playground}>{i18n.t('playground.aboutTitle')}</p>
-        <p>Todo</p>
+        <div className={styles.about_content}>
+          <p>Endpoints in Attribute Aggregation</p>
+        </div>
+        <div>
+          <img src={endpointImage}/>
+        </div>
       </div>
     )
   }
