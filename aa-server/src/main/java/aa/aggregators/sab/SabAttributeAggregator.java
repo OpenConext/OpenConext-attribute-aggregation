@@ -1,47 +1,27 @@
 package aa.aggregators.sab;
 
 import aa.aggregators.AbstractAttributeAggregator;
-import aa.aggregators.PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
-import aa.util.StreamUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.ByteArrayInputStream;
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
 
 import static aa.util.StreamUtils.singletonOptionalCollector;
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 
 public class SabAttributeAggregator extends AbstractAttributeAggregator {
 
@@ -68,13 +48,14 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
     }
     String request = request(userAttribute.get().getValues().get(0));
     ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request), String.class);
+    List<String> roles;
     try {
-      List<String> roles = parser.parse(new StringReader(response.getBody()));
-      LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
-      return mapResultsToUserAttribute(EDU_PERSON_ENTITLEMENT, roles);
-    } catch (Exception e) {
+      roles = parser.parse(new StringReader(response.getBody()));
+    } catch (XMLStreamException e) {
       throw new RuntimeException(e);
     }
+    LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
+    return mapResultsToUserAttribute(EDU_PERSON_ENTITLEMENT, roles);
   }
 
   private String request(String userId) {

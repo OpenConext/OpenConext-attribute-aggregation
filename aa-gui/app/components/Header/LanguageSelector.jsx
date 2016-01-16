@@ -35,6 +35,7 @@ export default class LanguageSelector extends React.Component {
     Utils.stop(e);
     i18n.changeLanguage(locale, (err, t) => {
       // resources have been loaded
+      window.location.reload()
     });
     this.setState({lang: locale});
   };

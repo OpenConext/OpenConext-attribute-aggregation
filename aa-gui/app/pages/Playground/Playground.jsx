@@ -71,8 +71,8 @@ export default class Playground extends React.Component {
     let handleOnChange = (val) => this.updatePlayState({serviceProvider: val || {}})
 
     let play = this.state.play;
-    let entityId = play.aggregation.serviceProviders ? play.aggregation.serviceProviders[0].entityId
-      : play.serviceProvider.entityId ? play.serviceProvider.entityId : undefined;
+    let entityId = play.serviceProvider.entityId ? play.serviceProvider.entityId :
+      play.aggregation.serviceProviders ? play.aggregation.serviceProviders[0].entityId : undefined
     return (
       <div className={Utils.isEmpty(entityId) ? styles.failure : styles.success}>
         <label htmlFor='serviceProvider'>{i18n.t('playground.serviceProvider')}</label>
