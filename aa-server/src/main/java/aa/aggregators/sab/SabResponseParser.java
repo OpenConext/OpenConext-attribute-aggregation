@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.IntStream.range;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 public class SabResponseParser {
 
@@ -40,7 +42,7 @@ public class SabResponseParser {
 
     while (reader.hasNext()) {
       switch (reader.next()) {
-        case XMLStreamConstants.START_ELEMENT:
+        case START_ELEMENT:
           switch (reader.getLocalName()) {
             case "Attribute":
               if (hasAttributeValue(reader, "urn:oid:1.3.6.1.4.1.5923.1.1.1.7")) {
@@ -54,7 +56,7 @@ public class SabResponseParser {
               break;
           }
           break;
-        case XMLStreamConstants.END_ELEMENT:
+        case END_ELEMENT:
           if (processRoles && reader.getLocalName().equals("Attribute")) {
             //we got what we wanted
             return roles;

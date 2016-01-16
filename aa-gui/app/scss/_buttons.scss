@@ -29,6 +29,14 @@
   }
 }
 
+.button_white_disabled {
+  @extend .button_white;
+
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
 .button_submit {
   @extend .button;
   width: 180px;
@@ -58,9 +66,13 @@
 }
 
 .button_full {
-  @extend .button;
-  width: 80%;
-  margin: 20px;
+  @extend .button_white;
+  margin: auto 20px;
+}
+
+.button_full_disabled {
+  @extend .button_white_disabled;
+  margin: auto 20px;
 }
 
 .button_narrow {

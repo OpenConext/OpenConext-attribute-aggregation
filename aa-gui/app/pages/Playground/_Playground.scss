@@ -47,6 +47,16 @@
   padding: 30px 10px 10px 20px;
   a {
     margin-left: 15px;
+
+    &:nth-child(5) {
+      float: right;
+      margin-right: 20px;
+    }
+
+    &:last-child {
+      margin-top: 15px;
+      display: block;
+    }
   }
 }
 

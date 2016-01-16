@@ -127,13 +127,20 @@ export default class Playground extends React.Component {
       <div className={styles.playground_actions}>
         <a className={this.validPlay() ? styles.button_submit_small : styles.button_submit_small_disabled} href="#"
            onClick={this.handleMe}>{i18n.t("playground.me")}</a>
-        <a className={this.state.play.serviceProvider.entityId ? styles.button_submit_small : styles.button_submit_small_disabled}
-           href="#" onClick={this.handleSchema}>{i18n.t("playground.schema")}</a>
+        <a
+          className={this.state.play.serviceProvider.entityId ? styles.button_submit_small : styles.button_submit_small_disabled}
+          href="#" onClick={this.handleSchema}>{i18n.t("playground.schema")}</a>
         <a className={styles.button_white} href="#"
            onClick={this.handleConfiguration}>{i18n.t("playground.service_provider_configuration")}</a>
         <a className={styles.button_white} href="#"
            onClick={this.handleResourceType}>{i18n.t("playground.resource_type")}</a>
         <a className={styles.button_cancel} href="#" onClick={this.handleCancel}>{i18n.t("playground.clear")}</a>
+        <a className={this.validPlay() ? styles.button_full : styles.button_full_disabled} href="#"
+           onClick={this.handleEBInternal}>
+          <i className="fa fa-refresh"></i>
+          {i18n.t("playground.engine_block")}
+        </a>
+
       </div>
     );
   }
@@ -165,6 +172,17 @@ export default class Playground extends React.Component {
   handleCancel = (e) => {
     Utils.stop(e);
     this.setState({result: undefined, play: {aggregation: {}, serviceProvider: {}, inputParameters: {}}});
+  };
+
+  handleEBInternal = (e) => {
+    Utils.stop(e);
+    let inputParameters = this.state.play.inputParameters;
+    let attributes = Object.keys(inputParameters).map((name) => {
+      return {name: name, values: [inputParameters[name]]}
+    });
+
+    let userAttributes = {serviceProviderEntityId: this.state.play.serviceProvider.entityId, attributes: attributes}
+    API.attributeAggregate(this.handleResult, userAttributes)
   };
 
   renderLeft() {

@@ -96,6 +96,9 @@ class API {
     return this.doFetch('/aa/api/internal/v1/Me?serviceProviderEntityId=' + encodeURIComponent(serviceProviderEntityId), callback, 'post', inputParameters, false);
   }
 
+  attributeAggregate(callback, userAttributes) {
+    return this.doFetch('/aa/api/attribute/aggregate', callback, 'post', userAttributes, false);
+  }
 }
 
 export default new API()

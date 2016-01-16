@@ -61,7 +61,7 @@ public class SabAttributeAggregatorTest {
 
   @Test
   public void testGetRolesFailures() throws Exception {
-    //if something goes wrong, we just don't get roles and SAB policies will return Indeterminate. We log all requests and responses
+    //if something goes wrong, we just don't get roles. We log all requests and responses
     for (String fileName : Arrays.asList("response_acl_blocked.xml", "response_invalid_user.xml", "response_unknown_user.xml")) {
       //lambda requires error handling
       assertEmptyRoles(fileName);
@@ -73,6 +73,5 @@ public class SabAttributeAggregatorTest {
     stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
         .willReturn(aResponse().withStatus(200).withBody(response)));
     assertTrue(subject.aggregate(input).isEmpty());
-
   }
 }
