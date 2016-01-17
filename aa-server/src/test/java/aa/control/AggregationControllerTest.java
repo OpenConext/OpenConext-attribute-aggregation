@@ -12,7 +12,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,6 +25,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 import static org.springframework.http.HttpMethod.*;
+import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 
 @WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 public class AggregationControllerTest extends AbstractIntegrationTest {
@@ -137,13 +137,30 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
     assertTrue(aggregationExistsByNameAndId("TEST AGGREGATION", 2L));
   }
 
+  @Test
+  public void testAggregationsByServiceProviderEntityIds() throws Exception {
+    URI uri = fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationsByServiceProviderEntityIds")
+        .queryParam("entityIds", "http://mock-sp", "http://unknown-sp").build().encode().toUri();
+    RequestEntity requestEntity = new RequestEntity(headers, GET, uri);
+
+    String s = restTemplate.exchange(requestEntity,String.class).getBody();
+
+
+    List<Object[]> names = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Object[]>>() {
+    }).getBody();
+    assertEquals(1, names.size());
+    assertEquals("test aggregation", names.get(0)[0]);
+    assertEquals("http://mock-sp", names.get(0)[1]);
+
+  }
+
   private boolean aggregationExistsByName(String name) {
-    return aggregationExists(UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationExistsByName")
+    return aggregationExists(fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationExistsByName")
         .queryParam("name", name).build().encode().toUri());
   }
 
   private boolean aggregationExistsByNameAndId(String name, Long id) {
-    return aggregationExists(UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationExistsByName")
+    return aggregationExists(fromHttpUrl("http://localhost:" + port + "/aa/api/internal/aggregationExistsByName")
         .queryParam("name", name).queryParam("id", id).build().encode().toUri());
   }
 

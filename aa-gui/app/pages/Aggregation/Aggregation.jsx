@@ -18,7 +18,7 @@ export default class Aggregation extends React.Component {
       aggregation: {serviceProviders: [], attributes: []},
       serviceProviders: [],
       authorities: [],
-      errors: {}
+      errors: {serviceProviders: []}
     };
     API.getServiceProviders((json) => this.setState({serviceProviders: json}));
     API.getAuthorityConfiguration((json) => this.setState(
@@ -71,7 +71,8 @@ export default class Aggregation extends React.Component {
 
     let handleOnChange = (e) => this.updateAggregationState({name: e.target.value});
     let validateName = (e) => API.aggregationExistsByName(e.target.value.trim(), aggregation.id, (json) => {
-      this.setState({errors: {name: json}});
+      var newState = update(this.state.errors, {$merge: {name: json}})
+      this.setState({errors: newState});
     });
 
     let errorName = this.state.errors.name ? {} :  {display: 'none'};
@@ -87,7 +88,20 @@ export default class Aggregation extends React.Component {
   }
 
   renderServiceProviders() {
-    let handleOnChange = (val) => this.updateAggregationState({serviceProviders: val || []})
+    let handleOnChange = (val) => {
+      this.updateAggregationState({serviceProviders: val || []});
+      if (Utils.isEmpty(val)) {
+        var newState = update(this.state.errors, {$merge: {serviceProviders: []}});
+        this.setState({errors: newState});
+      } else {
+        API.aggregationsByServiceProviderEntityIds(val, this.state.aggregation.id, (json) => {
+          var newState = update(this.state.errors, {$merge: {serviceProviders: json}});
+          this.setState({errors: newState});
+        })
+      }
+    };
+
+    let warningServiceProviders = Utils.isEmpty(this.state.errors.serviceProviders) ? {display: 'none'} : {};
 
     let aggregation = this.state.aggregation;
     return (
@@ -104,6 +118,14 @@ export default class Aggregation extends React.Component {
           multi={true}
           placeholder='Select one or more ServiceProviders'
         />
+        <div style={warningServiceProviders}>
+          {this.state.errors.serviceProviders.map((aggregationNameAndEntityId) =>
+            <em key={aggregationNameAndEntityId.join()} className={styles.warning}>
+              <sup>*</sup>
+              {i18n.t('aggregation.sp_already_linked', {serviceProvider: aggregationNameAndEntityId[1], aggregation: aggregationNameAndEntityId[0]})}
+            </em>
+          )}
+        </div>
       </div>
     );
   }

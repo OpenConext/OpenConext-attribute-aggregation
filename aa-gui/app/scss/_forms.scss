@@ -57,6 +57,13 @@
 }
 
 .error {
+  display: inline-block;
   color: $red;
+}
+
+.warning {
+  margin-top: 5px;
+  display: inline-block;
+  color: #C17B00;
 }
 

@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -115,6 +116,12 @@ public class AggregationController {
   @RequestMapping(method = GET, value = "/internal/aggregationExistsByName")
   public boolean aggregationExistsByName(@RequestParam("name") String name, @RequestParam(value = "id", required = false) Long id) {
     return id == null ? aggregationRepository.existsByName(name) : aggregationRepository.existsByNameAndId(name, id);
+  }
+
+  @RequestMapping(method = GET, value = "/internal/aggregationsByServiceProviderEntityIds")
+  public List<Object[]> aggregationsByServiceProviderEntityIds(@RequestParam("entityIds") String[] entityIds,
+                                                               @RequestParam(value = "aggregationId", required = false) Long aggregationId) {
+    return aggregationRepository.getAggregationsByServiceProviderEntityIds(Arrays.asList(entityIds), aggregationId == null ? -1L : aggregationId);
   }
 
   private void addMetaDataInformation(ServiceProvider serviceProvider) {

@@ -82,6 +82,12 @@ class API {
       this.doFetch('/aa/api/internal/aggregationExistsByName?name=' + encodeURIComponent(name), callback) :
       this.doFetch('/aa/api/internal/aggregationExistsByName?name=' + encodeURIComponent(name) + '&id=' + id, callback)
   }
+
+  aggregationsByServiceProviderEntityIds(serviceProviders, aggregationId, callback) {
+    let params = serviceProviders.map((sp) => 'entityIds=' + encodeURIComponent(sp.entityId)).join('&');
+    aggregationId = aggregationId || -1;
+    return this.doFetch("/aa/api/internal/aggregationsByServiceProviderEntityIds?" + params + '&aggregationId=' + aggregationId, callback);
+  }
   /*
    * The following are API calls to test the SCIMController
    */

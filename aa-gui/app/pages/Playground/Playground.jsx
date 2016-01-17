@@ -147,6 +147,7 @@ export default class Playground extends React.Component {
 
   handleResult = (json) => {
     this.setState({result: json});
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
   }
 
   handleMe = (e) => {
