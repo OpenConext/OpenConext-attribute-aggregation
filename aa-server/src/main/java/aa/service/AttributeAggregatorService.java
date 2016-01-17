@@ -94,7 +94,7 @@ public class AttributeAggregatorService {
       }
       List<UserAttribute> userAttributes = aggregator.aggregate(input);
       if (cacheKey.isPresent() && userAttributes.size() > 0) {
-        LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey);
+        LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey.get());
         cache.put(cacheKey.get(), new CachedAggregate(now, userAttributes));
       }
       return userAttributes;

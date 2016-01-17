@@ -29,6 +29,8 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static aa.util.StreamUtils.singletonOptionalCollector;
+import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -95,6 +97,16 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
   }
 
+  protected String getUserAttributeSingleValue(List<UserAttribute> input, String nameId) {
+    Optional<UserAttribute> userAttribute = input.stream().filter(attr -> attr.getName().equals(nameId)).collect(singletonOptionalCollector());
+    if (!userAttribute.isPresent() || userAttribute.get().getValues().isEmpty()) {
+      throw new IllegalArgumentException(format("%s requires %s attribute with value", getClass(), nameId));
+    }
+    return userAttribute.get().getValues().get(0);
+  }
+
+
+
   protected List<UserAttribute> mapResultsToUserAttribute(String attributeName, List<String> results) {
     if (isEmpty(results)) {
       return emptyList();
@@ -103,7 +115,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     return Collections.singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
   }
 
-  private ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {
+  protected ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {
     HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections().evictIdleConnections(10l, TimeUnit.SECONDS);
     if (StringUtils.hasText(attributeAuthorityConfiguration.getUser())) {
       BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();

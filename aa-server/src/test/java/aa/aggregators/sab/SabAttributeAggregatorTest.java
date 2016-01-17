@@ -30,6 +30,9 @@ public class SabAttributeAggregatorTest {
 
   private List<UserAttribute> input = singletonList(new UserAttribute(NAME_ID, singletonList("urn")));
 
+  @Rule
+  public WireMockRule wireMockRule = new WireMockRule(8889);
+
   @Before
   public void before() {
     AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("sab");
@@ -39,9 +42,6 @@ public class SabAttributeAggregatorTest {
     configuration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute(NAME_ID)));
     subject = new SabAttributeAggregator(configuration);
   }
-
-  @Rule
-  public WireMockRule wireMockRule = new WireMockRule(8889);
 
   @Test
   public void testGetRolesHappyFlow() throws Exception {
@@ -63,7 +63,6 @@ public class SabAttributeAggregatorTest {
   public void testGetRolesFailures() throws Exception {
     //if something goes wrong, we just don't get roles. We log all requests and responses
     for (String fileName : Arrays.asList("response_acl_blocked.xml", "response_invalid_user.xml", "response_unknown_user.xml")) {
-      //lambda requires error handling
       assertEmptyRoles(fileName);
     }
   }

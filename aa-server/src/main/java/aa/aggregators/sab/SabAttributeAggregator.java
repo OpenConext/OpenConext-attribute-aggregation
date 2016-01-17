@@ -42,11 +42,8 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
 
   @Override
   public List<UserAttribute> aggregate(List<UserAttribute> input) {
-    Optional<UserAttribute> userAttribute = input.stream().filter(attr -> attr.getName().equals(NAME_ID)).collect(singletonOptionalCollector());
-    if (!userAttribute.isPresent() || userAttribute.get().getValues().isEmpty()) {
-      throw new IllegalArgumentException(format("%s requires %s attribute with value", getClass(), NAME_ID));
-    }
-    String request = request(userAttribute.get().getValues().get(0));
+    String userId = getUserAttributeSingleValue(input, NAME_ID);
+    String request = request(userId);
     ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request), String.class);
     List<String> roles;
     try {
