@@ -1,7 +1,7 @@
 import styles from './_Playground.scss';
 
 import React from 'react'
-
+import { Link } from 'react-router'
 import update from 'react-addons-update'
 import i18n from 'i18next'
 import _ from 'lodash'
@@ -9,8 +9,6 @@ import Select from 'react-select'
 
 import API from '../../util/API'
 import Utils from '../../util/Utils'
-
-const endpointImage = require('../../images/endpoint.001.png');
 
 export default class Playground extends React.Component {
 
@@ -51,7 +49,7 @@ export default class Playground extends React.Component {
 
     let aggregations = this.state.aggregations;
     return (
-      <div className={styles.success}>
+      <div className={Utils.isEmpty(this.state.play.aggregation) ? styles.failure : styles.success}>
         <label htmlFor='aggregations'>{i18n.t('playground.aggregations')}</label>
         <em className={styles.info}>{i18n.t('playground.aggregationsInfo')}</em>
         <Select
@@ -111,7 +109,7 @@ export default class Playground extends React.Component {
     }
     //we permit empty user attributes to see empty result
     return (
-      <div className={styles.success}>
+      <div className={Utils.isEmpty(this.state.play.inputParameters) ? styles.failure : styles.success}>
         <label>{i18n.t('playground.userAttributes')}</label>
         {uniqueRequiredAttributeNames.map((name) =>
           <div key={name} className={styles.user_attributes}>
@@ -229,10 +227,9 @@ export default class Playground extends React.Component {
       <div className={styles.about}>
         <p className={styles.header_playground}>{i18n.t('playground.aboutTitle')}</p>
         <div className={styles.about_content}>
-          <p>Endpoints in Attribute Aggregation</p>
-        </div>
-        <div>
-          <img src={endpointImage}/>
+          <p>Select an aggregation, fill in the required attributes for the aggregation and preview the result
+          of invoking one of the endpoints. For all endpoints see <Link to="/about">{i18n.t('navigation.about')}</Link>.
+          </p>
         </div>
       </div>
     )

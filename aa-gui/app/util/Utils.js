@@ -29,6 +29,9 @@ class Utils {
     if (typeof obj === 'string') {
       return obj.trim().length === 0;
     }
+    if (typeof obj === 'object') {
+      return Object.keys(obj).length === 0;
+    }
     return false;
   }
 
