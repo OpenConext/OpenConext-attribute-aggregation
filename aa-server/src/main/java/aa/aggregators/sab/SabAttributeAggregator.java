@@ -18,8 +18,10 @@ import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 public class SabAttributeAggregator extends AbstractAttributeAggregator {
 
@@ -50,7 +52,8 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
       throw new RuntimeException(e);
     }
     LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
-    return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, roles);
+    List<String> scopedRoles = roles.stream().map(role -> "urn:x-surfnet:surfnet.nl:sab:role:".concat(role)).collect(toList());
+    return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, scopedRoles);
   }
 
   private String request(String userId) {

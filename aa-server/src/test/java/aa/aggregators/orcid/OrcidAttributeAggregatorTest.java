@@ -50,7 +50,7 @@ public class OrcidAttributeAggregatorTest {
 
     List<String> values = userAttribute.getValues();
     assertEquals(1, values.size());
-    assertEquals("urn:x-surfnet:orcid:0000-0002-4926-2859", values.get(0));
+    assertEquals("http://orcid.org/0000-0002-4926-2859", values.get(0));
   }
 
   @Test

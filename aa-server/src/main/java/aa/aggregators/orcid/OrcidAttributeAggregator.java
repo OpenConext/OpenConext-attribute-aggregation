@@ -28,7 +28,7 @@ public class OrcidAttributeAggregator extends AbstractAttributeAggregator {
   }
 
   @Override
-  @SuppressWarnings("checked")
+  @SuppressWarnings("unchecked")
   public List<UserAttribute> aggregate(List<UserAttribute> input) {
     String eppn = getUserAttributeSingleValue(input, EDU_PERSON_PRINCIPAL_NAME);
     URI uri = fromUri(endpoint()).queryParam("requester", requester).queryParam("principal", eppn).build().encode().toUri();

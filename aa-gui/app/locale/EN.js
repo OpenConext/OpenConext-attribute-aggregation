@@ -76,7 +76,7 @@ export default {
     clear: 'Clear',
     result_status_ok: 'Ok',
     result_status_error: 'Error',
-    engine_block: 'Internal EngineBlock call'
+    engine_block: 'Attribute Aggregation'
   },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',

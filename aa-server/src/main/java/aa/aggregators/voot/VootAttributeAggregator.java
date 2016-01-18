@@ -29,7 +29,7 @@ public class VootAttributeAggregator extends AbstractAttributeAggregator {
     List<Map<String, Object>> listOfGroupMaps = (List<Map<String, Object>>) vootService.getForObject(url, List.class, userId);
     List<String> groups = listOfGroupMaps.stream().map(entry -> (String) entry.get("id")).collect(toList());
     LOG.debug("Retrieved groups: {}", groups);
-    return mapValuesToUserAttribute(GROUP, groups);
+    return mapValuesToUserAttribute(IS_MEMBER_OF, groups);
   }
 
   private OAuth2RestTemplate vootRestTemplate(AttributeAuthorityConfiguration configuration,

@@ -60,9 +60,9 @@ authorities:
       timeOut: 1000,
       attributes: [
         {
-          name: "urn:collab:group",
+          name: "urn:mace:dir:attribute-def:isMemberOf",
           caseExact: True,
-          description: "URI (either URN or URL) that indicates the group memberships.",
+          description: "Lists the collaborative organisations / groups the user is a member of",
           multiValued: True,
           mutability: "readOnly",
           required: False,

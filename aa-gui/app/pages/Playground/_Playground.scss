@@ -57,19 +57,26 @@
 }
 
 .playground_actions {
-  padding: 30px 10px 10px 20px;
+  padding: 15px;
   a {
     margin-left: 15px;
 
+    &:first-child {
+      margin-left: 0;
+    }
+
     &:nth-child(5) {
       float: right;
-      margin-right: 20px;
     }
 
     &:last-child {
       margin-top: 15px;
       display: block;
+      margin-left: 0;
     }
+  }
+  i {
+    font-size: 20px;
   }
 }
 

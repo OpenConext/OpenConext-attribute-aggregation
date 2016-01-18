@@ -1,9 +1,7 @@
 package aa;
 
 
-import aa.model.Aggregation;
-import aa.model.Attribute;
-import aa.model.Schema;
+import aa.model.*;
 import aa.repository.AggregationRepository;
 import aa.repository.AttributeRepository;
 import aa.repository.ServiceProviderRepository;
@@ -15,15 +13,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -106,5 +112,18 @@ public abstract class AbstractIntegrationTest {
     return oauthHeaders;
   }
 
+  @SuppressWarnings("unchecked")
+  protected List<UserAttribute> doAttributeAggregate(String serviceProviderEntityId, String userAttributeName, int port) throws URISyntaxException {
+    UserAttribute input = new UserAttribute(userAttributeName,
+        singletonList("urn:collab:person:example.com:admin"),
+        null);
+    UserAttributes userAttributes = new UserAttributes(serviceProviderEntityId, singletonList(input));
+
+    RequestEntity requestEntity = new RequestEntity(userAttributes, headers, HttpMethod.POST, new URI("http://localhost:" + port + "/aa/api/attribute/aggregate"));
+    ResponseEntity<List<UserAttribute>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<UserAttribute>>() {
+    });
+
+    return response.getBody();
+  }
 
 }

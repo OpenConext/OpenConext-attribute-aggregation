@@ -15,11 +15,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
 import static aa.aggregators.AttributeAggregator.NAME_ID;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -53,10 +55,12 @@ public class SabAttributeAggregatorTest {
     UserAttribute userAttribute = userAttributes.get(0);
     assertEquals(EDU_PERSON_ENTITLEMENT, userAttribute.getName());
 
-    List<String> expected = Arrays.asList("urn:x-surfnet:sab:Superuser", "urn:x-surfnet:sab:Instellingsbevoegde", "urn:x-surfnet:sab:Infraverantwoordelijke",
-        "urn:x-surfnet:sab:OperationeelBeheerder", "urn:x-surfnet:sab:Mailverantwoordelijke", "urn:x-surfnet:sab:Domeinnamenverantwoordelijke",
-        "urn:x-surfnet:sab:DNS-Beheerder", "urn:x-surfnet:sab:AAIverantwoordelijke", "urn:x-surfnet:sab:Beveiligingsverantwoordelijke");
-    assertEquals(expected, userAttribute.getValues());
+    List<String> expected = Arrays.asList("Superuser", "Instellingsbevoegde", "Infraverantwoordelijke",
+        "OperationeelBeheerder", "Mailverantwoordelijke", "Domeinnamenverantwoordelijke", "DNS-Beheerder",
+        "AAIverantwoordelijke", "Beveiligingsverantwoordelijke");
+
+    assertEquals(expected.stream().map(role -> "urn:x-surfnet:surfnet.nl:sab:role:".concat(role)).collect(toList()),
+        userAttribute.getValues());
   }
 
   @Test

@@ -2,6 +2,7 @@ package aa.oidc;
 
 import aa.AbstractIntegrationTest;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.boot.test.WebIntegrationTest;
@@ -43,7 +44,7 @@ public abstract class AbstractOidcIntegrationTest extends AbstractIntegrationTes
   }
 
   protected void stubOidcCheckTokenUser(String path) throws IOException {
-    String json = StreamUtils.copyToString(new ClassPathResource(path).getInputStream(), forName("UTF-8"));
+    String json = IOUtils.toString(new ClassPathResource(path).getInputStream());
     oidcServerMock.stubFor(get(urlPathEqualTo("/introspect")).willReturn(
         aResponse().withStatus(200).withHeader("Content-type", "application/json").withBody(json)
     ));

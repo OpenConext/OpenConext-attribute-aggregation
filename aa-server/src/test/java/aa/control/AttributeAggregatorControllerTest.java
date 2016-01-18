@@ -27,13 +27,13 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
   @Test
   public void testAttributeAggregateWithoutRequiredAttribute() throws Exception {
-    List<UserAttribute> result = doAttributeAggregate("http://mock-sp", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
+    List<UserAttribute> result = doAttributeAggregate("http://mock-sp", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", port);
 
     assertEquals(0, result.size());
   }
   @Test
   public void testAttributeAggregateRequiredAttributePresent() throws Exception {
-    List<UserAttribute> result = doAttributeAggregate("http://mock-sp", "urn:mace:dir:attribute-def:eduPersonPrincipalName");
+    List<UserAttribute> result = doAttributeAggregate("http://mock-sp", "urn:mace:dir:attribute-def:eduPersonPrincipalName", port);
 
     assertEquals(1, result.size());
 
@@ -46,23 +46,9 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
   @Test
   public void testNoServiceProvider() throws Exception {
-    List<UserAttribute> result = doAttributeAggregate("http://unknown-sp", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
+    List<UserAttribute> result = doAttributeAggregate("http://unknown-sp", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", port);
 
     assertEquals(0, result.size());
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<UserAttribute> doAttributeAggregate(String serviceProviderEntityId, String userAttributeName) throws URISyntaxException {
-    UserAttribute input = new UserAttribute(userAttributeName,
-        singletonList("urn:collab:person:example.com:admin"),
-        null);
-    UserAttributes userAttributes = new UserAttributes(serviceProviderEntityId, singletonList(input));
-
-    RequestEntity requestEntity = new RequestEntity(userAttributes, headers, HttpMethod.POST, new URI("http://localhost:" + port + "/aa/api/attribute/aggregate"));
-    ResponseEntity<List<UserAttribute>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<UserAttribute>>() {
-    });
-
-    return response.getBody();
   }
 
 }

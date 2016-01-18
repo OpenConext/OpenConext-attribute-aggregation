@@ -44,7 +44,6 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
   private final RestTemplate restTemplate;
   private final List<String> attributeKeysRequired;
-  private final String attributeValueTemplate = "urn:x-surfnet:%s:%s";
 
   public AbstractAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     this.attributeAuthorityConfiguration = attributeAuthorityConfiguration;
@@ -111,8 +110,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     if (isEmpty(values)) {
       return emptyList();
     }
-    List<String> results = values.stream().map(result -> String.format(attributeValueTemplate, getAttributeAuthorityId(), result)).collect(toList());
-    return Collections.singletonList(new UserAttribute(attributeName, results, getAttributeAuthorityId()));
+    return Collections.singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
   }
 
   protected ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {

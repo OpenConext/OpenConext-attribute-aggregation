@@ -7,11 +7,14 @@ import java.util.Optional;
 
 public interface AttributeAggregator {
 
+  //input attribute names
   String NAME_ID = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
-  String EDU_PERSON_ENTITLEMENT = "urn:mace:dir:attribute-def:eduPersonEntitlement";
   String EDU_PERSON_PRINCIPAL_NAME = "urn:mace:dir:attribute-def:eduPersonPrincipalName";
-  String GROUP = "urn:collab:group";
-  String ORCID = "urn:mace:dir:attribute-def:orcid";
+
+  //output attribute names
+  String EDU_PERSON_ENTITLEMENT = "urn:mace:dir:attribute-def:eduPersonEntitlement";
+  String IS_MEMBER_OF = "urn:mace:dir:attribute-def:isMemberOf";
+  String ORCID = "urn:mace:dir:attribute-def:eduPersonOrcid";
 
   String getAttributeAuthorityId();
 

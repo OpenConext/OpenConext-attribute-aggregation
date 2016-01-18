@@ -67,12 +67,12 @@
 
 .button_full {
   @extend .button_white;
-  margin: auto 20px;
+  margin: auto 0;
 }
 
 .button_full_disabled {
   @extend .button_white_disabled;
-  margin: auto 20px;
+  margin: auto 0;
 }
 
 .button_narrow {

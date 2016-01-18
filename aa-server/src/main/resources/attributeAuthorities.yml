@@ -71,9 +71,9 @@ authorities:
       timeOut: 500,
       attributes: [
         {
-          name: "urn:mace:dir:attribute-def:group",
+          name: "urn:mace:dir:attribute-def:isMemberOf",
           caseExact: True,
-          description: "Group memberships.",
+          description: "Lists the collaborative organisations / groups the user is a member of",
           multiValued: True,
           mutability: "readOnly",
           required: False,

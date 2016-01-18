@@ -119,7 +119,6 @@ public class AttributeAggregatorService {
     });
   }
 
-
   private class CachedAggregate {
     long timestamp;
     List<UserAttribute> aggregate;

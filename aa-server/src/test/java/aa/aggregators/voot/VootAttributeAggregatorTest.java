@@ -10,11 +10,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
-import static aa.aggregators.AttributeAggregator.GROUP;
+import static aa.aggregators.AttributeAggregator.IS_MEMBER_OF;
 import static aa.aggregators.AttributeAggregator.NAME_ID;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.singletonList;
@@ -51,12 +49,12 @@ public class VootAttributeAggregatorTest {
     List<UserAttribute> userAttributes = subject.aggregate(input);
     assertEquals(1, userAttributes.size());
     UserAttribute userAttribute = userAttributes.get(0);
-    assertEquals(GROUP, userAttribute.getName());
+    assertEquals(IS_MEMBER_OF, userAttribute.getName());
 
     List<String> values = userAttribute.getValues();
     assertEquals(14, values.size());
 
-    values.forEach(value -> assertTrue(value.startsWith("urn:x-surfnet:voot:urn:collab:group:test.surfteams.nl")));
+    values.forEach(value -> assertTrue(value.startsWith("urn:collab:group:test.surfteams.nl")));
   }
 
   @Test
