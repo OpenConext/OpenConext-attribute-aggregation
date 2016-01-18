@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static aa.util.StreamUtils.singletonOptionalCollector;
 import static java.util.stream.Collectors.toList;
@@ -20,6 +21,8 @@ import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 public class OrcidAttributeAggregator extends AbstractAttributeAggregator {
 
   private final Pattern orcidValuePattern = Pattern.compile("\\QStringAttributeValue{value=\\E(.*?)}");
+  private final Pattern orcidPattern = Pattern.compile("\\Qhttp://orcid.org/\\E[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}");
+
   private final String requester;
 
   public OrcidAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration, String serverEnvironment) {
@@ -41,7 +44,7 @@ public class OrcidAttributeAggregator extends AbstractAttributeAggregator {
         if (!CollectionUtils.isEmpty(values)) {
           List<String> orcidValues = values.stream().map(this::extractOrcidValue).filter(Optional::isPresent).map(Optional::get).collect(toList());
           LOG.debug("Retrieved ORCID with request: {} and response: {}", uri, orcidValues);
-          return mapValuesToUserAttribute(ORCID, orcidValues);
+          return mapValuesToUserAttribute(ORCID, orcidValues.stream().filter(this::isValidOrcidId).collect(toList()));
         }
       }
     }
@@ -51,5 +54,13 @@ public class OrcidAttributeAggregator extends AbstractAttributeAggregator {
   private Optional<String> extractOrcidValue(String value) {
     Matcher matcher = orcidValuePattern.matcher(value);
     return matcher.find() ? Optional.of(matcher.group(1)) : Optional.empty();
+  }
+
+  private boolean isValidOrcidId(String value) {
+    boolean matches = orcidPattern.matcher(value).matches();
+    if (!matches) {
+      LOG.warn("Received invalid ORCID {}", value);
+    }
+    return matches;
   }
 }

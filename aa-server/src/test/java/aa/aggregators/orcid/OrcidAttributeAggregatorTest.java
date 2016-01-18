@@ -1,6 +1,5 @@
 package aa.aggregators.orcid;
 
-import aa.aggregators.sab.SabAttributeAggregator;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
@@ -12,14 +11,11 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.*;
-import static aa.aggregators.AttributeAggregator.NAME_ID;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.singletonList;
-import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.junit.Assert.*;
 
 public class OrcidAttributeAggregatorTest {
@@ -41,9 +37,7 @@ public class OrcidAttributeAggregatorTest {
 
   @Test
   public void testGetOrcidHappyFlow() throws Exception {
-    String response = IOUtils.toString(new ClassPathResource("orcid/response_succes.json").getInputStream());
-    stubForOrcid(response);
-    List<UserAttribute> userAttributes = subject.aggregate(input);
+    List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_succes.json");
     assertEquals(1, userAttributes.size());
     UserAttribute userAttribute = userAttributes.get(0);
     assertEquals(ORCID, userAttribute.getName());
@@ -54,14 +48,20 @@ public class OrcidAttributeAggregatorTest {
   }
 
   @Test
-  public void testGetOrcidEmpty() throws Exception {
-    //if something goes wrong, we just don't get the orcid. We log all requests and responses
-    String response = IOUtils.toString(new ClassPathResource("orcid/response_empty.json").getInputStream());
-    stubForOrcid(response);
-    assertTrue(subject.aggregate(input).isEmpty());
+  public void testGetOrcidWrongInput() throws Exception {
+    List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_wrong_orcid.json");
+    assertTrue(userAttributes.isEmpty());
   }
 
-  private void stubForOrcid(String response) {
+  @Test
+  public void testGetOrcidEmpty() throws Exception {
+    List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_empty.json");
+    assertTrue(userAttributes.isEmpty());
+  }
+
+  private List<UserAttribute> getOrcidResponse(String jsonFile) throws IOException {
+    String response = IOUtils.toString(new ClassPathResource(jsonFile).getInputStream());
     stubFor(get(urlPathEqualTo("/orcid")).willReturn(aResponse().withStatus(200).withBody(response).withHeader("Content-Type", "application/json")));
+    return subject.aggregate(input);
   }
 }
