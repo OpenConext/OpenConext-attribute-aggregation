@@ -1,7 +1,7 @@
 # OpenConext-attribute-aggregation
 
-[![Build Status](https://travis-ci.org/oharsta/OpenConext-attribute-aggregation.svg)](https://travis-ci.org/oharsta/OpenConext-attribute-aggregation)
-[![codecov.io](https://codecov.io/github/oharsta/OpenConext-attribute-aggregation/coverage.svg)](https://codecov.io/github/oharsta/OpenConext-attribute-aggregation)
+[![Build Status](https://travis-ci.org/OpenConext/OpenConext-attribute-aggregation.svg)](https://travis-ci.org/OpenConext/OpenConext-attribute-aggregation)
+[![codecov.io](https://codecov.io/github/OpenConext/OpenConext-attribute-aggregation/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-attribute-aggregation)
 
 OpenConext Attribute Aggregation
 
