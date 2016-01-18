@@ -21,7 +21,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 public class OrcidAttributeAggregator extends AbstractAttributeAggregator {
 
   private final Pattern orcidValuePattern = Pattern.compile("\\QStringAttributeValue{value=\\E(.*?)}");
-  private final Pattern orcidPattern = Pattern.compile("\\Qhttp://orcid.org/\\E[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}");
+  private final Pattern orcidPattern = Pattern.compile("\\Qhttp://orcid.org/\\E[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9|X]{1}");
 
   private final String requester;
 

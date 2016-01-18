@@ -38,6 +38,10 @@ public class OrcidAttributeAggregatorTest {
   @Test
   public void testGetOrcidHappyFlow() throws Exception {
     List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_succes.json");
+    assertUserAttributes(userAttributes);
+  }
+
+  private void assertUserAttributes(List<UserAttribute> userAttributes) {
     assertEquals(1, userAttributes.size());
     UserAttribute userAttribute = userAttributes.get(0);
     assertEquals(ORCID, userAttribute.getName());
@@ -45,6 +49,12 @@ public class OrcidAttributeAggregatorTest {
     List<String> values = userAttribute.getValues();
     assertEquals(1, values.size());
     assertEquals("http://orcid.org/0000-0002-4926-2859", values.get(0));
+  }
+
+  @Test
+  public void testGetOrcidTrailingX() throws Exception {
+    List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_succes.json");
+    assertUserAttributes(userAttributes);
   }
 
   @Test

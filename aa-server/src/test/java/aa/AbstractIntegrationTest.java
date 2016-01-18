@@ -97,8 +97,8 @@ public abstract class AbstractIntegrationTest {
 
     assertEquals(1, schema.getAttributes().size());
     Attribute attribute = schema.getAttributes().get(0);
-
-    assertEquals("aa1", attribute.getAttributeAuthorityId());
+    //we don't want this field in the Schema as it is not a valid SCIM attribute
+    assertEquals(null, attribute.getAttributeAuthorityId());
     assertEquals("urn:mace:dir:attribute-def:eduPersonOrcid", attribute.getName());
 
     assertEquals("readOnly", attribute.getMutability());

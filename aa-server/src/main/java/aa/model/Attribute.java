@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity(name = "attributes")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Attribute {
+public class Attribute implements Cloneable {
 
   @Id
   @GeneratedValue
@@ -168,5 +168,14 @@ public class Attribute {
         ", type='" + getType() + '\'' +
         ", uniqueness='" + getUniqueness() + '\'' +
         '}';
+  }
+
+  @Override
+  public Attribute clone() {
+    try {
+      return (Attribute) super.clone();
+    } catch (CloneNotSupportedException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

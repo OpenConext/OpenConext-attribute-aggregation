@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static java.util.Arrays.asList;
@@ -101,11 +102,14 @@ public class SCIMController {
     //attributes from the authorityConfiguration with metadata
     List<Attribute> attributes = authorityConfiguration.getAttributes(configuredAttributes.stream().map(Attribute::getName).collect(toSet()));
 
+    //we don't want to include the attributeAuthorityId, so we need copy with erased attributeAuthorityId
+    List<Attribute> clonedAttributes = attributes.stream().map(this::eraseAuthorityId).collect(toList());
+
     Schema schema = new Schema(
         "Attributes for " + serviceProviderEntityId,
         "urn:ietf:params:scim:schemas:extension:x-surfnet:" + serviceProviderEntityId,
         serviceProviderEntityId,
-        attributes);
+        clonedAttributes);
 
     LOG.debug("Returning schema {} for {}", schema, serviceProviderEntityId);
 
@@ -183,4 +187,10 @@ public class SCIMController {
         Collections.emptyMap());
   }
 
+
+  private Attribute eraseAuthorityId(Attribute attribute) {
+    Attribute clone = attribute.clone();
+    clone.setAttributeAuthorityId(null);
+    return clone;
+  }
 }
