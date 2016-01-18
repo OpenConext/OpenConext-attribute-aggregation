@@ -31,6 +31,7 @@ export default {
   authority: {
     authorities: 'Attribute Authorities',
     endpoint: 'Endpoint',
+    timeOut: 'Timeout (ms)',
     userName: 'Username',
     requiredInputAttributes: 'Required input attributes',
     attribute: 'Attribute',

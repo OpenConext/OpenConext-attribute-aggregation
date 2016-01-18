@@ -51,6 +51,8 @@ export default class AuthorityConfiguration extends React.Component {
         </ul>
         <span>{i18n.t('authority.endpoint')}</span>
         <p>{authority.endpoint}</p>
+        <span>{i18n.t('authority.timeOut')}</span>
+        <p>{authority.timeOut}</p>
         {this.renderAttributes(authority.attributes)}
         <span/>
       </div>

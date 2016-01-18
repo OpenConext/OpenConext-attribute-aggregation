@@ -17,10 +17,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static aa.util.StreamUtils.singletonOptionalCollector;
 import static java.lang.String.format;
 
 public class SabAttributeAggregator extends AbstractAttributeAggregator {
@@ -52,7 +50,7 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
       throw new RuntimeException(e);
     }
     LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
-    return mapResultsToUserAttribute(EDU_PERSON_ENTITLEMENT, roles);
+    return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, roles);
   }
 
   private String request(String userId) {

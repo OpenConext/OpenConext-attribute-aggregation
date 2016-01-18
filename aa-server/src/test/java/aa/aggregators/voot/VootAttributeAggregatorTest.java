@@ -62,13 +62,7 @@ public class VootAttributeAggregatorTest {
   @Test
   public void testGetRolesFailures() throws Exception {
     //if something goes wrong, we just don't get groups. We log all requests and responses
-    for (String fileName : Arrays.asList("empty_groups.json")) {
-      assertEmptyRoles(fileName);
-    }
-  }
-
-  private void assertEmptyRoles(String fileName) throws IOException {
-    String response = IOUtils.toString(new ClassPathResource("voot/" + fileName).getInputStream());
+    String response = IOUtils.toString(new ClassPathResource("voot/empty_groups.json").getInputStream());
     stubForVoot(response);
     assertTrue(subject.aggregate(input).isEmpty());
   }

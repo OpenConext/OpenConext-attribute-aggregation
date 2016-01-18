@@ -107,12 +107,12 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
 
 
-  protected List<UserAttribute> mapResultsToUserAttribute(String attributeName, List<String> results) {
-    if (isEmpty(results)) {
+  protected List<UserAttribute> mapValuesToUserAttribute(String attributeName, List<String> values) {
+    if (isEmpty(values)) {
       return emptyList();
     }
-    List<String> values = results.stream().map(result -> String.format(attributeValueTemplate, getAttributeAuthorityId(), result)).collect(toList());
-    return Collections.singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
+    List<String> results = values.stream().map(result -> String.format(attributeValueTemplate, getAttributeAuthorityId(), result)).collect(toList());
+    return Collections.singletonList(new UserAttribute(attributeName, results, getAttributeAuthorityId()));
   }
 
   protected ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {

@@ -1,5 +1,6 @@
 package aa.aggregators;
 
+import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.sab.SabAttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
 import aa.aggregators.voot.VootAttributeAggregator;
@@ -28,6 +29,9 @@ public class AttributeAggregatorConfiguration {
 
   @Value("${aggregate.cache.duration.milliseconds}")
   private long cacheDuration;
+
+  @Value("${scim.server.environment}")
+  private String environment;
 
   @Autowired
   private AuthorityResolver authorityResolver;
@@ -59,6 +63,8 @@ public class AttributeAggregatorConfiguration {
         return new VootAttributeAggregator(configuration, authorizationAccessTokenUrl);
       case "test":
         return new TestingAttributeAggregator(configuration, false);
+      case "orcid":
+        return new OrcidAttributeAggregator(configuration, environment);
       default:
         throw new IllegalArgumentException(String.format("Authority with id %s in unknown", configuration.getId()));
     }
