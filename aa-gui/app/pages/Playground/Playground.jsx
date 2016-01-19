@@ -138,7 +138,7 @@ export default class Playground extends React.Component {
         <a className={styles.button_cancel} href="#" onClick={this.handleCancel}>{i18n.t("playground.clear")}</a>
         <a className={this.validPlay() ? styles.button_full : styles.button_full_disabled} href="#"
            onClick={this.handleEBInternal}>
-          <i className="fa fa-sitemap"></i>
+          <i className="fa fa-refresh"></i>
           {i18n.t("playground.engine_block")}
         </a>
 

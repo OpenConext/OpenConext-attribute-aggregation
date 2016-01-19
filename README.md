@@ -69,7 +69,9 @@ For VOOT use `urn:collab:person:example.com:admin`.
 
 For SAB use `urn:collab:person:surfnet.nl:henny`.
 
-For ORCID use `jstiglitz@harvard-example.edu`.
+For ORCID use `jstiglitz@harvard-example.edu` or `oharsta@surfguest.nl`.
+
+Note that you can register your own ORCID at orcid.test.surfconext.nl
 
 ### Service Registry
 
