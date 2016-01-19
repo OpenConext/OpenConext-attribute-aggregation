@@ -61,6 +61,16 @@ When new npm dependencies are added:
 `cd aa-gui && npm test`
 `cd aa-server && mvn test`
 
+## Miscellaneous
+
+When testing the aggregations in the Playground you have to provide input attributes for retrieving values from the authorities.
+
+For VOOT use `urn:collab:person:example.com:admin`.
+
+For SAB use `urn:collab:person:surfnet.nl:henny`.
+
+For ORCID use `jstiglitz@harvard-example.edu`.
+
 ### Service Registry
 
 The aa-server needs to access the metadata of Service providers from the Service Registry. In production modus the content is read (and periodically refreshed) from:

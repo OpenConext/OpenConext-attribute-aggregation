@@ -15,7 +15,10 @@ class API {
   checkStatus = (response) => {
     PubSub.publish('API', {started: false});
     if (response.status >= 200 && response.status < 300) {
-      this.csrfToken = response.headers.get('X-CSRF-TOKEN');
+      let token = response.headers.get('X-CSRF-TOKEN');
+      if (!Utils.isEmpty(token)) {
+        this.csrfToken = token;
+      }
       return response
     } else {
       var error = new Error(response.statusText);
@@ -29,12 +32,14 @@ class API {
     let options = {
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': this.csrfToken
+        'Content-Type': 'application/json'
       },
       method: method,
       credentials: 'same-origin'
     };
+    if (!Utils.isEmpty(this.csrfToken)) {
+      options.headers['X-CSRF-TOKEN'] = this.csrfToken;
+    }
     if (form && (method === 'post' || method === 'put')) {
       options.body = JSON.stringify(form);
     }

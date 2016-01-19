@@ -36,15 +36,21 @@ public class OrcidAttributeAggregator extends AbstractAttributeAggregator {
     String eppn = getUserAttributeSingleValue(input, EDU_PERSON_PRINCIPAL_NAME);
     URI uri = fromUri(endpoint()).queryParam("requester", requester).queryParam("principal", eppn).build().encode().toUri();
     Map<String, Object> body = getRestTemplate().getForEntity(uri, Map.class).getBody();
+
+    LOG.debug("Retrieved ORCID with request: {} and response: {}", uri, body);
+
+    List<String> orcidValues = getOrcid(body);
+    return mapValuesToUserAttribute(ORCID, orcidValues.stream().filter(this::isValidOrcidId).collect(toList()));
+  }
+
+  private List<String> getOrcid(Map<String, Object> body) {
     List<Map<String, Object>> attributes = (List<Map<String, Object>>) body.get("attributes");
     if (!CollectionUtils.isEmpty(attributes)) {
       Optional<Map<String, Object>> optional = attributes.stream().filter(map -> "orcid".equals(map.get("name"))).collect(singletonOptionalCollector());
       if (optional.isPresent()) {
         List<String> values = (List<String>) optional.get().get("values");
         if (!CollectionUtils.isEmpty(values)) {
-          List<String> orcidValues = values.stream().map(this::extractOrcidValue).filter(Optional::isPresent).map(Optional::get).collect(toList());
-          LOG.debug("Retrieved ORCID with request: {} and response: {}", uri, orcidValues);
-          return mapValuesToUserAttribute(ORCID, orcidValues.stream().filter(this::isValidOrcidId).collect(toList()));
+          return values.stream().map(this::extractOrcidValue).filter(Optional::isPresent).map(Optional::get).collect(toList());
         }
       }
     }

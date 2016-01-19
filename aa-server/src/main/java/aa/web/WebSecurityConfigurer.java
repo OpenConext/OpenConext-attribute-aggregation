@@ -122,6 +122,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
         .antMatchers("/v2/query").access("#oauth2.hasScope('saml-attribute-query')")
         .antMatchers("/attribute/**").hasRole("ADMIN")
         .antMatchers("/internal/**").hasRole("ADMIN")
+        .antMatchers("/public/**","/health/**","/info/**", "/v2/ServiceProviderConfig").permitAll()
         .antMatchers("/**").hasRole("USER");
 
     if (environment.acceptsProfiles("no-csrf")) {
