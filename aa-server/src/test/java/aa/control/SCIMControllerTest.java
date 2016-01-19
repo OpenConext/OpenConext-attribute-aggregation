@@ -1,5 +1,7 @@
 package aa.control;
 
+import aa.model.MetaInformation;
+import aa.model.ResourceType;
 import aa.model.Schema;
 import aa.oidc.AbstractOidcIntegrationTest;
 import org.junit.Test;
@@ -42,37 +44,31 @@ public class SCIMControllerTest extends AbstractOidcIntegrationTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testServiceProviderConfiguration() throws Exception {
-    Map body = restTemplate.exchange(new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/v1/ServiceProviderConfig")), Map.class).getBody();
-    assertEquals("https://aa.test.surfconext.nl/v1/ServiceProviderConfig", ((Map) body.get("meta")).get("location"));
+    Map body = restTemplate.exchange(new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/v2/ServiceProviderConfig")), Map.class).getBody();
+    assertEquals("https://aa.test.surfconext.nl/v2/ServiceProviderConfig", ((Map) body.get("meta")).get("location"));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void testResourceType() throws Exception {
-    List body = restTemplate.exchange(new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/v1/ResourceType")), List.class).getBody();
-    assertEquals(1, body.size());
-    assertEquals("https://aa.test.surfconext.nl/v1/ResourceType", ((Map) ((Map) body.get(0)).get("meta")).get("location"));
+    RequestEntity requestEntity = new RequestEntity(oauthHeaders, GET, new URI("http://localhost:" + port + "/aa/api/v2/ResourceType"));
+    ResponseEntity<ResourceType> responseEntity = restTemplate.exchange(requestEntity, ResourceType.class);
+    assertResourceType(responseEntity.getBody());
   }
 
   @Test
   public void testMe() throws Exception {
-    RequestEntity requestEntity = new RequestEntity(oauthHeaders, GET, new URI("http://localhost:" + port + "/aa/api/v1/Me"));
+    RequestEntity requestEntity = new RequestEntity(oauthHeaders, GET, new URI("http://localhost:" + port + "/aa/api/v2/Me"));
     ResponseEntity<Map<String, Object>> result = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {
     });
-
-    Map<String, Object> body = result.getBody();
-
-    assertEquals(body.get("schema"), Collections.singletonList("urn:ietf:params:scim:schemas:extension:x-surfnet:http://mock-sp"));
-    assertNotNull(UUID.fromString((String) body.get("id")));
-    assertEquals(Collections.singletonList("urn:x-surfnet:aa1:test"), body.get("urn:mace:dir:attribute-def:eduPersonOrcid"));
-    assertEquals(5, ((Map<String, Object>) body.get("meta")).size());
+    assertMeResult(result.getBody());
   }
 
   private ResponseEntity<Schema> getSchemaResponse(String file) throws IOException, URISyntaxException {
     //Schema endPoint is for client credentials
     stubOidcCheckTokenUser(file);
 
-    RequestEntity requestEntity = new RequestEntity(oauthHeaders, GET, new URI("http://localhost:" + port + "/aa/api/v1/Schema"));
+    RequestEntity requestEntity = new RequestEntity(oauthHeaders, GET, new URI("http://localhost:" + port + "/aa/api/v2/Schema"));
     return restTemplate.exchange(requestEntity, Schema.class);
   }
 

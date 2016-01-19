@@ -44,15 +44,15 @@ export default class AuthorityConfiguration extends React.Component {
         <section className={styles.header}>{authority.id}</section>
         <span>{i18n.t('authority.description')}</span>
         <p>{authority.description}</p>
+        <span>{i18n.t('authority.endpoint')}</span>
+        <p>{authority.endpoint}</p>
+        <span>{i18n.t('authority.timeOut')}</span>
+        <p>{authority.timeOut}</p>
         <span>{i18n.t('authority.requiredInputAttributes')}</span>
         <ul>{authority.requiredInputAttributes.map((attr) =>
           <li key={authority.id + '-' + attr.name}>{attr.name}</li>
         )}
         </ul>
-        <span>{i18n.t('authority.endpoint')}</span>
-        <p>{authority.endpoint}</p>
-        <span>{i18n.t('authority.timeOut')}</span>
-        <p>{authority.timeOut}</p>
         {this.renderAttributes(authority.attributes)}
         <span/>
       </div>
@@ -67,11 +67,11 @@ export default class AuthorityConfiguration extends React.Component {
     )
   }
 
-  renderAttribute(attribute) {
+  renderAttribute(attribute, index) {
     const valueToString = (val) => val !== undefined && val !== null ? val.toString() : '';
     return (
       <div key={attribute.attributeAuthorityId + '_' + attribute.name}>
-        <section className={styles.attribute}>{i18n.t('authority.attribute')}<em>{attribute.name}</em></section>
+        <section className={styles.attribute}>{i18n.t('authority.attribute') + ' #' + (index + 1)}<em>{attribute.name}</em></section>
         {attributeKeys.map((key) =>
           <div key={attribute.name + '-' + key} className={styles.attributeDetails}>
             <span>{i18n.t('authority.' + key)}</span>

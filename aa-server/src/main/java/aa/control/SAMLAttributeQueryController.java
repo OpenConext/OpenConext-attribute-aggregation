@@ -78,7 +78,7 @@ public class SAMLAttributeQueryController {
     parserPool.initialize();
   }
 
-  @RequestMapping(method = RequestMethod.POST, value = "/v1/query")
+  @RequestMapping(method = RequestMethod.POST, value = "/v2/query")
   public String attributeQuery(@RequestBody String soap) throws XMLParserException, MarshallingException, UnmarshallingException, SignatureException, SecurityException {
     AttributeQuery attributeQuery = getAttributeQuery(soap);
 

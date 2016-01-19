@@ -34,7 +34,7 @@ export default {
     timeOut: 'Timeout (ms)',
     userName: 'Username',
     requiredInputAttributes: 'Required input attributes',
-    attribute: 'Attribute',
+    attribute: 'Output attribute',
     name: 'Name',
     caseExact: 'Case insensitive',
     description: 'Description',

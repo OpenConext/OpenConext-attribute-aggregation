@@ -2,16 +2,20 @@ package aa.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Schema {
 
+  private List<String> schemas = singletonList("urn:ietf:params:scim:schemas:core:2.0:Schema");
   private String description;
   private String id;
+  private String mutability = "readOnly";
   private String name;
 
-  private String mutability = "readOnly";
   private String returned = "default";
 
   private List<Attribute> attributes;
@@ -24,6 +28,10 @@ public class Schema {
     this.id = id;
     this.name = name;
     this.attributes = attributes;
+  }
+
+  public List<String> getSchemas() {
+    return schemas;
   }
 
   public String getDescription() {

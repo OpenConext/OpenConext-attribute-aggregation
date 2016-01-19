@@ -91,7 +91,7 @@ public class SAMLAttributeQueryControllerTest extends AbstractAuthzIntegrationTe
     oauthHeaders.remove(CONTENT_TYPE);
     oauthHeaders.add(CONTENT_TYPE, "application/soap+xml");
 
-    RequestEntity requestEntity = new RequestEntity(soap, oauthHeaders, HttpMethod.POST, new URI("http://localhost:" + port + "/aa/api/v1/query"));
+    RequestEntity requestEntity = new RequestEntity(soap, oauthHeaders, HttpMethod.POST, new URI("http://localhost:" + port + "/aa/api/v2/query"));
     return restTemplate.exchange(requestEntity, String.class);
   }
 

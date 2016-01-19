@@ -1,6 +1,7 @@
 package aa.control;
 
 import aa.AbstractIntegrationTest;
+import aa.model.ResourceType;
 import aa.model.Schema;
 import org.junit.Test;
 import org.springframework.boot.test.WebIntegrationTest;
@@ -28,9 +29,18 @@ import static org.springframework.http.HttpMethod.POST;
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 public class SCIMControllerInternalTest extends AbstractIntegrationTest {
 
+
+  @Test
+  public void testInternalResourceTypeEndPoint() throws Exception {
+    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/v2/ResourceType?serviceProviderEntityId=" + encode("http://mock-sp", "UTF-8")));
+
+    ResponseEntity<ResourceType> responseEntity = restTemplate.exchange(requestEntity, ResourceType.class);
+    assertResourceType(responseEntity.getBody());
+  }
+
   @Test
   public void testInternalSchemaEndPoint() throws Exception {
-    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/v1/Schema?serviceProviderEntityId=" + encode("http://mock-sp", "UTF-8")));
+    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/v2/Schema?serviceProviderEntityId=" + encode("http://mock-sp", "UTF-8")));
 
     ResponseEntity<Schema> responseEntity = restTemplate.exchange(requestEntity, Schema.class);
     Schema schema = responseEntity.getBody();
@@ -45,16 +55,10 @@ public class SCIMControllerInternalTest extends AbstractIntegrationTest {
     inputParameters.put("urn:mace:dir:attribute-def:eduPersonPrincipalName", "test");
     inputParameters.put("urn:mace:terena.org:attribute-def:schacHomeOrganization", "test");
 
-    RequestEntity requestEntity = new RequestEntity(inputParameters, headers, POST, new URI("http://localhost:" + port + "/aa/api/internal/v1/Me?serviceProviderEntityId=" + encode("http://mock-sp", "UTF-8")));
+    RequestEntity requestEntity = new RequestEntity(inputParameters, headers, POST, new URI("http://localhost:" + port + "/aa/api/internal/v2/Me?serviceProviderEntityId=" + encode("http://mock-sp", "UTF-8")));
     ResponseEntity<Map<String, Object>> result = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {
     });
-
-    Map<String, Object> body = result.getBody();
-
-    assertEquals(body.get("schema"), Collections.singletonList("urn:ietf:params:scim:schemas:extension:x-surfnet:http://mock-sp"));
-    assertNotNull(UUID.fromString((String) body.get("id")));
-    assertEquals(Collections.singletonList("urn:x-surfnet:aa1:test"), body.get("urn:mace:dir:attribute-def:eduPersonOrcid"));
-    assertEquals(5, ((Map<String, Object>) body.get("meta")).size());
+    assertMeResult(result.getBody());
   }
 
 

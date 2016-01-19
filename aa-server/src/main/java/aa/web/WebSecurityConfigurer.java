@@ -78,7 +78,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
   public void configure(WebSecurity web) throws Exception {
     web.
         ignoring()
-        .antMatchers("/public/**", "/health/**", "/info/**", "/v1/ServiceProviderConfig", "/v1/ResourceType");
+        .antMatchers("/public/**", "/health/**", "/info/**", "/v2/ServiceProviderConfig");
   }
 
   /**
@@ -118,8 +118,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
             BasicAuthenticationFilter.class
         )
         .authorizeRequests()
-        .antMatchers("/v1/Me", "/v1/Schema").access("#oauth2.hasScope('attribute-aggregation')")
-        .antMatchers("/v1/query").access("#oauth2.hasScope('saml-attribute-query')")
+        .antMatchers("/v2/ResourceType", "/v2/Me", "/v2/Schema").access("#oauth2.hasScope('attribute-aggregation')")
+        .antMatchers("/v2/query").access("#oauth2.hasScope('saml-attribute-query')")
         .antMatchers("/attribute/**").hasRole("ADMIN")
         .antMatchers("/internal/**").hasRole("ADMIN")
         .antMatchers("/**").hasRole("USER");

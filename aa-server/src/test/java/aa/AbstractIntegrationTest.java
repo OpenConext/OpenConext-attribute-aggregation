@@ -25,12 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.FAIL_ON_ERROR;
@@ -91,9 +90,9 @@ public abstract class AbstractIntegrationTest {
   }
 
   protected void assertSchema(Schema schema) {
-    assertEquals(schema.getName(), spEntityID);
-    assertEquals(schema.getDescription(), "Attributes for " + spEntityID);
-    assertEquals(schema.getId(), "urn:ietf:params:scim:schemas:extension:x-surfnet:" + spEntityID);
+    assertEquals(spEntityID, schema.getName());
+    assertEquals("Attribute schema for " + spEntityID, schema.getDescription() );
+    assertEquals("urn:scim:schemas:extension:surf:" + spEntityID, schema.getId());
 
     assertEquals(1, schema.getAttributes().size());
     Attribute attribute = schema.getAttributes().get(0);
@@ -102,6 +101,28 @@ public abstract class AbstractIntegrationTest {
     assertEquals("urn:mace:dir:attribute-def:eduPersonOrcid", attribute.getName());
 
     assertEquals("readOnly", attribute.getMutability());
+  }
+
+  protected void assertResourceType(ResourceType resourceType) {
+    assertEquals("/v2/Me", resourceType.getEndpoint());
+    assertEquals("http://mock-sp", resourceType.getId());
+    assertEquals("http://mock-sp", resourceType.getName());
+    assertEquals("urn:scim:schemas:extension:surf:http://mock-sp", resourceType.getSchema());
+
+    List<String> schemas = resourceType.getSchemas();
+    assertEquals(1, schemas.size());
+    assertEquals("urn:ietf:params:scim:schemas:core:2.0:Schema", schemas.get(0));
+
+    MetaInformation metaInformation = resourceType.getMeta();
+    assertEquals("https://aa.test.surfconext.nl/v2/ResourceTypes/Me", metaInformation.getLocation());
+    assertEquals("ResourceType", metaInformation.getResourceType());
+  }
+
+  protected void assertMeResult(Map<String, Object> body) {
+    assertEquals(Collections.singletonList("urn:scim:schemas:extension:surf:http://mock-sp"), body.get("schemas"));
+    assertNotNull(UUID.fromString((String) body.get("id")));
+    assertEquals(Collections.singletonList("urn:x-surfnet:aa1:test"), body.get("urn:mace:dir:attribute-def:eduPersonOrcid"));
+    assertEquals(5, ((Map<String, Object>) body.get("meta")).size());
   }
 
   protected HttpHeaders oauthHeaders(String accessToken) {

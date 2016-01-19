@@ -130,10 +130,11 @@ export default class Playground extends React.Component {
         <a
           className={this.state.play.serviceProvider.entityId ? styles.button_submit_small : styles.button_submit_small_disabled}
           href="#" onClick={this.handleSchema}>{i18n.t("playground.schema")}</a>
+        <a
+          className={this.state.play.serviceProvider.entityId ? styles.button_submit_small : styles.button_submit_small_disabled}
+          href="#" onClick={this.handleResourceType}>{i18n.t("playground.resource_type")}</a>
         <a className={styles.button_white} href="#"
            onClick={this.handleConfiguration}>{i18n.t("playground.service_provider_configuration")}</a>
-        <a className={styles.button_white} href="#"
-           onClick={this.handleResourceType}>{i18n.t("playground.resource_type")}</a>
         <a className={styles.button_cancel} href="#" onClick={this.handleCancel}>{i18n.t("playground.clear")}</a>
         <a className={this.validPlay() ? styles.button_full : styles.button_full_disabled} href="#"
            onClick={this.handleEBInternal}>
@@ -167,7 +168,7 @@ export default class Playground extends React.Component {
 
   handleResourceType = (e) => {
     Utils.stop(e);
-    API.getResourceType(this.handleResult)
+    API.getResourceType(this.handleResult, this.state.play.serviceProvider.entityId)
   };
 
   handleCancel = (e) => {
@@ -229,7 +230,8 @@ export default class Playground extends React.Component {
         <p className={styles.header_playground}>{i18n.t('playground.aboutTitle')}</p>
         <div className={styles.about_content}>
           <p>Select an aggregation, fill in the required attributes for the aggregation and preview the result
-          of invoking one of the endpoints. For all endpoints see <Link to="/about">{i18n.t('navigation.about')}</Link>.
+            of invoking one of the endpoints. For all endpoints see <Link
+              to="/about">{i18n.t('navigation.about')}</Link>.
           </p>
         </div>
       </div>

@@ -92,19 +92,19 @@ class API {
    * The following are API calls to test the SCIMController
    */
   getServiceProviderConfiguration(callback) {
-    return this.doFetch('/aa/api/v1/ServiceProviderConfig', callback);
+    return this.doFetch('/aa/api/v2/ServiceProviderConfig', callback);
   }
 
-  getResourceType(callback) {
-    return this.doFetch('/aa/api/v1/ResourceType', callback);
+  getResourceType(callback, serviceProviderEntityId) {
+    return this.doFetch('/aa/api/internal/v2/ResourceType?serviceProviderEntityId=' + encodeURIComponent(serviceProviderEntityId), callback, 'get', {}, false);
   }
 
   getSchema(callback, serviceProviderEntityId) {
-    return this.doFetch('/aa/api/internal/v1/Schema?serviceProviderEntityId=' + encodeURIComponent(serviceProviderEntityId), callback, 'get', {}, false);
+    return this.doFetch('/aa/api/internal/v2/Schema?serviceProviderEntityId=' + encodeURIComponent(serviceProviderEntityId), callback, 'get', {}, false);
   }
 
   getMe(callback, serviceProviderEntityId, inputParameters) {
-    return this.doFetch('/aa/api/internal/v1/Me?serviceProviderEntityId=' + encodeURIComponent(serviceProviderEntityId), callback, 'post', inputParameters, false);
+    return this.doFetch('/aa/api/internal/v2/Me?serviceProviderEntityId=' + encodeURIComponent(serviceProviderEntityId), callback, 'post', inputParameters, false);
   }
 
   attributeAggregate(callback, userAttributes) {

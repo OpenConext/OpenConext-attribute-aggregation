@@ -2,40 +2,43 @@
   "schemas": [
     "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"
   ],
-  "documentationUri": "https://github.com/OpenConext/OpenConext-attribute-aggregation/",
-  "patch": {
-    "supported": false
-  },
+  "authenticationSchemes": [
+    {
+      "description": "Authentication Scheme using the OAuth Standard",
+      "documentationUri": "http://tools.ietf.org/html/rfc6749",
+      "name": "OAuth v2.0",
+      "primary": true,
+      "specUri": "http://tools.ietf.org/html/rfc6749",
+      "type": "oauth2"
+    }
+  ],
   "bulk": {
-    "supported": false
-  },
-  "filter": {
+    "maxOperations": 0,
+    "maxPayloadSize": 0,
     "supported": false
   },
   "changePassword": {
     "supported": false
   },
-  "sort": {
-    "supported": false
-  },
+  "documentationUrl": "https://help.surfconext.nl/aa",
   "etag": {
     "supported": false
   },
-  "authenticationSchemes": [
-    {
-      "name": "OAuth Bearer Token",
-      "description": "Authentication scheme using the OAuth Bearer Token Standard",
-      "specUri": "http://www.rfc-editor.org/info/rfc6750",
-      "documentationUri": "http://example.com/help/oauth.html",
-      "type": "oauthbearertoken",
-      "primary": true
-    }
-  ],
+  "filter": {
+    "maxResults": 200,
+    "supported": false
+  },
+  "patch": {
+    "supported": false
+  },
+  "sort": {
+    "supported": false
+  },
   "meta": {
-    "location": "https://aa.%s.nl/v1/ServiceProviderConfig",
+    "created": "2015-01-23T04:56:22Z",
+    "lastModified": "2015-05-13T04:42:34Z",
+    "location": "https://aa.%s.nl/v2/ServiceProviderConfig",
     "resourceType": "ServiceProviderConfig",
-    "created": "2016-01-12T09:00:00Z",
-    "lastModified": "2016-01-12T09:00:00Z",
-    "version": "0.1"
+    "version": "W/\"3694e05e9dff594\""
   }
 }

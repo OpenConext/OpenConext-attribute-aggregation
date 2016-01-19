@@ -15,7 +15,7 @@ public class ApacheConfTest {
     assertTrue(matches("/aa/api/internal/aggregations"));
 
     assertFalse(matches("/aa/api/public/git"));
-    assertFalse(matches("/aa/api/v1/Schema"));
+    assertFalse(matches("/aa/api/v2/Schema"));
     assertFalse(matches("/aa/api/attribute/aggregate"));
     assertFalse(matches("/aa/api/t/aggregate"));
   }
