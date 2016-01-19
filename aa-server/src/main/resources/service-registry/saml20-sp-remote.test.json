@@ -17,6 +17,19 @@
     }
   },
   {
+    "entityid": "https://aa.test.surfconext.nl",
+    "state": "prodaccepted",
+    "type": "saml20-sp",
+    "description": {
+      "en": "Attribute Aggregator Test",
+      "nl": "Attribute Aggregator Test"
+    },
+    "name": {
+      "en": "Attribute Aggregator Test",
+      "nl": "Attribute Aggregator Test"
+    }
+  },
+  {
     "entityid": "https://oidc.test.surfconext.nl",
     "state": "prodaccepted",
     "type": "saml20-sp",

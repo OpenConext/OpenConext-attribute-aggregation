@@ -12,7 +12,7 @@ public class ClassPathResourceServiceRegistryTest {
 
   @Test
   public void testServiceProviders() throws Exception {
-    assertEquals(953, serviceRegistry.serviceProviders().size());
+    assertEquals(954, serviceRegistry.serviceProviders().size());
   }
 
   @Test

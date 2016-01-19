@@ -30,7 +30,7 @@ public class ServiceRegistryControllerTest extends AbstractIntegrationTest {
     });
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(953, response.getBody().size());
+    assertEquals(954, response.getBody().size());
   }
 
 }

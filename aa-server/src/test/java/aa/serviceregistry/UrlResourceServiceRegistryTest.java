@@ -32,7 +32,7 @@ public class UrlResourceServiceRegistryTest {
 
   @Test
   public void testMetaData() throws Exception {
-    assertEquals(3, subject.serviceProviders().size());
+    assertEquals(4, subject.serviceProviders().size());
   }
 
   @Test
