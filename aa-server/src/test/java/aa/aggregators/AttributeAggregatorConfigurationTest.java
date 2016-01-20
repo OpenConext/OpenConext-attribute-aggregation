@@ -19,7 +19,7 @@ public class AttributeAggregatorConfigurationTest {
 
   @Before
   public void before() throws Exception {
-    this.doBefore("classpath:/realWorldAttributeAuthorities.yml");
+    this.doBefore("classpath:/attributeAuthoritiesProductionTemplate.yml");
   }
 
   private void doBefore(String configFileLocation) {

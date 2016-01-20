@@ -91,6 +91,14 @@ To mimic the behaviour of attribute aggregation for an internal client - e.g. En
 
 `curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/request.json -u eb:secret https://aa.test.surfconext.nl/aa/api/attribute/aggregate`
 
+### New Attribute Authority
+
+New Attribute Authorities first must be added and configured in `attributeAuthoritiesProductionTemplate.yml`. Then add the new authority implementation to `AttributeAggregatorConfiguration#attributeAggregatorById`.
+
+To actually use the new authority in the test/acc/prod environment it also needs to be configured in OpenConext-deploy [attributeAuthorities.yml.j2](https://github.com/OpenConext/OpenConext-deploy/blob/master/roles/aa/templates/attributeAuthorities.yml.j2).
+
+Do not to forget to write Integration tests. For an example see [OrcidAttributeAggregatorTest](aa-server/src/test/java/aa/aggregators/orcid/OrcidAttributeAggregatorTest.java)
+
 ### Service Registry
 
 The aa-server needs to access the metadata of Service providers from the Service Registry. In production modus the content is read (and periodically refreshed) from:
