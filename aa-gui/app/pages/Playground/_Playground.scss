@@ -104,7 +104,7 @@
     p {
       margin: 0;
       color: $dark-grey;
-      background-color: $light-grey;
+      background-color: lighten($medium-grey, 15);
       i {
         font-size: 12px;
       }
