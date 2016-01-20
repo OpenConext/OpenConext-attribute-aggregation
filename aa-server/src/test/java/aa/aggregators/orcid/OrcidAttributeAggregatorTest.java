@@ -11,10 +11,12 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.*;
 
@@ -41,20 +43,27 @@ public class OrcidAttributeAggregatorTest {
     assertUserAttributes(userAttributes);
   }
 
-  private void assertUserAttributes(List<UserAttribute> userAttributes) {
-    assertEquals(1, userAttributes.size());
-    UserAttribute userAttribute = userAttributes.get(0);
-    assertEquals(ORCID, userAttribute.getName());
-
-    List<String> values = userAttribute.getValues();
-    assertEquals(1, values.size());
-    assertEquals("http://orcid.org/0000-0002-4926-2859", values.get(0));
+  @Test
+  public void testGetOrcidMultipleValues() throws Exception {
+    List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_multiple_values.json");
+    assertEquals(asList("http://orcid.org/0000-0002-4926-2859","http://orcid.org/4444-3333-2222-1111"),userAttributes.get(0).getValues());
   }
 
   @Test
   public void testGetOrcidTrailingX() throws Exception {
     List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_succes.json");
     assertUserAttributes(userAttributes);
+  }
+
+  @Test
+  public void testGetOrcidAttributeMissing() throws Exception {
+    List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_attribute_missing.json");
+    assertTrue(userAttributes.isEmpty());
+  }
+  @Test
+  public void testGetOrcidNoValues() throws Exception {
+    List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_no_values.json");
+    assertTrue(userAttributes.isEmpty());
   }
 
   @Test
@@ -67,6 +76,16 @@ public class OrcidAttributeAggregatorTest {
   public void testGetOrcidEmpty() throws Exception {
     List<UserAttribute> userAttributes = getOrcidResponse("orcid/response_empty.json");
     assertTrue(userAttributes.isEmpty());
+  }
+
+  private void assertUserAttributes(List<UserAttribute> userAttributes) {
+    assertEquals(1, userAttributes.size());
+    UserAttribute userAttribute = userAttributes.get(0);
+    assertEquals(ORCID, userAttribute.getName());
+
+    List<String> values = userAttribute.getValues();
+    assertEquals(1, values.size());
+    assertEquals("http://orcid.org/0000-0002-4926-2859", values.get(0));
   }
 
   private List<UserAttribute> getOrcidResponse(String jsonFile) throws IOException {

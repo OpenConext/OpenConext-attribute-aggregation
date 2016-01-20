@@ -6,7 +6,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +18,16 @@ public class SabResponseParserTest {
 
   @Test
   public void testParse() throws IOException, XMLStreamException {
-    String soap = IOUtils.toString(new ClassPathResource("sab/response_success.xml").getInputStream());
+    dpParse("sab/response_success.xml");
+  }
+
+  @Test
+  public void testParseExtraAttribute() throws IOException, XMLStreamException {
+    dpParse("sab/response_success_extra_attribute.xml");
+  }
+
+  private void dpParse(String jsonResponse) throws IOException, XMLStreamException {
+    String soap = IOUtils.toString(new ClassPathResource(jsonResponse).getInputStream());
     List<String> roles = subject.parse(new StringReader(soap));
     assertEquals(Arrays.asList(
         "Superuser", "Instellingsbevoegde", "Infraverantwoordelijke", "OperationeelBeheerder", "Mailverantwoordelijke",

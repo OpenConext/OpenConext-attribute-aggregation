@@ -1,0 +1,19 @@
+{
+  "requester": "https://aa.test.surfconext.nl",
+  "principal": "jstiglitz@harvard-example.edu",
+  "attributes": [
+    {
+      "name": "orcid",
+      "values": [
+        "StringAttributeValue{value=http://orcid.org/0000-0002-4926-2859}",
+        "StringAttributeValue{value=http://orcid.org/4444-3333-2222-1111}"
+      ]
+    },
+    {
+      "name": "aa",
+      "values": [
+        "StringAttributeValue{value=orcidaa.test.surfconext.nl}"
+      ]
+    }
+  ]
+}
