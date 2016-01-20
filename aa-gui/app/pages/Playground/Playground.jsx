@@ -19,7 +19,8 @@ export default class Playground extends React.Component {
       serviceProviders: [],
       aggregations: [],
       result: undefined,
-      play: {aggregation: {}, serviceProvider: {}, inputParameters: {}}
+      play: {aggregation: {}, serviceProvider: {}, inputParameters: {}},
+      duration: undefined
     };
 
     API.getServiceProviders((json) => this.setState({serviceProviders: json}));
@@ -28,6 +29,8 @@ export default class Playground extends React.Component {
       this.setState({aggregations: aggregations});
     });
     API.getAuthorityConfiguration((json) => this.setState({authorities: json.authorities}));
+
+    this.startDate = new Date();
   }
 
   updatePlayState(newPartialState) {
@@ -146,28 +149,34 @@ export default class Playground extends React.Component {
     );
   }
 
+  startTimer(e) {
+    Utils.stop(e);
+    this.startDate = new Date();
+  };
+
   handleResult = (json) => {
-    this.setState({result: json});
+    let duration = new Date() - this.startDate;
+    this.setState({result: json, duration: duration});
     document.body.scrollTop = document.documentElement.scrollTop = 0;
-  }
+  };
 
   handleMe = (e) => {
-    Utils.stop(e);
+   this.startTimer(e);
     API.getMe(this.handleResult, this.state.play.serviceProvider.entityId, this.state.play.inputParameters)
   };
 
   handleSchema = (e) => {
-    Utils.stop(e);
+    this.startTimer(e);
     API.getSchema(this.handleResult, this.state.play.serviceProvider.entityId)
   };
 
   handleConfiguration = (e) => {
-    Utils.stop(e);
+    this.startTimer(e);
     API.getServiceProviderConfiguration(this.handleResult)
   };
 
   handleResourceType = (e) => {
-    Utils.stop(e);
+    this.startTimer(e);
     API.getResourceType(this.handleResult, this.state.play.serviceProvider.entityId)
   };
 
@@ -177,7 +186,7 @@ export default class Playground extends React.Component {
   };
 
   handleEBInternal = (e) => {
-    Utils.stop(e);
+    this.startTimer(e);
     let inputParameters = this.state.play.inputParameters;
     let attributes = Object.keys(inputParameters).map((name) => {
       return {name: name, values: [inputParameters[name]]}
@@ -215,7 +224,7 @@ export default class Playground extends React.Component {
             <h1>{i18n.t('playground.result_status_' + status)}</h1>
             <em></em>
           </article>
-          <p><i className="fa fa-file-o"></i>result.json</p>
+          <p><i className="fa fa-file-o"></i>result.json - {this.state.duration} ms</p>
         </section>
         <pre>
           <code dangerouslySetInnerHTML={{__html: Utils.prettyPrintJson(result) }}></code>
