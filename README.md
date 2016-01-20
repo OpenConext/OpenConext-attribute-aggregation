@@ -70,26 +70,34 @@ For SAB use `urn:collab:person:surfnet.nl:henny`.
 
 For ORCID use `jstiglitz@harvard-example.edu` or `oharsta@surfguest.nl`.
 
-Note that you can register your own ORCID at orcid.test.surfconext.nl
+Note that you can register your own ORCID at (orcid.test.surfconext.nl)[https://orcid.test.surfconext.nl]
 
 ### cUrl
 
 The unsecured ServiceProviderConfig endpoint:
 
-`curl -ik https://aa.test.surfconext.nl/aa/api/v2/ServiceProviderConfig -H "Content-Type: application/json"`
+```bash
+curl -ik https://aa.test.surfconext.nl/aa/api/v2/ServiceProviderConfig -H "Content-Type: application/json"
+```
 
 For the SCIM endpoint for the SP where we need client credentials we can obtain an access_token from the authz server:
 
-`curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -u https@//aa.test.surfconext.nl:secret -d "grant_type=client_credentials&scope=attribute-aggregation" https://authz.test.surfconext.nl/oauth/token`
+```bash
+curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -u https@//aa.test.surfconext.nl:secret -d "grant_type=client_credentials&scope=attribute-aggregation" https://authz.test.surfconext.nl/oauth/token
+```
 
 Use the access token to call the ResourceType and Schema endpoint (do not forget to replace ${access_token} with the atual obtained access_token
 
-`curl -ik -H "Authorization: Bearer ${access_token}" -H "Content-Type: application/json" https://aa.test.surfconext.nl/aa/api/v2/ResourceType`
-`curl -ik -H "Authorization: Bearer ${access_token}" -H "Content-Type: application/json" https://aa.test.surfconext.nl/aa/api/v2/Schema`
+```bash
+curl -ik -H "Authorization: Bearer ${access_token}" -H "Content-Type: application/json" https://aa.test.surfconext.nl/aa/api/v2/ResourceType
+curl -ik -H "Authorization: Bearer ${access_token}" -H "Content-Type: application/json" https://aa.test.surfconext.nl/aa/api/v2/Schema
+```
 
 To mimic the behaviour of attribute aggregation for an internal client - e.g. EngineBlock - we need to post form data:
 
-`curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/request.json -u eb:secret https://aa.test.surfconext.nl/aa/api/attribute/aggregate`
+```bash
+curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/request.json -u eb:secret https://aa.test.surfconext.nl/aa/api/attribute/aggregate
+```
 
 ### New Attribute Authority
 
