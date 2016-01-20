@@ -1,0 +1,17 @@
+{
+  "serviceProviderEntityId": "http://mock-sp",
+  "attributes": [
+    {
+      "name": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+      "values": [
+        "urn:collab:person:surfnet.nl:henny"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+      "values": [
+        "jstiglitz@harvard-example.edu"
+      ]
+    }
+  ]
+}

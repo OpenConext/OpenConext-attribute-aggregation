@@ -24,7 +24,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 
 import static java.util.Collections.singletonList;
@@ -91,7 +90,7 @@ public abstract class AbstractIntegrationTest {
 
   protected void assertSchema(Schema schema) {
     assertEquals(spEntityID, schema.getName());
-    assertEquals("Attribute schema for " + spEntityID, schema.getDescription() );
+    assertEquals("Attribute schema for " + spEntityID, schema.getDescription());
     assertEquals("urn:scim:schemas:extension:surf:" + spEntityID, schema.getId());
 
     assertEquals(1, schema.getAttributes().size());
@@ -134,7 +133,7 @@ public abstract class AbstractIntegrationTest {
   }
 
   @SuppressWarnings("unchecked")
-  protected List<UserAttribute> doAttributeAggregate(String serviceProviderEntityId, String userAttributeName, int port) throws URISyntaxException {
+  protected List<UserAttribute> doAttributeAggregate(String serviceProviderEntityId, String userAttributeName, int port) throws Exception {
     UserAttribute input = new UserAttribute(userAttributeName,
         singletonList("urn:collab:person:example.com:admin"),
         null);
