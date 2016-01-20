@@ -5,9 +5,7 @@ import aa.service.AttributeAggregatorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
@@ -21,8 +19,12 @@ public class AttributeAggregatorConfigurationTest {
 
   @Before
   public void before() throws Exception {
+    this.doBefore("classpath:/realWorldAttributeAuthorities.yml");
+  }
+
+  private void doBefore(String configFileLocation) {
     subject = new AttributeAggregatorConfiguration();
-    setField(subject, "authorityResolver", new AuthorityResolver(new DefaultResourceLoader(), "classpath:/realWorldAttributeAuthorities.yml"));
+    setField(subject, "authorityResolver", new AuthorityResolver(new DefaultResourceLoader(), configFileLocation));
     setField(subject, "environment", "test.surfconext");
     setField(subject, "cacheDuration", 1200000L);
     setField(subject, "authorizationAccessTokenUrl", "http://localhost:8889/oauth/token");
@@ -37,4 +39,12 @@ public class AttributeAggregatorConfigurationTest {
     assertEquals(3, aggregators.size());
     asList("orcid", "sab", "voot").forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("unchecked")
+  public void testAttributeAggregatorServiceIllegalAuthorityId() throws Exception {
+    this.doBefore("classpath:/testAttributeAuthorities.yml");
+    subject.attributeAggregatorService();
+  }
+
 }

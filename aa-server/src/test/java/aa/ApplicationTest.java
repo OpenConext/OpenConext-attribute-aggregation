@@ -1,6 +1,7 @@
 package aa;
 
 import org.junit.Test;
+import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ public class ApplicationTest extends AbstractIntegrationTest {
     ResponseEntity<Map> response = restTemplate.getForEntity("http://localhost:" + port + "/aa/api/health", Map.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(response.getBody().get("status"), "UP");
+  }
+
+  @Test(expected = UnsatisfiedDependencyException.class)
+  public void testMain() {
+    Application application = new Application();
+    application.main(new String[]{});
   }
 
 }

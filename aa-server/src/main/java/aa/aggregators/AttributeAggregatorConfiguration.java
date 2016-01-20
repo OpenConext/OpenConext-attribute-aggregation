@@ -61,8 +61,6 @@ public class AttributeAggregatorConfiguration {
         return new SabAttributeAggregator(configuration);
       case "voot":
         return new VootAttributeAggregator(configuration, authorizationAccessTokenUrl);
-      case "test":
-        return new TestingAttributeAggregator(configuration, false);
       case "orcid":
         return new OrcidAttributeAggregator(configuration, environment);
       default:
