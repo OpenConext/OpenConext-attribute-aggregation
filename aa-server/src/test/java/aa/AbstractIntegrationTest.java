@@ -104,14 +104,14 @@ public abstract class AbstractIntegrationTest {
   }
 
   protected void assertResourceType(ResourceType resourceType) {
-    assertEquals("/v2/Me", resourceType.getEndpoint());
+    assertEquals("/Me", resourceType.getEndpoint());
     assertEquals("http://mock-sp", resourceType.getId());
     assertEquals("http://mock-sp", resourceType.getName());
     assertEquals("urn:scim:schemas:extension:surf:http://mock-sp", resourceType.getSchema());
 
     List<String> schemas = resourceType.getSchemas();
     assertEquals(1, schemas.size());
-    assertEquals("urn:ietf:params:scim:schemas:core:2.0:Schema", schemas.get(0));
+    assertEquals("urn:ietf:params:scim:schemas:core:2.0:ResourceType", schemas.get(0));
 
     MetaInformation metaInformation = resourceType.getMeta();
     assertEquals("https://aa.test.surfconext.nl/v2/ResourceTypes/Me", metaInformation.getLocation());

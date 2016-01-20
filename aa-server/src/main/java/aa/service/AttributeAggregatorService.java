@@ -74,6 +74,7 @@ public class AttributeAggregatorService {
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException("Unable to schedule querying of attribute aggregators.", e);
     }
+
     //filter out those Attributes that are not allowed no return (rare case, but possible)
     List<UserAttribute> result = aggregatedAttributes.stream().filter(userAttribute -> allowedAttribute(attributes, userAttribute)).collect(toList());
 

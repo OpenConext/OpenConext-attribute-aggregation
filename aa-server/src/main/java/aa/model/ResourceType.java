@@ -9,9 +9,9 @@ import static java.util.Collections.singletonList;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResourceType {
 
-  private List<String> schemas = singletonList("urn:ietf:params:scim:schemas:core:2.0:Schema");
+  private List<String> schemas = singletonList("urn:ietf:params:scim:schemas:core:2.0:ResourceType");
   private String description = "SCIM Attributes resource type for use with SURFconext Attribute Aggregation";
-  private String endpoint = "/v2/Me";
+  private String endpoint = "/Me";
   private String id;
   private String name;
   private String schema;

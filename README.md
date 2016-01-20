@@ -56,14 +56,13 @@ When new npm dependencies are added:
 
 `npm install`
 
-## Testing
-
-`cd aa-gui && npm test`
-`cd aa-server && mvn test`
-
 ## Miscellaneous
 
-When testing the aggregations in the Playground you have to provide input attributes for retrieving values from the authorities.
+### Testing
+
+There are integration tests that test against a running Spring boot AA server.
+
+When testing the aggregations in the GUI Playground you have to provide input attributes for retrieving values from the authorities.
 
 For VOOT use `urn:collab:person:example.com:admin`.
 
@@ -72,6 +71,21 @@ For SAB use `urn:collab:person:surfnet.nl:henny`.
 For ORCID use `jstiglitz@harvard-example.edu` or `oharsta@surfguest.nl`.
 
 Note that you can register your own ORCID at orcid.test.surfconext.nl
+
+### cUrl
+
+The unsecured ServiceProviderConfig endpoint:
+
+`curl -ik https://aa.test.surfconext.nl/aa/api/v2/ServiceProviderConfig -H "Content-Type: application/json"`
+
+For the SCIM endpoint for the SP where we need client credentials we can obtain an access_token from the authz server:
+
+`curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -u https@//aa.surfconext.test.nl:secret -d "grant_type=client_credentials&scope=attribute-aggregation" https://authz.test.surfconext.nl/oauth/token`
+
+Use the access token to call the ResourceType and Schema endpoint (do not forget to replace ${access_token} with the atual obtained access_token
+
+`curl -ik -H "Authorization: Bearer ${access_token}" -H "Content-Type: application/json" https://aa.test.surfconext.nl/aa/api/v2/ResourceType`
+``
 
 ### Service Registry
 
