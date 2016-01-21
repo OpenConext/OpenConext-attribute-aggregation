@@ -11,6 +11,7 @@ import aa.shibboleth.ShibbolethUserDetailService;
 import aa.shibboleth.mock.MockShibbolethFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -30,6 +31,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 
+import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
@@ -78,20 +80,27 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
   public void configure(WebSecurity web) throws Exception {
     web.
         ignoring()
-        .antMatchers("/public/**", "/health/**", "/info/**", "/v2/ServiceProviderConfig");
+        .antMatchers("/health/**", "/v2/ServiceProviderConfig");
   }
+
+  /*
+   * This needs to stay in sync with the apache configuration for Attribute Aggregation
+   */
+  public static final String NON_SHIBBOLETH_PROTECTED_METHODS =
+      "^(?!/attribute/aggregate|/health|/v2/ServiceProviderConfig|/v2/ResourceType|/v2/Schema|/v2/Me).*$";
+
 
   /**
    * Protect endpoints for the internal API with Shibboleth AbstractPreAuthenticatedProcessingFilter.
-   * <p/>
+   * <p>
    * Protect the internal endpoint for EB and Dashbaord with basic authentication.
-   * <p/>
+   * <p>
    * Protect all other endpoints - except the public ones - with OAuth2 with support for both Authz and OIDC.
-   * <p/>
+   * <p>
    * Do not protect public endpoints like /health, /info and /ServiceProviderConfig
-   * <p/>
+   * <p>
    * Protect the /Me endpoint with an OAuth2 access_token associated with an User authentication
-   * <p/>
+   * <p>
    * Protect the /Schema endpoint with an OAuth2 client credentials access_token
    */
   @Override
@@ -113,8 +122,10 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
                 new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
             AbstractPreAuthenticatedProcessingFilter.class
         )
-        .addFilterAfter(
-            new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean()),
+        //ensure we don't create a shib principal for methods that are not protected by shib in the apache conf
+        .addFilterAfter(new RegExpRequestMatcherFilter(
+                new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean()),
+                NON_SHIBBOLETH_PROTECTED_METHODS),
             BasicAuthenticationFilter.class
         )
         .authorizeRequests()
@@ -122,7 +133,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
         .antMatchers("/v2/query").access("#oauth2.hasScope('saml-attribute-query')")
         .antMatchers("/attribute/**").hasRole("ADMIN")
         .antMatchers("/internal/**").hasRole("ADMIN")
-        .antMatchers("/public/**","/health/**","/info/**", "/v2/ServiceProviderConfig").permitAll()
+        .antMatchers("/health/**", "/v2/ServiceProviderConfig").permitAll()
         .antMatchers("/**").hasRole("USER");
 
     if (environment.acceptsProfiles("no-csrf")) {
