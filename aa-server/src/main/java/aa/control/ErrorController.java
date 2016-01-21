@@ -3,6 +3,7 @@ package aa.control;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -16,6 +17,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
@@ -23,6 +25,9 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 public class ErrorController implements org.springframework.boot.autoconfigure.web.ErrorController {
+
+  @Autowired
+  private Environment environment;
 
   private final ErrorAttributes errorAttributes;
 
@@ -55,6 +60,7 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
       result.remove("exception");
       result.remove("message");
     }
+    result.put("profiles", String.join(", ", environment.getActiveProfiles()));
     HttpStatus statusCode;
     if (error == null) {
       statusCode = INTERNAL_SERVER_ERROR;

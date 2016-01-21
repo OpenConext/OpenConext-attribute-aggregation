@@ -2,6 +2,8 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Link } from 'react-router'
 
+import PubSub from 'pubsub-js'
+
 import API from '../../util/API';
 
 import Header from '../Header/Header';
@@ -12,6 +14,14 @@ export default class App extends React.Component {
 
   constructor(props, context) {
     super(props, context);
+    PubSub.subscribe('DEAD_SESSION', (msg, data) => {
+      window.location.reload()
+    });
+    PubSub.subscribe('ERROR', (msg, data) => {
+      this.props.history.replace('/error');
+      //need to publish on different topic as Errors might not be constructed yet
+      PubSub.publish('ERROR_RECEIVED', data);
+    });
   }
 
   render() {

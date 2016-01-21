@@ -6,8 +6,6 @@
 }
 
 .mod_left {
-  @include panel;
-
   @media screen and (min-width: $large) {
     float: left;
     width: 49%;

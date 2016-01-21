@@ -1,7 +1,3 @@
-import createBrowserHistory from 'history/lib/createBrowserHistory'
-
-const history = createBrowserHistory();
-
 import Utils from './Utils'
 
 import PubSub from 'pubsub-js'
@@ -15,19 +11,26 @@ class API {
   checkStatus = (response) => {
     PubSub.publish('API', {started: false});
     if (response.status >= 200 && response.status < 300) {
+      let alive = response.headers.get('X-SESSION-ALIVE');
+      if (!alive) {
+        PubSub.publish('DEAD_SESSION', {broken: true});
+        let error = new Error('Broken session');
+        error.response = response;
+        throw error;
+      }
       let token = response.headers.get('X-CSRF-TOKEN');
       if (!Utils.isEmpty(token)) {
         this.csrfToken = token;
       }
       return response
     } else {
-      var error = new Error(response.statusText);
+      let error = new Error(response.statusText);
       error.response = response;
       throw error;
     }
   };
 
-  doFetch = (url, callback, method = 'get', form, checkStatus = true) => {
+  doFetch = (url, callback, method = 'get', form, doCheckStatus = true) => {
     PubSub.publish('API', {started: true});
     let options = {
       headers: {
@@ -44,13 +47,13 @@ class API {
       options.body = JSON.stringify(form);
     }
     fetch(url, options)
-      .then(checkStatus ? this.checkStatus : (response) => {
+      .then(doCheckStatus ? this.checkStatus : (response) => {
         PubSub.publish('API', {started: false});
         return response;
       })
       .then(res => res.json())
       .then(json => callback(json))
-      .catch(ex => history.replace('/#/error'));
+      .catch(ex =>  PubSub.publish('ERROR', {error: ex}));
   };
 
   getAggregations(callback) {
@@ -93,6 +96,7 @@ class API {
     aggregationId = aggregationId || -1;
     return this.doFetch("/aa/api/internal/aggregationsByServiceProviderEntityIds?" + params + '&aggregationId=' + aggregationId, callback);
   }
+
   /*
    * The following are API calls to test the SCIMController
    */

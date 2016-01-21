@@ -78,6 +78,12 @@ export default {
     result_status_error: 'Error',
     engine_block: 'Attribute Aggregation'
   },
+  error: {
+    exception_occurred: 'An unexpected error occurred. That is all we know.',
+    exception_environment: 'Configured to display error details for environment profile(s): {{profiles}}.',
+    key: 'Property',
+    value: 'Value'
+  },
   footer: {
     surfnetHtml: '<a href="http://www.surfnet.nl/en" target="_blank">SURFnet</a>',
     termsHtml: '<a href="https://wiki.surfnet.nl/display/conextsupport/Terms+of+Service+%28EN%29" target="_blank">Terms of Service</a>',

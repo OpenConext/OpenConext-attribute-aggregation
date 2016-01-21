@@ -104,8 +104,6 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     return userAttribute.get().getValues().get(0);
   }
 
-
-
   protected List<UserAttribute> mapValuesToUserAttribute(String attributeName, List<String> values) {
     if (isEmpty(values)) {
       return emptyList();
