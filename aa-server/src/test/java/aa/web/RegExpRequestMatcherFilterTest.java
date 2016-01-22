@@ -13,10 +13,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static aa.web.WebSecurityConfigurer.NON_SHIBBOLETH_PROTECTED_METHODS;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class RegExpRequestMatcherFilterTest {
+
+  private static final String pattern = NON_SHIBBOLETH_PROTECTED_METHODS;
 
   @Test
   public void testDoFilter() throws Exception {
@@ -45,7 +48,7 @@ public class RegExpRequestMatcherFilterTest {
       }
     };
 
-    RegExpRequestMatcherFilter subject = new RegExpRequestMatcherFilter(new TestFilter(doFilter), WebSecurityConfigurer.NON_SHIBBOLETH_PROTECTED_METHODS);
+    RegExpRequestMatcherFilter subject = new RegExpRequestMatcherFilter(new TestFilter(doFilter), pattern);
     subject.doFilter(request, response, chain);
   }
 
