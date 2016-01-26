@@ -43,12 +43,15 @@ export default class Aggregations extends React.Component {
     }
   };
 
-  renderServiceProviders = (aggregation) => <div className={styles.attributes}>{aggregation.serviceProviders.map((sp) =>
-    <p key={sp.entityId}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</p>)}</div>;
+  renderServiceProviders = (aggregation) =>
+    <div className={styles.attributes}>{aggregation.serviceProviders.map((sp) =>
+      <p key={sp.entityId}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</p>)}
+    </div>;
 
-  renderAttributes = (aggregation) => <div className={styles.attributes}>{aggregation.attributes.map((attr) =>
-    <p key={attr.attributeAuthorityId + '-' + attr.name}>{attr.name} <em>from</em> {attr.attributeAuthorityId}
-    </p>)}</div>;
+  renderAttributes = (aggregation) =>
+    <div className={styles.attributes}>{aggregation.attributes.map((attr) =>
+      <p key={attr.attributeAuthorityId + '-' + attr.name}>{attr.name} <em>from</em> {attr.attributeAuthorityId}{this.renderSkipConsent(attr)}</p>)}
+    </div>;
 
   renderActions = (aggregation) => (<div className={styles.actions}>
     <a href="#" onClick={this.handleShowAggregation(aggregation)}
@@ -58,6 +61,8 @@ export default class Aggregations extends React.Component {
       <ReactTooltip /> <i className="fa fa-remove"></i>
     </a>
   </div>);
+
+  renderSkipConsent = (attribute) => (attribute.skipConsent ? <em> (consent is skipped)</em> : <em></em>)
 
   search = (e) => {
     let input = e.target.value;
