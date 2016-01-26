@@ -49,6 +49,7 @@
   }
 
 }
+
 .remove_attribute {
   @extend .remove_authority;
   right: 6px;
@@ -72,11 +73,11 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"] + label span {
-  font-size: 10px;
-  box-shadow: 0.5px 0.5px 0.3px $medium-grey;
+  font-size: 11px;
   background-color: white;
   border: 1px solid $blue;
   border-radius: 3px;
+  padding: 1px 2px;
   i {
     color: transparent;
     padding: 0px 1px;
@@ -84,8 +85,10 @@ input[type="checkbox"] + label span {
 }
 
 input[type="checkbox"]:checked + label span {
-  border-radius: 0px;
+  border: 3px solid $blue;
+  border-radius: 3px;
   box-shadow: none;
+  padding: 0;
   i {
     background-color: $blue;
     color: white;
