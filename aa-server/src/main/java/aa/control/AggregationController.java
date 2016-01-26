@@ -4,10 +4,8 @@ import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.Aggregation;
 import aa.model.AggregationNotFoundException;
-import aa.model.Attribute;
 import aa.model.ServiceProvider;
 import aa.repository.AggregationRepository;
-import aa.repository.AttributeRepository;
 import aa.repository.ServiceProviderRepository;
 import aa.service.AggregationValidator;
 import aa.serviceregistry.ServiceRegistry;
@@ -20,9 +18,9 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static aa.util.StreamUtils.listFromIterable;
 import static java.util.stream.Collectors.toSet;
@@ -38,19 +36,16 @@ public class AggregationController {
 
   private final ServiceProviderRepository serviceProviderRepository;
   private final AggregationRepository aggregationRepository;
-  private final AttributeRepository attributeRepository;
   private final AuthorityConfiguration configuration;
   private final ServiceRegistry serviceRegistry;
 
   @Autowired
   public AggregationController(ServiceProviderRepository serviceProviderRepository,
                                AggregationRepository aggregationRepository,
-                               AttributeRepository attributeRepository,
                                AuthorityResolver authorityResolver,
                                ServiceRegistry serviceRegistry) {
     this.serviceProviderRepository = serviceProviderRepository;
     this.aggregationRepository = aggregationRepository;
-    this.attributeRepository = attributeRepository;
     this.configuration = authorityResolver.getConfiguration();
     this.serviceRegistry = serviceRegistry;
   }
@@ -60,7 +55,7 @@ public class AggregationController {
     aggregationValidator.validate(configuration, serviceRegistry, aggregation);
 
     aggregation.setServiceProviders(aggregation.getServiceProviders().stream().map(this::serviceProviderOrExists).collect(toSet()));
-    aggregation.setAttributes(aggregation.getAttributes().stream().map(this::attributeOrExists).collect(Collectors.toSet()));
+    aggregation.setAttributes(new HashSet(aggregation.getAttributes()));
 
     FederatedUser federatedUser = federatedUser();
     aggregation.setUserDisplayName(federatedUser.getDisplayName());
@@ -135,10 +130,6 @@ public class AggregationController {
 
   private ServiceProvider serviceProviderOrExists(ServiceProvider serviceProvider) {
     return serviceProviderRepository.findByEntityId(serviceProvider.getEntityId()).orElse(serviceProvider);
-  }
-
-  private Attribute attributeOrExists(Attribute attribute) {
-    return attributeRepository.findByAttributeAuthorityIdAndName(attribute.getAttributeAuthorityId(), attribute.getName()).orElse(attribute);
   }
 
   private FederatedUser federatedUser() {

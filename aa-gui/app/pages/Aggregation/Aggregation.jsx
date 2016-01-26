@@ -75,7 +75,7 @@ export default class Aggregation extends React.Component {
       this.setState({errors: newState});
     });
 
-    let errorName = this.state.errors.name ? {} :  {display: 'none'};
+    let errorName = this.state.errors.name ? {} : {display: 'none'};
 
     return (
       <div className={Utils.isEmpty(aggregation.name) || this.state.errors.name ? styles.failure : styles.success}>
@@ -122,13 +122,23 @@ export default class Aggregation extends React.Component {
           {this.state.errors.serviceProviders.map((aggregationNameAndEntityId) =>
             <em key={aggregationNameAndEntityId.join()} className={styles.warning}>
               <sup>*</sup>
-              {i18n.t('aggregation.sp_already_linked', {serviceProvider: aggregationNameAndEntityId[1], aggregation: aggregationNameAndEntityId[0]})}
+              {i18n.t('aggregation.sp_already_linked', {
+                serviceProvider: aggregationNameAndEntityId[1],
+                aggregation: aggregationNameAndEntityId[0]
+              })}
             </em>
           )}
         </div>
       </div>
     );
   }
+
+  handleSkipConsent = (authorityId) => (e) => {
+    let attributesSkipConsent = this.state.aggregation.attributes.filter((attribute) => attribute.attributeAuthorityId === authorityId);
+    let attributesNoSkipConsent = this.state.aggregation.attributes.filter((attribute) => attribute.attributeAuthorityId !== authorityId);
+    attributesSkipConsent.forEach((attr) => attr.skipConsent = e.target.checked);
+    this.updateAggregationState({attributes: attributesSkipConsent.concat(attributesNoSkipConsent)})
+  };
 
   handleRemoveAuthority = (authorityId) => (e) => {
     Utils.stop(e);
@@ -228,6 +238,7 @@ export default class Aggregation extends React.Component {
               <a href="#" onClick={this.handleRemoveAuthority(authorityId)} className={styles.remove_authority}>
                 <i className="fa fa-remove"></i>
               </a>
+              {this.renderSkipConsentForAuthority(authorityId)}
               <div className={styles.attributes}>
                 <label>{i18n.t('aggregation.attributes')}</label>
                 {attributesGroupedByAuthority[authorityId].sort((a1, a2) => a1.name.localeCompare(a2.name)).map((attribute)=> {
@@ -252,6 +263,22 @@ export default class Aggregation extends React.Component {
       </div>
     );
   }
+
+  renderSkipConsentForAuthority(authorityId) {
+    let htmlFor = 'skipConsent_' + authorityId;
+    let attributesForAuthority = this.state.aggregation.attributes.filter((attr) => attr.attributeAuthorityId === authorityId);
+    let skipConsent = Utils.isEmpty(attributesForAuthority) ? false : attributesForAuthority[0].skipConsent ? true : false;
+
+    return (
+      <div key={authorityId}>
+        <label htmlFor={htmlFor}>{i18n.t('aggregation.skip_consent')}</label>
+        <input className={styles.input} type="checkbox" id={htmlFor} name={htmlFor} checked={skipConsent}
+               onChange={this.handleSkipConsent(authorityId)}/>
+        <label htmlFor={htmlFor}><span><i className="fa fa-check"></i></span></label>
+      </div>
+    );
+  }
+
 
   validAggregation() {
     var aggregation = this.state.aggregation;

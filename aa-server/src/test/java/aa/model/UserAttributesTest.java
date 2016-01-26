@@ -15,6 +15,6 @@ public class UserAttributesTest {
     subject.setAttributes(Collections.singletonList(new UserAttribute("name", Collections.singletonList("value"), "source")));
 
     String s = subject.toString();
-    assertEquals("UserAttributes{serviceProviderEntityId='http://mock-idp', attributes=[UserAttribute{name='name', values=[value], source='source'}]}", s);
+    assertEquals("UserAttributes{serviceProviderEntityId='http://mock-idp', attributes=[UserAttribute{name='name', values=[value], source='source', skipConsent=false}]}", s);
   }
 }

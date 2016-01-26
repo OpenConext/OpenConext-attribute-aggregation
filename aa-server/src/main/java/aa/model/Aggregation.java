@@ -29,7 +29,7 @@ public class Aggregation {
       inverseJoinColumns = {@JoinColumn(name = "service_provider_id", referencedColumnName = "id")})
   private Set<ServiceProvider> serviceProviders = new HashSet<>();
 
-  @ManyToMany(cascade = {PERSIST, REFRESH, DETACH, MERGE}, fetch = EAGER)
+  @ManyToMany(cascade = ALL, fetch = EAGER)
   @LazyCollection(LazyCollectionOption.FALSE)
   @JoinTable(
       name = "aggregations_attributes",

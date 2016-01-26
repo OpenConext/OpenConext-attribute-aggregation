@@ -7,6 +7,7 @@ public class UserAttribute {
   private String name;
   private List<String> values;
   private String source;
+  private boolean skipConsent;
 
   public UserAttribute() {
   }
@@ -46,12 +47,21 @@ public class UserAttribute {
     this.source = source;
   }
 
+  public boolean isSkipConsent() {
+    return skipConsent;
+  }
+
+  public void setSkipConsent(boolean skipConsent) {
+    this.skipConsent = skipConsent;
+  }
+
   @Override
   public String toString() {
     return "UserAttribute{" +
-        "name='" + getName() + '\'' +
-        ", values=" + getValues() +
-        ", source='" + getSource() + '\'' +
+        "name='" + name + '\'' +
+        ", values=" + values +
+        ", source='" + source + '\'' +
+        ", skipConsent=" + skipConsent +
         '}';
   }
 }

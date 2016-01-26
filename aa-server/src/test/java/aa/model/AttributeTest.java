@@ -1,6 +1,9 @@
 package aa.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,22 +14,15 @@ import static org.junit.Assert.assertEquals;
 
 public class AttributeTest {
 
-  @Test
-  public void testEquals() throws Exception {
-    Attribute attribute = new Attribute("name","aa1");
-    Attribute other = new Attribute("name","aa1");
-    assertEquals(attribute, other);
-
-    Set<Attribute> attributes = new HashSet<>(Arrays.asList(attribute, other));
-    assertEquals(1, attributes.size());
-  }
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
   public void testClone() throws Exception {
-    Attribute attribute = new Attribute("name","aa1");
+    String content = IOUtils.toString(new ClassPathResource("json/client/attribute.json").getInputStream());
+    Attribute attribute = objectMapper.readValue(content, Attribute.class);
     Attribute cloned = (Attribute) attribute.clone();
 
     assertFalse(cloned == attribute);
-    assertEquals(cloned, attribute);
+    assertEquals(attribute.toString(), cloned.toString());
   }
 }

@@ -6,6 +6,7 @@ import aa.model.Attribute;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.ServiceProvider;
 import aa.model.UserAttribute;
+import aa.util.StreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -77,6 +78,13 @@ public class AttributeAggregatorService {
 
     //filter out those Attributes that are not allowed no return (rare case, but possible)
     List<UserAttribute> result = aggregatedAttributes.stream().filter(userAttribute -> allowedAttribute(attributes, userAttribute)).collect(toList());
+
+    //finally mark the UserAttributes with skipConsent based on the Attribute
+    result.forEach(userAttribute -> {
+      Attribute attribute = attributes.stream().filter(attr -> attr.getAttributeAuthorityId().equals(userAttribute.getSource()) &&
+          attr.getName().equals(userAttribute.getName())).collect(StreamUtils.singletonCollector());
+      userAttribute.setSkipConsent(attribute.isSkipConsent());
+    });
 
     LOG.debug("Finished aggregating attributes in {} millis for SP {} and input {} with result {}",
         System.currentTimeMillis() - start, serviceProvider, input, result);

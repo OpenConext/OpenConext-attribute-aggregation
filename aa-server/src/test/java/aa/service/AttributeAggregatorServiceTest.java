@@ -22,6 +22,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AttributeAggregatorServiceTest {
 
@@ -43,6 +44,7 @@ public class AttributeAggregatorServiceTest {
   @Test
   public void testCache() throws Exception {
     Attribute attribute = new Attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", "aa1");
+    attribute.setSkipConsent(true);
 
     AttributeAuthorityConfiguration attributeAuthorityConfiguration = new AttributeAuthorityConfiguration();
     attributeAuthorityConfiguration.setAttributes(singletonList(attribute));
@@ -61,6 +63,7 @@ public class AttributeAggregatorServiceTest {
     List<UserAttribute> input = singletonList(new UserAttribute(attribute.getName(), singletonList("value")));
     List<UserAttribute> result = subject.aggregate(sp, input);
     assertEquals(1, result.size());
+    assertTrue(result.get(0).isSkipConsent());
 
     //now throw an Exception, but the cache will hit
     stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(400)));

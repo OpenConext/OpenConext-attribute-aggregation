@@ -3,7 +3,6 @@ package aa;
 
 import aa.model.*;
 import aa.repository.AggregationRepository;
-import aa.repository.AttributeRepository;
 import aa.repository.ServiceProviderRepository;
 import aa.web.PrePopulatedJsonHttpHeaders;
 import org.junit.Before;
@@ -54,9 +53,6 @@ public abstract class AbstractIntegrationTest {
 
   @Autowired
   protected AggregationRepository aggregationRepository;
-
-  @Autowired
-  protected AttributeRepository attributeRepository;
 
   @Value("${local.server.port}")
   protected int port;

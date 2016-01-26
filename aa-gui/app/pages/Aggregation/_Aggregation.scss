@@ -62,7 +62,35 @@
 .authority {
   position: relative;
 }
+
 .attribute {
   @extend .authority;
 }
+
+input[type="checkbox"] {
+  display: none;
+}
+
+input[type="checkbox"] + label span {
+  font-size: 10px;
+  box-shadow: 0.5px 0.5px 0.3px $medium-grey;
+  background-color: white;
+  border: 1px solid $blue;
+  border-radius: 3px;
+  i {
+    color: transparent;
+    padding: 0px 1px;
+  }
+}
+
+input[type="checkbox"]:checked + label span {
+  border-radius: 0px;
+  box-shadow: none;
+  i {
+    background-color: $blue;
+    color: white;
+    padding: 3px 2px;
+  }
+}
+
 

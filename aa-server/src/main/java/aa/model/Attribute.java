@@ -19,6 +19,9 @@ public class Attribute implements Cloneable {
   @Column
   private String name;
 
+  @Column
+  private boolean skipConsent;
+
   @Transient
   private boolean caseExact;
 
@@ -73,6 +76,14 @@ public class Attribute implements Cloneable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public boolean isSkipConsent() {
+    return skipConsent;
+  }
+
+  public void setSkipConsent(boolean skipConsent) {
+    this.skipConsent = skipConsent;
   }
 
   public boolean isCaseExact() {
@@ -140,25 +151,12 @@ public class Attribute implements Cloneable {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Attribute)) return false;
-    Attribute attribute = (Attribute) o;
-    return Objects.equals(attributeAuthorityId, attribute.attributeAuthorityId) &&
-        Objects.equals(name, attribute.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(attributeAuthorityId, name);
-  }
-
-  @Override
   public String toString() {
     return "Attribute{" +
         "id=" + getId() +
         ", attributeAuthorityId='" + getAttributeAuthorityId() + '\'' +
         ", name='" + getName() + '\'' +
+        ", skipConsent='" + isSkipConsent() + '\'' +
         ", caseExact=" + isCaseExact() +
         ", description='" + getDescription() + '\'' +
         ", multiValued=" + isMultiValued() +

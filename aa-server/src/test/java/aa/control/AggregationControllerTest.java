@@ -62,7 +62,10 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
 
     aggregation.setName("new-name");
     aggregation.setServiceProviders(new HashSet<>(singletonList(new ServiceProvider("https://oidc.localhost.surfconext.nl"))));
-    aggregation.setAttributes(new HashSet<>(singletonList(new Attribute("urn:mace:dir:attribute-def:eduPersonEntitlement", "aa1"))));
+
+    Attribute attribute = new Attribute("urn:mace:dir:attribute-def:eduPersonEntitlement", "aa1");
+    attribute.setSkipConsent(true);
+    aggregation.setAttributes(new HashSet<>(singletonList(attribute)));
 
     RequestEntity requestEntity = new RequestEntity(aggregation, headers, PUT, new URI("http://localhost:" + port + "/aa/api/internal/aggregation"));
     ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
@@ -73,7 +76,8 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
 
     assertEquals(aggregation.getName(), savedAggregation.getName());
     assertEquals(aggregation.getServiceProviders(), savedAggregation.getServiceProviders());
-    assertEquals(aggregation.getAttributes(), savedAggregation.getAttributes());
+
+    assertTrue(savedAggregation.getAttributes().iterator().next().isSkipConsent());
   }
 
   @Test

@@ -60,7 +60,8 @@ export default {
     cancel: "Cancel",
     cancel_question: "Are you sure you want to leave this page?",
     name_already_exists: 'An aggregation with this name already exists',
-    sp_already_linked: "Service Provider '{{serviceProvider}}' is already linked to aggregation '{{aggregation}}'"
+    sp_already_linked: "Service Provider '{{serviceProvider}}' is already linked to aggregation '{{aggregation}}'",
+    skip_consent: "Skip consent"
   },
   playground : {
     title: 'AGGREGATION PLAYGROUND',
