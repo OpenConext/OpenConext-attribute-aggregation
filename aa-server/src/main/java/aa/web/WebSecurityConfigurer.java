@@ -80,7 +80,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
   public void configure(WebSecurity web) throws Exception {
     web.
         ignoring()
-        .antMatchers("/health/**", "/v2/ServiceProviderConfig");
+        .antMatchers("/health/**");
   }
 
   /*
