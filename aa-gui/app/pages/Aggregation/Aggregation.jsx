@@ -271,10 +271,10 @@ export default class Aggregation extends React.Component {
 
     return (
       <div key={authorityId}>
-        <label htmlFor={htmlFor}>{i18n.t('aggregation.skip_consent')}</label>
+        <label htmlFor={htmlFor} className={styles.pointer_hand}>{i18n.t('aggregation.skip_consent')}</label>
         <input className={styles.input} type="checkbox" id={htmlFor} name={htmlFor} checked={skipConsent}
                onChange={this.handleSkipConsent(authorityId)}/>
-        <label htmlFor={htmlFor}><span><i className="fa fa-check"></i></span></label>
+        <label htmlFor={htmlFor} className={styles.pointer_hand}><span><i className="fa fa-check"></i></span></label>
       </div>
     );
   }

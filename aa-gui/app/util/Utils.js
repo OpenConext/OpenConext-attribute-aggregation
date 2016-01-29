@@ -1,9 +1,9 @@
 class Utils {
 
   replacer = (match, pIndent, pKey, pVal, pEnd) => {
-    var key = '<span style=color:#303F9F;>';
-    var val = '<span class=color:#8BC34A;>';
-    var str = '<span class=color:#CDDC39;>';
+    var key = '<span style=color:#051CB3;>';
+    var val = '<span style=color:#8BC34A;>';
+    var str = '<span style=color:#005600;>';
     var r = pIndent || '';
     if (pKey)
       r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';

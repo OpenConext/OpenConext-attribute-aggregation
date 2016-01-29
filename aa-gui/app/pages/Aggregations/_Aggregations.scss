@@ -8,15 +8,15 @@
   i {
     color: lighten($blue, 5);
     position: absolute;
-    left: 6px;
-    top: 6px;
-    font-size: 14px;
+    left: 7px;
+    top: 9px;
+    font-size: 16px;
   }
 
   input {
-    padding: 3px 3px 3px 25px;
+    padding: 5px 5px 5px 30px;
     display: block;
-    width: 20%;
+    width: 40%;
     min-width: 320px;
     border-radius: $br;
     line-height: 20px;
@@ -46,10 +46,10 @@
         border-top-left-radius: $br;
       }
       &:nth-child(2) {
-        width: 35%;
+        width: 30%;
       }
       &:nth-child(3) {
-        width: 35%;
+        width: 40%;
       }
       &:last-child {
         width: 15%;

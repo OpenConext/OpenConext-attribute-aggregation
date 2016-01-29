@@ -14,9 +14,6 @@ export default class App extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    PubSub.subscribe('DEAD_SESSION', (msg, data) => {
-      window.location.reload()
-    });
     PubSub.subscribe('ERROR', (msg, data) => {
       this.props.history.replace('/error');
       //need to publish on different topic as Errors might not be constructed yet

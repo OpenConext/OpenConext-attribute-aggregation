@@ -13,10 +13,8 @@ class API {
     if (response.status >= 200 && response.status < 300) {
       let alive = response.headers.get('X-SESSION-ALIVE');
       if (!alive) {
-        PubSub.publish('DEAD_SESSION', {broken: true});
-        let error = new Error('Broken session');
-        error.response = response;
-        throw error;
+        //re-render everything
+        window.location.reload();
       }
       let token = response.headers.get('X-CSRF-TOKEN');
       if (!Utils.isEmpty(token)) {
