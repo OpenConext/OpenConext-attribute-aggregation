@@ -13,8 +13,7 @@ class API {
     if (response.status >= 200 && response.status < 300) {
       let alive = response.headers.get('X-SESSION-ALIVE');
       if (!alive) {
-        //re-render everything
-        window.location.reload();
+        throw new Error('SESSION-ENDED')
       }
       let token = response.headers.get('X-CSRF-TOKEN');
       if (!Utils.isEmpty(token)) {
@@ -51,7 +50,14 @@ class API {
       })
       .then(res => res.json())
       .then(json => callback(json))
-      .catch(ex =>  PubSub.publish('ERROR', {error: ex}));
+      .catch(ex =>  {
+        if (ex.response) {
+          PubSub.publish('ERROR', {error: ex})
+        } else {
+          //re-render everything
+          window.location.reload();
+        }
+      });
   };
 
   getAggregations(callback) {
