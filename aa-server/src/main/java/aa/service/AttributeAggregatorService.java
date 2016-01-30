@@ -81,8 +81,12 @@ public class AttributeAggregatorService {
 
     //finally mark the UserAttributes with skipConsent based on the Attribute
     result.forEach(userAttribute -> {
-      Attribute attribute = attributes.stream().filter(attr -> attr.getAttributeAuthorityId().equals(userAttribute.getSource()) &&
-          attr.getName().equals(userAttribute.getName())).collect(StreamUtils.singletonCollector());
+      Attribute attribute = attributes.stream().filter(
+          attr -> attr.getAttributeAuthorityId().equals(userAttribute.getSource()) &&
+          attr.getName().equals(userAttribute.getName()))
+          .findAny()
+          //this can not happen
+          .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown UserAttribute %s returned for SP %s", userAttribute, serviceProvider)));
       userAttribute.setSkipConsent(attribute.isSkipConsent());
     });
 
