@@ -66,7 +66,7 @@ When manually testing the aggregations in the Playground you have to provide inp
 * The attribute `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` with the value `urn:collab:person:surfnet.nl:henny` returns SAB roles
 * The attribute `urn:mace:dir:attribute-def:eduPersonPrincipalName` with value `oharsta@surfguest.nl` returns a valid ORCID.
 
-Note that you can register your own ORCID at (orcid.test.surfconext.nl)[https://orcid.test.surfconext.nl]
+Note that you can register your own ORCID at [orcid.test.surfconext.nl](https://orcid.test.surfconext.nl)
 
 ### [cUrl](#curl)
 
