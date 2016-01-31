@@ -70,7 +70,7 @@ Note that you can register your own ORCID at [orcid.test.surfconext.nl](https://
 
 ### [cUrl](#curl)
 
-The unsecured ServiceProviderConfig endpoint:
+The unsecured ServiceProviderConfig endpoint can be accessed at:
 
 ```bash
 curl -ik https://aa.test.surfconext.nl/aa/api/v2/ServiceProviderConfig -H "Content-Type: application/json"
