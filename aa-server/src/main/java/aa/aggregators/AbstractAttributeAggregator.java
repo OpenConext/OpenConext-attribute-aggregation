@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import static aa.util.StreamUtils.singletonOptionalCollector;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -108,7 +109,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     if (isEmpty(values)) {
       return emptyList();
     }
-    return Collections.singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
+    return singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
   }
 
   protected ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {

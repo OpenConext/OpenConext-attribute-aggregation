@@ -57,7 +57,7 @@ public class AttributeAggregatorService {
     //all of the unique AttributeAuthorityConfigurations for the attributes
     Set<AttributeAuthorityConfiguration> authorityConfigurations = attributes.stream().map(attribute -> configuration.getAuthorityById(attribute.getAttributeAuthorityId())).collect(toSet());
 
-    //all of the names on input UserAttributes that at least have one non-empty value
+    //all of the names of input UserAttributes that at least have one non-empty value
     List<String> inputNames = input.stream().filter(userAttribute -> userAttribute.getValues().stream().anyMatch(StringUtils::hasText))
         .map(UserAttribute::getName).collect(toList());
 

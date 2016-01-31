@@ -78,9 +78,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.
-        ignoring()
-        .antMatchers("/health/**");
+    web.ignoring().antMatchers("/health/**");
   }
 
   /*
