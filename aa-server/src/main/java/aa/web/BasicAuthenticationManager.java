@@ -14,7 +14,7 @@ import static org.springframework.security.core.authority.AuthorityUtils.createA
  * EngineBlock / Dashboard calls the AttributeAggregatorController and we don't want to use OAuth for this as
  * they are trusted clients
  */
-public class BasicAuthenticationManager implements AuthenticationManager {
+  public class BasicAuthenticationManager implements AuthenticationManager {
 
   private final String userName;
   private final String password;
