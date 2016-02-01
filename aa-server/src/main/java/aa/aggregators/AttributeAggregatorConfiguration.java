@@ -56,7 +56,8 @@ public class AttributeAggregatorConfiguration {
   }
 
   private AttributeAggregator attributeAggregatorById(AttributeAuthorityConfiguration configuration) {
-    switch (configuration.getId()) {
+    String id = configuration.getId();
+    switch (id) {
       case "sab":
         return new SabAttributeAggregator(configuration);
       case "voot":
@@ -64,7 +65,7 @@ public class AttributeAggregatorConfiguration {
       case "orcid":
         return new OrcidAttributeAggregator(configuration, environment);
       default:
-        throw new IllegalArgumentException(String.format("Authority with id %s in unknown", configuration.getId()));
+        throw new IllegalArgumentException(String.format("Authority with id %s in unknown", id));
     }
   }
 }

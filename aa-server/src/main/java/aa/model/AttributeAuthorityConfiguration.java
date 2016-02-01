@@ -2,6 +2,7 @@ package aa.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ public class AttributeAuthorityConfiguration {
   @JsonIgnore
   private String password;
   private List<Attribute> attributes;
-  private List<RequiredInputAttribute> requiredInputAttributes;
+  private List<RequiredInputAttribute> requiredInputAttributes = new ArrayList<>();
   private int timeOut;
 
   public AttributeAuthorityConfiguration() {

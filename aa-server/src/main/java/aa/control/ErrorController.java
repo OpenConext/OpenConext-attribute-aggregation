@@ -61,13 +61,11 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
       result.remove("message");
     }
     result.put("profiles", String.join(", ", environment.getActiveProfiles()));
-    HttpStatus statusCode;
-    if (error == null) {
-      statusCode = INTERNAL_SERVER_ERROR;
-    } else {
-      //https://github.com/spring-projects/spring-boot/issues/3057
+    HttpStatus statusCode = INTERNAL_SERVER_ERROR;
+    if (error != null) {
       ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
-      statusCode = annotation != null ? annotation.value() : INTERNAL_SERVER_ERROR;
+      //https://github.com/spring-projects/spring-boot/issues/3057
+      statusCode = annotation != null ? annotation.value() : statusCode;
     }
     return new ResponseEntity<>(result, statusCode);
   }

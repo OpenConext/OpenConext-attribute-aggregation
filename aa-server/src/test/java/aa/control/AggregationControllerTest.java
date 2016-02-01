@@ -25,6 +25,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 import static org.springframework.http.HttpMethod.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 
 @WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
@@ -156,6 +157,12 @@ public class AggregationControllerTest extends AbstractIntegrationTest {
     assertEquals("test aggregation", names.get(0)[0]);
     assertEquals("http://mock-sp", names.get(0)[1]);
 
+  }
+
+  @Test
+  public void testFindAggregationById() throws URISyntaxException {
+    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/aggregation/99"));
+    assertEquals(NOT_FOUND, restTemplate.exchange(requestEntity, String.class).getStatusCode());
   }
 
   private boolean aggregationExistsByName(String name) {

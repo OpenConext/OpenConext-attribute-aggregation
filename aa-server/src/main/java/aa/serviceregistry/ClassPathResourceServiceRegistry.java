@@ -9,8 +9,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -22,9 +21,7 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
 
   private final static ObjectMapper objectMapper = new ObjectMapper();
 
-  private final ReadWriteLock lock = new ReentrantReadWriteLock();
-
-  private Map<String, ServiceProvider> entityMetaData = new HashMap<>();
+  private Map<String, ServiceProvider> entityMetaData = new ConcurrentHashMap<>();
 
   public ClassPathResourceServiceRegistry(boolean initialize) {
     //this provides subclasses a hook to set properties before initializing metadata
@@ -34,14 +31,9 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
   }
 
   protected void initializeMetadata() {
-    try {
-      lock.writeLock().lock();
-      List<Resource> resources = getResources();
-      entityMetaData = resources.stream().map(this::parseEntities).flatMap(m -> m.entrySet().stream()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
-      LOG.debug("Initialized SR Resources. Number of SPs {}", entityMetaData.size());
-    } finally {
-      lock.writeLock().unlock();
-    }
+    List<Resource> resources = getResources();
+    Map<String, ServiceProvider> serviceProviderMap = resources.stream().map(this::parseEntities).flatMap(m -> m.entrySet().stream()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+    entityMetaData.putAll(serviceProviderMap);
   }
 
   protected List<Resource> getResources() {
@@ -54,23 +46,13 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
 
   @Override
   public Collection<ServiceProvider> serviceProviders() {
-    try {
-      lock.readLock().lock();
-      return entityMetaData.values();
-    } finally {
-      lock.readLock().unlock();
-    }
+    return entityMetaData.values();
   }
 
   @Override
   public Optional<ServiceProvider> serviceProviderByEntityId(String entityId) {
-    try {
-      lock.readLock().lock();
-      ServiceProvider sp = this.entityMetaData.get(entityId);
-      return sp == null ? Optional.empty() : Optional.of(sp);
-    } finally {
-      lock.readLock().unlock();
-    }
+    ServiceProvider sp = this.entityMetaData.get(entityId);
+    return sp == null ? Optional.empty() : Optional.of(sp);
   }
 
   protected Map<String, ServiceProvider> parseEntities(Resource resource) {

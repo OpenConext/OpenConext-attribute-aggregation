@@ -1,10 +1,12 @@
 package aa.service;
 
+import aa.aggregators.AttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.*;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -13,8 +15,7 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.singleton;
@@ -35,7 +36,7 @@ public class AttributeAggregatorServiceTest {
   public WireMockRule wireMockRule = new WireMockRule(8889);
 
   @Test
-  public void testAggregate() throws Exception {
+  public void testAggregateTimeOuts() throws Exception {
     doTestAggregate(0, 6);
     doTestAggregate(250, 3);
     doTestAggregate(1000, 0);
@@ -76,7 +77,37 @@ public class AttributeAggregatorServiceTest {
 
     result = subject.aggregate(sp, input);
     assertEquals(0, result.size());
+  }
 
+  @Test
+  public void testLimitUserAttributes() {
+    List<Attribute> attributes = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      Attribute attribute = new Attribute("name" + i, "aa1");
+      if (i % 2 == 0) {
+        attribute.setSkipConsent(true);
+      }
+      attributes.add(attribute);
+    }
+    AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("aa1", attributes);
+    configuration.setEndpoint("http://localhost");
+    List<AttributeAuthorityConfiguration> configurations = singletonList(configuration);
+    AuthorityConfiguration authorityConfiguration = new AuthorityConfiguration(configurations);
+    List<AttributeAggregator> aggregators = singletonList(new TestingAttributeAggregator(configurations.get(0), false));
+    AttributeAggregatorService subject = new AttributeAggregatorService(aggregators, authorityConfiguration, 0, -1);
+
+    Set<Aggregation> aggregations = singleton(new Aggregation(new HashSet<>(attributes.subList(0, 3))));
+    ServiceProvider serviceProvider = new ServiceProvider(aggregations);
+    List<UserAttribute> userAttributes = subject.aggregate(serviceProvider, singletonList(new UserAttribute("name", singletonList("value"))));
+    assertEquals(3, userAttributes.size());
+    for (int i = 0; i < 3; i++) {
+      UserAttribute userAttribute = userAttributes.get(i);
+      assertEquals("name" + i, userAttribute.getName());
+      assertEquals("aa1", userAttribute.getSource());
+      if (i % 2 == 0) {
+        assertEquals(true, userAttribute.isSkipConsent());
+      }
+    }
   }
 
   private void doTestAggregate(int milliseconds, int expected) throws IOException {
@@ -91,7 +122,7 @@ public class AttributeAggregatorServiceTest {
   }
 
   private void stubAggregationCall(int milliseconds, String path) throws IOException {
-    String response = StreamUtils.copyToString(new ClassPathResource(path).getInputStream(), Charset.forName("UTF-8"));
+    String response = IOUtils.toString(new ClassPathResource(path).getInputStream());
 
     //the delay will cause the Attribute Aggregators to return empty list
     stubFor(get(urlEqualTo("/")).willReturn(aResponse().withFixedDelay(milliseconds).withStatus(200).withHeader("Content-Type", "application/json").withBody(response)));

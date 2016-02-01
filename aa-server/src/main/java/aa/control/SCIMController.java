@@ -93,7 +93,7 @@ public class SCIMController {
 
     Optional<ServiceProvider> serviceProvider = serviceRegistry.serviceProviderByEntityId(serviceProviderEntityId);
     if (!serviceProvider.isPresent()) {
-      throw new UnknownServiceProviderException("Service Provider " + serviceProviderEntityId + " is unknown");
+      throw new SchemaNotFoundException("Service Provider " + serviceProviderEntityId + " is unknown");
     }
     MetaInformation metaInformation = new MetaInformation(this.dateTime, this.dateTime, this.resourcelocation, "ResourceType");
     return new ResourceType(serviceProviderEntityId, metaInformation);

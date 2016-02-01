@@ -32,6 +32,7 @@ public class AttributeAggregatorService {
   private final ForkJoinPool forkJoinPool;
   private final AuthorityConfiguration configuration;
   private final long cacheDuration;
+  private final boolean useCache;
 
   public AttributeAggregatorService(List<AttributeAggregator> aggregators,
                                     AuthorityConfiguration configuration,
@@ -41,8 +42,11 @@ public class AttributeAggregatorService {
     this.forkJoinPool = new ForkJoinPool(20 /* number of threads in embedded tomcat */ * aggregators.size());
     this.configuration = configuration;
     this.cacheDuration = cacheDurationMilliseconds;
+    this.useCache = expiryIntervalCheckMilliseconds > 0;
 
-    newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAggregates, 0, expiryIntervalCheckMilliseconds, TimeUnit.MILLISECONDS);
+    if (useCache) {
+      newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAggregates, 0, expiryIntervalCheckMilliseconds, TimeUnit.MILLISECONDS);
+    }
   }
 
   public List<UserAttribute> aggregate(ServiceProvider serviceProvider, List<UserAttribute> input) {
@@ -98,6 +102,9 @@ public class AttributeAggregatorService {
 
   private List<UserAttribute> doAggregate(List<UserAttribute> input, AttributeAggregator aggregator) {
     try {
+      if (!useCache) {
+        return aggregator.aggregate(input);
+      }
       Optional<String> cacheKey = aggregator.cacheKey(input);
       CachedAggregate cachedAggregate = cacheKey.isPresent() ? cache.get(cacheKey.get()) : null;
       long now = System.currentTimeMillis();

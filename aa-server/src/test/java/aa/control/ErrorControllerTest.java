@@ -1,5 +1,6 @@
 package aa.control;
 
+import aa.model.SchemaNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 public class ErrorControllerTest {
 
@@ -55,22 +57,36 @@ public class ErrorControllerTest {
 
     when(errorAttributes.getError(any())).thenReturn(new MethodArgumentNotValidException(mock(MethodParameter.class), bindingResult));
 
-    assertResponse(request, INTERNAL_SERVER_ERROR, "{entityId=required}");
+    assertResponse(request, INTERNAL_SERVER_ERROR, "{entityId=required}", true);
   }
 
-  private void assertResponse(HttpServletRequest request, HttpStatus httpStatus, String expectedBodyResponse) {
+  @Test
+  public void testErrorWithRespsoneType() throws Exception {
+    HttpServletRequest request = new MockHttpServletRequest();
+
+    when(errorAttributes.getError(any())).thenReturn(new SchemaNotFoundException("schema not found"));
+
+    assertResponse(request, NOT_FOUND, "message", false);
+  }
+
+  private void assertResponse(HttpServletRequest request, HttpStatus httpStatus, String expectedBodyResponse, boolean details) {
     ResponseEntity<Map<String, Object>> response = subject.error(request);
 
     assertEquals(httpStatus, response.getStatusCode());
 
     Map<String, Object> body = response.getBody();
     //there were details, so we don't expect the 'exception' and 'message' still in here
-    assertFalse(body.containsKey("exception"));
-    assertFalse(body.containsKey("message"));
+    if (details) {
+      assertFalse(body.containsKey("exception"));
+      assertFalse(body.containsKey("message"));
+      assertEquals(expectedBodyResponse, body.get("details").toString());
+    } else {
+      assertEquals(expectedBodyResponse, body.get("message"));
+    }
 
     assertEquals("dev, aa-test", body.get("profiles"));
 
-    assertEquals(expectedBodyResponse, body.get("details").toString());
+
   }
 
 }

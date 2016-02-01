@@ -6,6 +6,7 @@ import aa.model.Schema;
 import org.junit.Test;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpStatus.*;
 
 /*
  * Need separate Controller because of security environment. We want ADMIN rights here and not use OAuth. We also
@@ -29,13 +31,19 @@ import static org.springframework.http.HttpMethod.POST;
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 public class SCIMControllerInternalTest extends AbstractIntegrationTest {
 
-
   @Test
   public void testInternalResourceTypeEndPoint() throws Exception {
     RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/v2/ResourceType?serviceProviderEntityId=" + encode("http://mock-sp", "UTF-8")));
 
     ResponseEntity<ResourceType> responseEntity = restTemplate.exchange(requestEntity, ResourceType.class);
     assertResourceType(responseEntity.getBody());
+  }
+
+  @Test
+  public void testInternalResourceTypeEndPointUnknownServiceProvider() throws Exception {
+    RequestEntity requestEntity = new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/v2/ResourceType?serviceProviderEntityId=" + encode("http://unknown-sp", "UTF-8")));
+
+    assertEquals(NOT_FOUND, restTemplate.exchange(requestEntity, String.class).getStatusCode());
   }
 
   @Test
@@ -61,5 +69,11 @@ public class SCIMControllerInternalTest extends AbstractIntegrationTest {
     assertMeResult(result.getBody());
   }
 
+  @Test
+  public void testMeUnknownServiceProvider() throws Exception {
+    Map<String, String> inputParameters = new HashMap<>();
+    RequestEntity requestEntity = new RequestEntity(inputParameters, headers, POST, new URI("http://localhost:" + port + "/aa/api/internal/v2/Me?serviceProviderEntityId=" + encode("http://unknown-sp", "UTF-8")));
+    assertEquals(NOT_FOUND, restTemplate.exchange(requestEntity, String.class).getStatusCode());
+  }
 
 }

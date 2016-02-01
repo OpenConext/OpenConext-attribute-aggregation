@@ -26,8 +26,6 @@ public class CachedRemoteTokenServices implements DecisionResourceServerTokenSer
 
   public CachedRemoteTokenServices(DecisionResourceServerTokenServices tokenServices, long durationMilliseconds, long expiryIntervalCheckMilliseconds) {
     this.tokenServices = tokenServices;
-    Assert.isTrue(durationMilliseconds > 0 && durationMilliseconds < 1000 * 60 * 61);
-    Assert.isTrue(expiryIntervalCheckMilliseconds > 0 && expiryIntervalCheckMilliseconds < 1000 * 60 * 61);
     this.duration = durationMilliseconds;
     newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAuthentications, 0, expiryIntervalCheckMilliseconds, TimeUnit.MILLISECONDS);
   }

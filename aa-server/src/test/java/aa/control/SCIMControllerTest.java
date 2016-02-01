@@ -31,7 +31,6 @@ public class SCIMControllerTest extends AbstractOidcIntegrationTest {
     assertEquals(OK, response.getStatusCode());
 
     Schema schema = response.getBody();
-
     assertSchema(schema);
   }
 
