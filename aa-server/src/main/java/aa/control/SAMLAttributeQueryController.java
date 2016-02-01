@@ -1,5 +1,6 @@
 package aa.control;
 
+import aa.aggregators.AttributeAggregator;
 import aa.model.SchemaNotFoundException;
 import aa.model.ServiceProvider;
 import aa.model.UserAttribute;
@@ -46,6 +47,7 @@ import java.io.StringWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
 import static aa.util.StreamUtils.singletonCollector;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -221,8 +223,7 @@ public class SAMLAttributeQueryController {
   }
 
   private List<UserAttribute> getUserAttributes(String eppn) {
-    return Collections.singletonList(
-        new UserAttribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", singletonList(eppn)));
+    return Collections.singletonList(new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList(eppn)));
   }
 
 }
