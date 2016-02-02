@@ -1,0 +1,50 @@
+[
+  {
+    "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+    "values": [
+      "urn:x-surfnet:surfnet.nl:sab:role:Superuser",
+      "urn:x-surfnet:surfnet.nl:sab:role:Instellingsbevoegde",
+      "urn:x-surfnet:surfnet.nl:sab:role:DNS-Beheerder",
+      "urn:x-surfnet:surfnet.nl:sab:role:SURFdrive-beheerder",
+      "urn:x-surfnet:surfnet.nl:sab:role:SURFconextverantwoordelijke",
+      "urn:x-surfnet:surfnet.nl:sab:role:TPM-Conext",
+      "urn:x-surfnet:surfnet.nl:sab:role:TPM-Rapportage",
+      "urn:x-surfnet:surfnet.nl:sab:role:Domeinnamenverantwoordelijke"
+    ],
+    "source": "sab",
+    "skipConsent": false
+  },
+  {
+    "name": "urn:mace:dir:attribute-def:isMemberOf",
+    "values": [
+      "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:henny",
+      "urn:collab:group:surfnet.nl:popco",
+      "urn:collab:group:surfnet.nl:surfteams",
+      "urn:collab:group:surfnet.nl:surfconext",
+      "urn:collab:group:surfnet.nl:crm",
+      "urn:collab:group:surfnet.nl:klantendb",
+      "urn:collab:group:surfnet.nl:svp",
+      "urn:collab:group:surfnet.nl:vpx",
+      "urn:collab:group:surfnet.nl:mf",
+      "urn:collab:group:surfnet.nl:kis-webservicegebruikers",
+      "urn:collab:group:surfnet.nl:sharepoint",
+      "urn:collab:group:surfnet.nl:cis",
+      "urn:collab:group:surfnet.nl:crowd-cis",
+      "urn:collab:group:surfnet.nl:crowd-surfnet",
+      "urn:collab:group:surfnet.nl:VPN",
+      "urn:collab:group:surfnet.nl:Crowd-TS",
+      "urn:collab:group:surfnet.nl:TS",
+      "urn:collab:group:surfnet.nl:Crowd-TeamTIE"
+    ],
+    "source": "voot",
+    "skipConsent": false
+  },
+  {
+    "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
+    "values": [
+      "http://orcid.org/0000-0002-5655-1894"
+    ],
+    "source": "orcid",
+    "skipConsent": true
+  }
+]

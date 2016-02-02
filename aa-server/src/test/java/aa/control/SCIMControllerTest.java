@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 public class SCIMControllerTest extends AbstractOidcIntegrationTest {
 
@@ -32,6 +33,12 @@ public class SCIMControllerTest extends AbstractOidcIntegrationTest {
 
     Schema schema = response.getBody();
     assertSchema(schema);
+  }
+
+  @Test
+  public void testSchemaEndpointWithWrongAuthentication() throws Exception {
+    ResponseEntity<Schema> response = getSchemaResponse("json/oidc/introspect.success.json");
+    assertEquals(UNAUTHORIZED, response.getStatusCode());
   }
 
   @Test
@@ -50,9 +57,18 @@ public class SCIMControllerTest extends AbstractOidcIntegrationTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testResourceType() throws Exception {
+    stubOidcCheckTokenUser("json/oidc/introspect.client_credentials.json");
     RequestEntity requestEntity = new RequestEntity(oauthHeaders, GET, new URI("http://localhost:" + port + "/aa/api/v2/ResourceType"));
     ResponseEntity<ResourceType> responseEntity = restTemplate.exchange(requestEntity, ResourceType.class);
     assertResourceType(responseEntity.getBody());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testResourceTypeWithWrongAuthentication() throws Exception {
+    RequestEntity requestEntity = new RequestEntity(oauthHeaders, GET, new URI("http://localhost:" + port + "/aa/api/v2/ResourceType"));
+    ResponseEntity<ResourceType> responseEntity = restTemplate.exchange(requestEntity, ResourceType.class);
+    assertEquals(UNAUTHORIZED, responseEntity.getStatusCode());
   }
 
   @Test

@@ -1,8 +1,10 @@
 package aa.control;
 
+import aa.aggregators.AttributeAggregator;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.*;
+import aa.oauth.ClientCredentialsAuthentication;
 import aa.oauth.FederatedUserAuthenticationToken;
 import aa.repository.ServiceProviderRepository;
 import aa.service.AttributeAggregatorService;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.util.StringUtils;
@@ -26,8 +29,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
+import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
+import static aa.aggregators.AttributeAggregator.NAME_ID;
+import static aa.aggregators.AttributeAggregator.SCHAC_HOME;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -80,14 +87,13 @@ public class SCIMController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/internal/v2/ResourceType")
   public ResourceType internalResourceType(@RequestParam("serviceProviderEntityId") String serviceProviderEntityId) {
-    String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
-    OAuth2Request oauth2Request = buildOAuth2Request(clientId);
-    OAuth2Authentication authentication = new OAuth2Authentication(oauth2Request, null);
+    OAuth2Authentication authentication = buildOAuth2Authentication(serviceProviderEntityId);
     return resourceType(authentication);
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/v2/ResourceType")
   public ResourceType resourceType(OAuth2Authentication authentication) {
+    assertClientCredentials(authentication);
     String clientId = authentication.getOAuth2Request().getClientId();
     String serviceProviderEntityId = serviceProviderTranslationService.translateClientId(clientId);
 
@@ -101,14 +107,13 @@ public class SCIMController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/internal/v2/Schema")
   public Schema internalSchema(@RequestParam("serviceProviderEntityId") String serviceProviderEntityId) {
-    String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
-    OAuth2Request oauth2Request = buildOAuth2Request(clientId);
-    OAuth2Authentication authentication = new OAuth2Authentication(oauth2Request, null);
+    OAuth2Authentication authentication = buildOAuth2Authentication(serviceProviderEntityId);
     return schema(authentication);
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/v2/Schema")
   public Schema schema(OAuth2Authentication authentication) {
+    assertClientCredentials(authentication);
     String clientId = authentication.getOAuth2Request().getClientId();
     String serviceProviderEntityId = serviceProviderTranslationService.translateClientId(clientId);
 
@@ -141,9 +146,9 @@ public class SCIMController {
     String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
     OAuth2Request oauth2Request = buildOAuth2Request(clientId);
 
-    String principal = inputParameters.get("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
-    String eduPersonPrincipalName = inputParameters.get("urn:mace:dir:attribute-def:eduPersonPrincipalName");
-    String schacHomeOrganization = inputParameters.get("urn:mace:terena.org:attribute-def:schacHomeOrganization");
+    String principal = inputParameters.get(NAME_ID);
+    String eduPersonPrincipalName = inputParameters.get(EDU_PERSON_PRINCIPAL_NAME);
+    String schacHomeOrganization = inputParameters.get(SCHAC_HOME);
 
     FederatedUserAuthenticationToken userAuthentication = new FederatedUserAuthenticationToken(eduPersonPrincipalName, schacHomeOrganization, principal, "N/A", AuthorityUtils.createAuthorityList("ROLE_USER"));
 
@@ -153,6 +158,7 @@ public class SCIMController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/v2/Me")
   public Map<String, Object> me(OAuth2Authentication authentication) {
+    assertAuthorizationCode(authentication);
     String clientId = authentication.getOAuth2Request().getClientId();
     String serviceProviderEntityId = serviceProviderTranslationService.translateClientId(clientId);
 
@@ -192,11 +198,11 @@ public class SCIMController {
 
     //need ArrayList otherwise we can't add anything
     List<UserAttribute> input = new ArrayList<>(asList(
-        new UserAttribute("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", singletonList(nameId)),
-        new UserAttribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", singletonList(schacHomeOrganization))
+        new UserAttribute(NAME_ID, singletonList(nameId)),
+        new UserAttribute(SCHAC_HOME, singletonList(schacHomeOrganization))
     ));
     if (StringUtils.hasText(eduPersonPrincipalName)) {
-      input.add(new UserAttribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", singletonList(eduPersonPrincipalName)));
+      input.add(new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList(eduPersonPrincipalName)));
     }
     return input;
   }
@@ -208,6 +214,28 @@ public class SCIMController {
         Collections.emptyMap());
   }
 
+  private OAuth2Authentication buildOAuth2Authentication(@RequestParam("serviceProviderEntityId") String serviceProviderEntityId) {
+    String clientId = serviceProviderTranslationService.translateServiceProviderEntityId(serviceProviderEntityId);
+    OAuth2Request oauth2Request = buildOAuth2Request(clientId);
+    return new OAuth2Authentication(oauth2Request,
+        new ClientCredentialsAuthentication(clientId, emptyList()));
+  }
+
+  private void assertClientCredentials(OAuth2Authentication authentication) {
+    if (!(authentication.getUserAuthentication() instanceof ClientCredentialsAuthentication)) {
+      throw new InvalidAuthenticationException(
+          String.format("Only accessible with Client Credentials authentication. Actual authentication %s",
+              authentication.getUserAuthentication()));
+    }
+  }
+
+  private void assertAuthorizationCode(OAuth2Authentication authentication) {
+    if (!(authentication.getUserAuthentication() instanceof FederatedUserAuthenticationToken)) {
+      throw new InvalidAuthenticationException(
+          String.format("Only accessible with Authorization code authentication. Actual authentication %s",
+              authentication.getUserAuthentication()));
+    }
+  }
 
   private Attribute eraseAuthorityId(Attribute attribute) {
     Attribute clone = attribute.clone();

@@ -1,6 +1,7 @@
 package aa.control;
 
 import aa.AbstractIntegrationTest;
+import aa.aggregators.AttributeAggregator;
 import aa.model.ResourceType;
 import aa.model.Schema;
 import org.junit.Test;
@@ -16,6 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
+import static aa.aggregators.AttributeAggregator.NAME_ID;
+import static aa.aggregators.AttributeAggregator.SCHAC_HOME;
 import static java.net.URLEncoder.encode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -59,9 +63,9 @@ public class SCIMControllerInternalTest extends AbstractIntegrationTest {
   @Test
   public void testMe() throws Exception {
     Map<String, String> inputParameters = new HashMap<>();
-    inputParameters.put("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "test");
-    inputParameters.put("urn:mace:dir:attribute-def:eduPersonPrincipalName", "test");
-    inputParameters.put("urn:mace:terena.org:attribute-def:schacHomeOrganization", "test");
+    inputParameters.put(NAME_ID, "test");
+    inputParameters.put(EDU_PERSON_PRINCIPAL_NAME, "test");
+    inputParameters.put(SCHAC_HOME, "test");
 
     RequestEntity requestEntity = new RequestEntity(inputParameters, headers, POST, new URI("http://localhost:" + port + "/aa/api/internal/v2/Me?serviceProviderEntityId=" + encode("http://mock-sp", "UTF-8")));
     ResponseEntity<Map<String, Object>> result = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {

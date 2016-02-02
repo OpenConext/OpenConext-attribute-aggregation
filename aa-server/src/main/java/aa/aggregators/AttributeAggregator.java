@@ -16,6 +16,9 @@ public interface AttributeAggregator {
   String IS_MEMBER_OF = "urn:mace:dir:attribute-def:isMemberOf";
   String ORCID = "urn:mace:dir:attribute-def:eduPersonOrcid";
 
+  //Schac home
+  String SCHAC_HOME = "urn:mace:terena.org:attribute-def:schacHomeOrganization";
+
   String getAttributeAuthorityId();
 
   List<UserAttribute> aggregate(List<UserAttribute> input);
