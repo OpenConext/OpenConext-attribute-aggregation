@@ -43,5 +43,4 @@ public class StreamUtilsTest {
     assertEquals(StreamUtils.listFromIterable(asList(1, 2, 3)), asList(1, 2, 3));
   }
 
-
 }

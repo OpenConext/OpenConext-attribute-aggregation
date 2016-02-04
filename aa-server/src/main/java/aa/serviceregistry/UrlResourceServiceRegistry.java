@@ -25,14 +25,16 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
   private final String spRemotePath;
 
   private final RestTemplate restTemplate = new RestTemplate();
+  private final int period;
 
   public UrlResourceServiceRegistry(
       String spRemotePath,
       int period) {
     super(false);
+    this.period = period;
     this.spRemotePath = spRemotePath;
     newScheduledThreadPool(1).scheduleAtFixedRate(this::initializeMetadata, period, period, TimeUnit.MINUTES);
-    this.initializeMetadata();
+    super.initializeMetadata();
   }
 
   @Override
@@ -44,8 +46,8 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
   @Override
   protected void initializeMetadata() {
     HttpHeaders headers = new HttpHeaders();
-    String oneMinuteAgo = RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")).minusMinutes(1));
-    headers.set(IF_MODIFIED_SINCE, oneMinuteAgo);
+    String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")).minusMinutes(period));
+    headers.set(IF_MODIFIED_SINCE, lastRefresh);
 
     ResponseEntity<String> result = restTemplate.exchange(spRemotePath, HEAD, new HttpEntity<>(headers), String.class);
 
