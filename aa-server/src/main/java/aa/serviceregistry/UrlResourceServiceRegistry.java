@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+import static java.util.Collections.singletonList;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static org.springframework.http.HttpHeaders.IF_MODIFIED_SINCE;
 import static org.springframework.http.HttpMethod.HEAD;
@@ -22,17 +24,21 @@ import static org.springframework.http.HttpStatus.NOT_MODIFIED;
 
 public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry {
 
-  private final String spRemotePath;
+  private final BasicAuthenticationUrlResource urlResource;
 
   private final RestTemplate restTemplate = new RestTemplate();
   private final int period;
+  private final String spRemotePath;
 
   public UrlResourceServiceRegistry(
+      String username,
+      String password,
       String spRemotePath,
-      int period) {
+      int period) throws MalformedURLException {
     super(false);
-    this.period = period;
+    this.urlResource = new BasicAuthenticationUrlResource(spRemotePath, username, password);
     this.spRemotePath = spRemotePath;
+    this.period = period;
     newScheduledThreadPool(1).scheduleAtFixedRate(this::initializeMetadata, period, period, TimeUnit.MINUTES);
     super.initializeMetadata();
   }
@@ -40,11 +46,11 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
   @Override
   protected List<Resource> getResources() {
     LOG.debug("Fetching SP metadata entries from {}", spRemotePath);
-    return Collections.singletonList(getResource(spRemotePath));
+    return singletonList(urlResource);
   }
 
   @Override
-  protected void initializeMetadata() {
+  protected void initializeMetadata()  {
     HttpHeaders headers = new HttpHeaders();
     String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")).minusMinutes(period));
     headers.set(IF_MODIFIED_SINCE, lastRefresh);
@@ -55,14 +61,6 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
       LOG.debug("Not refreshing SP metadata. Not modified");
     } else {
       super.initializeMetadata();
-    }
-  }
-
-  private Resource getResource(String path) {
-    try {
-      return new UrlResource(path);
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
     }
   }
 }

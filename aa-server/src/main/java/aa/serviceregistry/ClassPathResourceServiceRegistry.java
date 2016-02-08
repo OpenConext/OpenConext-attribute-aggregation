@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class ClassPathResourceServiceRegistry implements ServiceRegistry {
@@ -37,11 +35,7 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
   }
 
   protected List<Resource> getResources() {
-    return doGetResources("service-registry/saml20-sp-remote.json", "service-registry/saml20-sp-remote.test.json");
-  }
-
-  protected List<Resource> doGetResources(String... paths) {
-    return asList(paths).stream().map(ClassPathResource::new).collect(toList());
+    return Collections.singletonList(new ClassPathResource("service-registry/service-providers.json"));
   }
 
   @Override
@@ -81,16 +75,12 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
 
   @SuppressWarnings("unchecked")
   private String getMetaDateEntry(Map<String, Object> entry, String attributeName) {
-    String attr = null;
-    Map<String, String> attributes = (Map<String, String>) entry.get(attributeName);
-    if (attributes != null) {
-      attr = attributes.get("en");
-      if (attr == null) {
-        // try the other language
-        attr = attributes.get("nl");
-      }
+    String attribute = (String) entry.get(attributeName + ":en");
+    if (attribute == null) {
+      // try the other language
+      attribute = (String) entry.get(attributeName + ":nl");
     }
-    return attr;
+    return attribute;
   }
 
 }

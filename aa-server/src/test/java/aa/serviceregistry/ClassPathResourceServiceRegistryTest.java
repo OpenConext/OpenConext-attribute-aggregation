@@ -12,14 +12,14 @@ public class ClassPathResourceServiceRegistryTest {
 
   @Test
   public void testServiceProviders() throws Exception {
-    assertEquals(954, serviceRegistry.serviceProviders().size());
+    assertEquals(4, serviceRegistry.serviceProviders().size());
   }
 
   @Test
   public void testServiceProviderByEntityId() throws Exception {
-    ServiceProvider sp = serviceRegistry.serviceProviderByEntityId("https://www.let.rug.nl/~alfa/sp/metadata").get();
-    assertEquals("CompLing | RUG", sp.getName());
-    assertEquals("Computational linguistics, University of Groningen", sp.getDescription());
+    ServiceProvider sp = serviceRegistry.serviceProviderByEntityId("https://oidc.localhost.surfconext.nl").get();
+    assertEquals("OIDC localhost name", sp.getName());
+    assertEquals("OIDC localhost description", sp.getDescription());
   }
 
   @Test

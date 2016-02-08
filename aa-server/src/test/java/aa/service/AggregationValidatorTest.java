@@ -2,8 +2,8 @@ package aa.service;
 
 import aa.config.AuthorityConfiguration;
 import aa.model.*;
+import aa.serviceregistry.ClassPathResourceServiceRegistry;
 import aa.serviceregistry.ServiceRegistry;
-import aa.serviceregistry.TestingServiceRegistry;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -12,7 +12,7 @@ import static java.util.Arrays.asList;
 
 public class AggregationValidatorTest {
 
-  private ServiceRegistry serviceRegistry = new TestingServiceRegistry();
+  private ServiceRegistry serviceRegistry = new ClassPathResourceServiceRegistry(true);
 
   private AuthorityConfiguration authorityConfiguration = new AuthorityConfiguration(asList(
       new AttributeAuthorityConfiguration("aa1", asList(

@@ -22,12 +22,12 @@ public class UrlResourceServiceRegistryTest {
 
   @Before
   public void before() throws IOException {
-    String spResponse = IOUtils.toString(new ClassPathResource("service-registry/saml20-sp-remote.test.json").getInputStream());
+    String spResponse = IOUtils.toString(new ClassPathResource("service-registry/service-providers.json").getInputStream());
     stubFor(get(urlEqualTo("/sp")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody(spResponse)));
 
     stubFor(head(urlEqualTo("/sp")).withHeader(IF_MODIFIED_SINCE, notMatching("X")).willReturn(aResponse().withStatus(200)));
 
-    this.subject = new UrlResourceServiceRegistry("http://localhost:8889/sp", 10);
+    this.subject = new UrlResourceServiceRegistry("user","password","http://localhost:8889/sp", 10);
   }
 
   @Test
