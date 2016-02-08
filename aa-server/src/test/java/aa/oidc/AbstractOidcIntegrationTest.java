@@ -15,7 +15,7 @@ import java.io.IOException;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.nio.charset.Charset.forName;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=test,aa-test",
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=aa-test",
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml",
     "oidc.checkToken.endpoint.url=http://localhost:12121/introspect",
     "checkToken.cache=false"})

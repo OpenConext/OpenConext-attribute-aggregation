@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
 public class ServiceRegistryConfiguration {
 
   @Bean
-  @Profile({"dev", "no-csrf"})
+  @Profile({"dev", "no-csrf", "aa-test"})
   public ServiceRegistry classPathResourceServiceRegistry() {
     return new ClassPathResourceServiceRegistry(true);
   }

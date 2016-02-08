@@ -5,6 +5,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -39,6 +41,10 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
     this.urlResource = new BasicAuthenticationUrlResource(spRemotePath, username, password);
     this.spRemotePath = spRemotePath;
     this.period = period;
+
+    SimpleClientHttpRequestFactory requestFactory = (SimpleClientHttpRequestFactory) restTemplate.getRequestFactory();
+    requestFactory.setConnectTimeout(5 * 1000);
+
     newScheduledThreadPool(1).scheduleAtFixedRate(this::initializeMetadata, period, period, TimeUnit.MINUTES);
     super.initializeMetadata();
   }

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=test,aa-test",
+@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=aa-test",
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml",
     "authz.checkToken.endpoint.url=http://localhost:12122/oauth/check_token",
     "checkToken.cache=false"})

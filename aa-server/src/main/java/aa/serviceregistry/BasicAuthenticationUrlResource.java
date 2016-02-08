@@ -24,6 +24,7 @@ public class BasicAuthenticationUrlResource extends UrlResource {
     URLConnection con = this.getURL().openConnection();
     con.setRequestProperty("Authorization", basicAuth);
     con.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
+    con.setConnectTimeout(5 * 1000);
     try {
       return con.getInputStream();
     } catch (IOException ex) {
