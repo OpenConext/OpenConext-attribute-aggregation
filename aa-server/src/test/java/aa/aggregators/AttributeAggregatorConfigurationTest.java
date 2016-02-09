@@ -36,8 +36,8 @@ public class AttributeAggregatorConfigurationTest {
     AttributeAggregatorService attributeAggregatorService = subject.attributeAggregatorService();
     Map<String, AttributeAggregator> aggregators = (Map<String, AttributeAggregator>) getField(attributeAggregatorService, "aggregators");
 
-    assertEquals(3, aggregators.size());
-    asList("orcid", "sab", "voot").forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
+    assertEquals(4, aggregators.size());
+    asList("orcid", "sab", "voot", "test:mock").forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
   }
 
   @Test(expected = IllegalArgumentException.class)

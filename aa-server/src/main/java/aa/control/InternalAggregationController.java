@@ -28,9 +28,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping(headers = {"Content-Type=application/json"}, produces = {"application/json"})
-public class AggregationController {
+public class InternalAggregationController {
 
-  private final static Logger LOG = LoggerFactory.getLogger(AggregationController.class);
+  private final static Logger LOG = LoggerFactory.getLogger(InternalAggregationController.class);
 
   private final AggregationValidator aggregationValidator = new AggregationValidator();
 
@@ -40,10 +40,10 @@ public class AggregationController {
   private final ServiceRegistry serviceRegistry;
 
   @Autowired
-  public AggregationController(ServiceProviderRepository serviceProviderRepository,
-                               AggregationRepository aggregationRepository,
-                               AuthorityResolver authorityResolver,
-                               ServiceRegistry serviceRegistry) {
+  public InternalAggregationController(ServiceProviderRepository serviceProviderRepository,
+                                       AggregationRepository aggregationRepository,
+                                       AuthorityResolver authorityResolver,
+                                       ServiceRegistry serviceRegistry) {
     this.serviceProviderRepository = serviceProviderRepository;
     this.aggregationRepository = aggregationRepository;
     this.configuration = authorityResolver.getConfiguration();

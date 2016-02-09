@@ -29,7 +29,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 
 @WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
-public class AggregationControllerTest extends AbstractIntegrationTest {
+public class InternalAggregationControllerTest extends AbstractIntegrationTest {
 
   @Override
   protected boolean isBasicAuthenticated() {

@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 @Configuration
@@ -65,7 +66,12 @@ public class AttributeAggregatorConfiguration {
       case "orcid":
         return new OrcidAttributeAggregator(configuration, environment);
       default:
-        throw new IllegalArgumentException(String.format("Authority with id %s in unknown", id));
+        if (id.startsWith("test:")) {
+          return new TestingAttributeAggregator(configuration, false);
+        } else {
+          throw new IllegalArgumentException(format("Authority with id %s is unknown", id));
+        }
+
     }
   }
 }

@@ -43,16 +43,19 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
   private final AttributeAuthorityConfiguration attributeAuthorityConfiguration;
 
-  private final RestTemplate restTemplate;
   private final List<String> attributeKeysRequired;
+
+  private RestTemplate restTemplate;
 
   public AbstractAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     this.attributeAuthorityConfiguration = attributeAuthorityConfiguration;
     this.attributeKeysRequired = attributeAuthorityConfiguration.getRequiredInputAttributes().stream().map(RequiredInputAttribute::getName).collect(toList());
-    try {
-      this.restTemplate = new RestTemplate(getRequestFactory());
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
+    if (StringUtils.hasText(attributeAuthorityConfiguration.getEndpoint())) {
+      try {
+        this.restTemplate = new RestTemplate(getRequestFactory());
+      } catch (MalformedURLException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
