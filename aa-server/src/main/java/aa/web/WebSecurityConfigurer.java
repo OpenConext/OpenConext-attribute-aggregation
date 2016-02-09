@@ -73,7 +73,6 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
   @Autowired
   private Environment environment;
 
-  //we must ensure we don't get configured twice because of the combination WebSecurityConfigurerAdapter and ResourceServerConfigurer
   private boolean configured;
 
   @Override
@@ -104,6 +103,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
   @Override
   public void configure(HttpSecurity http) throws Exception {
     if (this.configured) {
+      //we must ensure we don't get configured twice because of the combination WebSecurityConfigurerAdapter and ResourceServerConfigurer
       return;
     }
     this.configured = true;
