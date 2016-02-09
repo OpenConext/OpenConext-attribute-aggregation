@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ClassPathResourceServiceRegistryTest {
 
@@ -25,6 +26,12 @@ public class ClassPathResourceServiceRegistryTest {
   @Test
   public void testServiceProviderByEntityIdIllegalArgument() throws Exception {
     assertFalse(serviceRegistry.serviceProviderByEntityId("https://unknown/sp").isPresent());
+  }
+
+  @Test
+  public void testAttributeAggregationRequired() {
+    ServiceProvider sp = serviceRegistry.serviceProviderByEntityId("https://oidc.test.surfconext.nl").get();
+    assertTrue(sp.isAttributeAggregationRequired());
   }
 
 }

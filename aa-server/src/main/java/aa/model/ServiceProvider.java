@@ -23,6 +23,9 @@ public class ServiceProvider {
   @Transient
   private String description;
 
+  @Transient
+  private boolean attributeAggregationRequired;
+
   @ManyToMany(mappedBy = "serviceProviders", fetch = FetchType.EAGER)
   @JsonIgnore
   private Set<Aggregation> aggregations = new HashSet<>();
@@ -34,10 +37,11 @@ public class ServiceProvider {
   public ServiceProvider() {
   }
 
-  public ServiceProvider(String entityId, String description, String name) {
+  public ServiceProvider(String entityId, String description, String name, boolean attributeAggregationRequired) {
     this.entityId = entityId;
     this.description = description;
     this.name = name;
+    this.attributeAggregationRequired = attributeAggregationRequired;
   }
 
   public ServiceProvider(Set<Aggregation> aggregations) {
@@ -82,6 +86,14 @@ public class ServiceProvider {
 
   public void setAggregations(Set<Aggregation> aggregations) {
     this.aggregations = aggregations;
+  }
+
+  public boolean isAttributeAggregationRequired() {
+    return attributeAggregationRequired;
+  }
+
+  public void setAttributeAggregationRequired(boolean attributeAggregationRequired) {
+    this.attributeAggregationRequired = attributeAggregationRequired;
   }
 
   @Override

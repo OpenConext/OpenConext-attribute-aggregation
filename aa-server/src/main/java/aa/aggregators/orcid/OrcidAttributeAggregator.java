@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static aa.util.StreamUtils.singletonOptionalCollector;
 import static java.util.stream.Collectors.toList;
@@ -43,6 +42,7 @@ public class OrcidAttributeAggregator extends AbstractAttributeAggregator {
     return mapValuesToUserAttribute(ORCID, orcidValues.stream().filter(this::isValidOrcidId).collect(toList()));
   }
 
+  @SuppressWarnings("unchecked")
   private List<String> getOrcid(Map<String, Object> body) {
     List<Map<String, Object>> attributes = (List<Map<String, Object>>) body.get("attributes");
     if (!CollectionUtils.isEmpty(attributes)) {

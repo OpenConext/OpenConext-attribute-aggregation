@@ -16,10 +16,12 @@ export default class Aggregations extends React.Component {
     this.state = {
       aggregations: [],
       filteredAggregations: [],
-      sorted: {name: 'Name', order: 'down'}
+      sorted: {name: 'Name', order: 'down'},
+      serviceProviders: []
     };
 
     this.fetchAggregations();
+    API.getServiceProviders((json) => this.setState({serviceProviders: json}));
   }
 
   fetchAggregations() {
@@ -45,8 +47,17 @@ export default class Aggregations extends React.Component {
 
   renderServiceProviders = (aggregation) =>
     <div className={styles.attributes}>{aggregation.serviceProviders.map((sp) =>
-      <p key={sp.entityId}>{sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}</p>)}
+      <p key={sp.entityId}>
+        {sp.name !== undefined && sp.name !== null ? sp.name : sp.entityId}
+        {this.renderMarkedInSr(sp.entityId)}
+      </p>)}
     </div>;
+
+  renderMarkedInSr(entityId) {
+    let spArray = this.state.serviceProviders.filter((sp) => sp.entityId === entityId);
+    let sp =  spArray.length === 1 ? spArray[0] : {};
+    return sp.attributeAggregationRequired ? <em></em> : <em className={styles.warning}> (not marked in SR with attribute_aggregation_required)</em>
+  }
 
   renderAttributes = (aggregation) =>
     <div className={styles.attributes}>{aggregation.attributes.map((attr) =>

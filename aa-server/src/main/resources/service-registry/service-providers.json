@@ -26,7 +26,8 @@
     "description:en": "OpenConext OIDC Test",
     "description:nl": "OpenConext OIDC Test",
     "name:en": "OpenConext OIDC Test",
-    "name:nl": "OpenConext OIDC Test"
+    "name:nl": "OpenConext OIDC Test",
+    "coin:attribute_aggregation_required": "1"
   },
   {
     "entityid": "https://oidc.localhost.surfconext.nl",

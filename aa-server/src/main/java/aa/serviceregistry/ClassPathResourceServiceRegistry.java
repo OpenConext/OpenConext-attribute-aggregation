@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -55,8 +56,17 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
         new ServiceProvider(
             (String) entry.get("entityid"),
             getMetaDateEntry(entry, "description"),
-            getMetaDateEntry(entry, "name"))
+            getMetaDateEntry(entry, "name"),
+            getAttributeAggregationRequired(entry))
     ).sorted(sortEntityMetaData()).collect(toMap(ServiceProvider::getEntityId, e -> e));
+  }
+
+  private boolean getAttributeAggregationRequired(Map<String, Object> entry) {
+    String attributeAggregationRequired = (String) entry.get("coin:attribute_aggregation_required");
+    if (StringUtils.hasText(attributeAggregationRequired)) {
+      return attributeAggregationRequired.equals("1");
+    }
+    return false;
   }
 
   @SuppressWarnings("unchecked")
