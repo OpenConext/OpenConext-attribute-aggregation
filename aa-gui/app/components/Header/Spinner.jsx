@@ -11,10 +11,7 @@ export default class Spinner extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {visible: false};
-    let subscriber = (msg, data) => {
-      this.setState({visible: data.started})
-    };
-    PubSub.subscribe('API', subscriber);
+    PubSub.subscribe('API', (msg, data) => this.setState({visible: data.started}));
   }
 
   render() {

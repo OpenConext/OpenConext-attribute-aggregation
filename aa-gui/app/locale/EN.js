@@ -26,7 +26,10 @@ export default {
     delete: 'Delete',
     confirmation: 'Are you sure you want to delete aggregation {{name}}?',
     deleted: 'Successfully deleted aggregation {{name}}',
-    no_found: 'No aggregations found'
+    no_found: 'No aggregations found',
+    srConfiguredWarning: 'not marked in SR with attribute_aggregation_required',
+    consentIsSkipped: 'consent is skipped',
+    searchPlaceHolder: 'Search...'
   },
   authority: {
     authorities: 'Attribute Authorities',
@@ -61,7 +64,8 @@ export default {
     cancel_question: "Are you sure you want to leave this page?",
     name_already_exists: 'An aggregation with this name already exists',
     sp_already_linked: "Service Provider '{{serviceProvider}}' is already linked to aggregation '{{aggregation}}'",
-    skip_consent: "Skip consent"
+    skip_consent: "Skip consent",
+    serviceProvidersPlaceholder: "Select one or more ServiceProviders"
   },
   playground : {
     title: 'AGGREGATION PLAYGROUND',
@@ -77,7 +81,9 @@ export default {
     clear: 'Clear',
     result_status_ok: 'Ok',
     result_status_error: 'Error',
-    engine_block: 'Attribute Aggregation'
+    engine_block: 'Attribute Aggregation',
+    serviceProviderPlaceholder: 'Select one ServiceProvider',
+    about: 'Select an aggregation, fill in the required attributes for the aggregation and preview the result of invoking one of the endpoints.'
   },
   error: {
     exception_occurred: 'An unexpected error occurred. That is all we know.',

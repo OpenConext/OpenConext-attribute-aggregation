@@ -87,7 +87,7 @@ export default class Playground extends React.Component {
           options={this.state.serviceProviders}
           onChange={handleOnChange}
           multi={false}
-          placeholder='Select one ServiceProvider'
+          placeholder={i18n.t('playground.serviceProviderPlaceholder')}
         />
       </div>
     );
@@ -238,9 +238,7 @@ export default class Playground extends React.Component {
       <div className={styles.about}>
         <p className={styles.header_playground}>{i18n.t('playground.aboutTitle')}</p>
         <div className={styles.about_content}>
-          <p>Select an aggregation, fill in the required attributes for the aggregation and preview the result
-            of invoking one of the endpoints. For all endpoints see <Link
-              to="/about">{i18n.t('navigation.about')}</Link>.
+          <p>{i18n.t('playground.about')}
           </p>
         </div>
       </div>

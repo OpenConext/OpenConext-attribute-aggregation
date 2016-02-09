@@ -56,7 +56,7 @@ export default class Aggregations extends React.Component {
   renderMarkedInSr(entityId) {
     let spArray = this.state.serviceProviders.filter((sp) => sp.entityId === entityId);
     let sp =  spArray.length === 1 ? spArray[0] : {};
-    return sp.attributeAggregationRequired ? <em></em> : <em className={styles.warning}> (not marked in SR with attribute_aggregation_required)</em>
+    return sp.attributeAggregationRequired ? <em></em> : <em className={styles.warning}> ({i18n.t('aggregations.srConfiguredWarning')})</em>
   }
 
   renderAttributes = (aggregation) =>
@@ -73,7 +73,7 @@ export default class Aggregations extends React.Component {
     </a>
   </div>);
 
-  renderSkipConsent = (attribute) => (attribute.skipConsent ? <em> (consent is skipped)</em> : <em></em>)
+  renderSkipConsent = (attribute) => (attribute.skipConsent ? <em> ({i18n.t('aggregations.consentIsSkipped')})</em> : <em></em>)
 
   search = (e) => {
     let input = e.target.value;
@@ -174,7 +174,7 @@ export default class Aggregations extends React.Component {
         <div className={styles.mod_container}>
           <div className={styles.search_container}>
             <i className="fa fa-search"></i>
-            <input placeholder="Search..." type="text" onChange={this.search}/>
+            <input placeholder={i18n.t('aggregations.searchPlaceHolder')} type="text" onChange={this.search}/>
           </div>
           {this.renderAggregationsTable()}
         </div>

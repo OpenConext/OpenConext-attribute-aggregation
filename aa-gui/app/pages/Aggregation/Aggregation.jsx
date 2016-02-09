@@ -116,7 +116,7 @@ export default class Aggregation extends React.Component {
           options={this.state.serviceProviders}
           onChange={handleOnChange}
           multi={true}
-          placeholder='Select one or more ServiceProviders'
+          placeholder={i18n.t('aggregation.serviceProvidersPlaceholder')}
         />
         <div style={warningServiceProviders}>
           {this.state.errors.serviceProviders.map((aggregationNameAndEntityId) =>

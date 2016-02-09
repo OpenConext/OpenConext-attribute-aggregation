@@ -31,7 +31,7 @@ export default class Header extends React.Component {
           {i18n.t("header.welcome",{name: this.state.user.displayName})}
         </div>
         <LanguageSelector />
-        <a href='https://github.com/oharsta/OpenConext-attribute-aggregation' target='_blank'>
+        <a href='https://github.com/OpenConext/OpenConext-attribute-aggregation' target='_blank'>
           <img className={styles.logo} src={gitHub}/>
         </a>
         <a href='https://www.pivotaltracker.com/n/projects/1501602' target='_blank'>
