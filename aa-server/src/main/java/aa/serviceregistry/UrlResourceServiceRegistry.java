@@ -62,7 +62,13 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
     if (result.getStatusCode().equals(NOT_MODIFIED)) {
       LOG.debug("Not refreshing SP metadata. Not modified");
     } else {
-      super.initializeMetadata();
+      try {
+        super.initializeMetadata();
+      } catch (RuntimeException e) {
+        LOG.error("Error in refreshing metadata", e);
+        //don't rethrow as this will stop the scheduled thread pool
+      }
+
     }
   }
 }

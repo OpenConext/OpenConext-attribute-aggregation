@@ -30,9 +30,12 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
   }
 
   protected void initializeMetadata() {
+    long start = System.currentTimeMillis();
+    LOG.debug("Starting refreshing SP metadata.");
     List<Resource> resources = getResources();
     Map<String, ServiceProvider> serviceProviderMap = resources.stream().map(this::parseEntities).flatMap(m -> m.entrySet().stream()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     entityMetaData.putAll(serviceProviderMap);
+    LOG.debug("Finished refreshing SP metadata in {} ms.",System.currentTimeMillis() - start);
   }
 
   protected List<Resource> getResources() {
