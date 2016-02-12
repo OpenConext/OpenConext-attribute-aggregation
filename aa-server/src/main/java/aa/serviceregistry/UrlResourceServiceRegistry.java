@@ -52,18 +52,11 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
   }
 
   @Override
-  protected void initializeMetadata()  {
-    HttpHeaders headers = new HttpHeaders();
-    String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")).minusMinutes(period));
-    headers.set(IF_MODIFIED_SINCE, lastRefresh);
-    headers.set("Authorization", urlResource.getBasicAuth());
-
-    ResponseEntity<String> result = restTemplate.exchange(spRemotePath, HEAD, new HttpEntity<>(headers), String.class);
-
-    if (result.getStatusCode().equals(NOT_MODIFIED)) {
-      LOG.debug("Not refreshing SP metadata. Not modified");
+  protected void initializeMetadata() {
+    if (urlResource.isModified(period)) {
+      super.initializeMetadata();
     } else {
-        super.initializeMetadata();
+      LOG.debug("Not refreshing SP metadata. Not modified");
     }
   }
 
