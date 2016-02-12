@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toMap;
 
 public class ClassPathResourceServiceRegistry implements ServiceRegistry {
 
-  protected final static Logger LOG = LoggerFactory.getLogger(ClassPathResourceServiceRegistry.class);
+  protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
   private final static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -35,7 +35,7 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
     List<Resource> resources = getResources();
     Map<String, ServiceProvider> serviceProviderMap = resources.stream().map(this::parseEntities).flatMap(m -> m.entrySet().stream()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     entityMetaData.putAll(serviceProviderMap);
-    LOG.debug("Finished refreshing SP metadata in {} ms.",System.currentTimeMillis() - start);
+    LOG.debug("Finished refreshing SP metadata in {} ms.", System.currentTimeMillis() - start);
   }
 
   protected List<Resource> getResources() {
