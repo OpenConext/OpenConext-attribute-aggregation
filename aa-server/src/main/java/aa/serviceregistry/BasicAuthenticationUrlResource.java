@@ -15,15 +15,17 @@ import java.time.ZonedDateTime;
 import java.util.Base64;
 
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+import static java.util.Base64.getEncoder;
 import static org.springframework.http.HttpHeaders.IF_MODIFIED_SINCE;
 
 public class BasicAuthenticationUrlResource extends UrlResource {
 
+  private static final ZoneId GMT = ZoneId.of("GMT");
   private final String basicAuth;
 
   public BasicAuthenticationUrlResource(String path, String username, String password) throws MalformedURLException {
     super(path);
-    this.basicAuth = "Basic " + new String(Base64.getEncoder().encode((username + ":" + password).getBytes()));
+    this.basicAuth = "Basic " + new String(getEncoder().encode((username + ":" + password).getBytes()));
   }
 
   @Override
@@ -47,7 +49,7 @@ public class BasicAuthenticationUrlResource extends UrlResource {
       con.setRequestMethod("HEAD");
       setHeaders(con);
 
-      String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")).minusMinutes(minutes));
+      String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(GMT).minusMinutes(minutes));
       con.setRequestProperty(IF_MODIFIED_SINCE, lastRefresh);
 
       int responseCode = con.getResponseCode();
