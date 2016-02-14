@@ -16,52 +16,33 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class RedisUserAttributeCache implements UserAttributeCache {
-
-  private final static Logger LOG = LoggerFactory.getLogger(RedisUserAttributeCache.class);
+public class RedisUserAttributeCache extends AbstractUserAttributeCache {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final StatefulRedisConnection<String, String> connection;
   private TypeReference<List<UserAttribute>> typeRef = new TypeReference<List<UserAttribute>>() {
   };
-  private final long cacheDuration;
 
   public RedisUserAttributeCache(String redisUrl, long cacheDuration) {
+    super(cacheDuration);
     RedisClient redisClient = RedisClient.create(redisUrl);
     this.connection = redisClient.connect();
-    this.cacheDuration = cacheDuration;
   }
 
   @Override
-  public Optional<List<UserAttribute>> get(Optional<String> cacheKey) {
-    if (!cacheKey.isPresent()) {
-      return Optional.empty();
-    }
-    String json = this.connection.sync().get(cacheKey.get());
+  protected List<UserAttribute> doGet(String cacheKey) throws IOException {
+    String json = this.connection.sync().get(cacheKey);
     if (StringUtils.hasText(json)) {
-      try {
-        List<UserAttribute> userAttributes = objectMapper.readValue(json, typeRef);
-        LOG.debug("Returning userAttributes from cache {}", userAttributes);
-        return Optional.of(userAttributes);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+      return objectMapper.readValue(json, typeRef);
     }
-    return Optional.empty();
+    return null;
   }
 
   @Override
-  public void put(Optional<String> cacheKey, List<UserAttribute> userAttributes) {
-    if (cacheKey.isPresent() && !CollectionUtils.isEmpty(userAttributes)) {
-      LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey.get());
-      try {
-        this.connection.sync().set(
-            cacheKey.get(),
-            objectMapper.writeValueAsString(userAttributes),
-            SetArgs.Builder.px(cacheDuration));
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
-      }
-    }
+  protected void doPut(String cacheKey, List<UserAttribute> userAttributes) throws JsonProcessingException {
+    this.connection.sync().set(
+        cacheKey,
+        objectMapper.writeValueAsString(userAttributes),
+        SetArgs.Builder.px(getCacheDuration()));
   }
 }

@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 public class VootAttributeAggregator extends AbstractAttributeAggregator {
@@ -23,6 +23,7 @@ public class VootAttributeAggregator extends AbstractAttributeAggregator {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public List<UserAttribute> aggregate(List<UserAttribute> input) {
     String userId = getUserAttributeSingleValue(input, NAME_ID);
     String url = endpoint() + "/internal/groups/{userUrn}";
@@ -39,7 +40,7 @@ public class VootAttributeAggregator extends AbstractAttributeAggregator {
     details.setClientId(configuration.getUser());
     details.setClientSecret(configuration.getPassword());
     details.setAccessTokenUri(authorizationAccessTokenUrl);
-    details.setScope(asList("groups"));
+    details.setScope(singletonList("groups"));
     return new OAuth2RestTemplate(details);
   }
 }

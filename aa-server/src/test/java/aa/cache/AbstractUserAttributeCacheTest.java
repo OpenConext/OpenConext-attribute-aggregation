@@ -20,7 +20,7 @@ public abstract class AbstractUserAttributeCacheTest {
   public abstract UserAttributeCache getSubject();
 
   @Test
-  public void testExpireCache() throws InterruptedException {
+  public void testExpireCache() throws Exception {
     getSubject().put(key, userAttributes);
     Thread.sleep(500);
     Optional<List<UserAttribute>> result = getSubject().get(key);
@@ -28,14 +28,14 @@ public abstract class AbstractUserAttributeCacheTest {
   }
 
   @Test
-  public void testCacheHit() throws InterruptedException {
+  public void testCacheHit() throws Exception {
     getSubject().put(key, userAttributes);
     Optional<List<UserAttribute>> result = getSubject().get(key);
     assertEquals(userAttributes, result.get());
   }
 
   @Test
-  public void testCacheMiss() throws InterruptedException {
+  public void testCacheMiss() throws Exception {
     getSubject().put(Optional.empty(), userAttributes);
     Optional<List<UserAttribute>> result = getSubject().get(Optional.empty());
     assertFalse(result.isPresent());

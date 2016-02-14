@@ -1,7 +1,10 @@
 package aa.serviceregistry;
 
 import aa.model.ServiceProvider;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,7 +12,12 @@ import static org.junit.Assert.assertTrue;
 
 public class ClassPathResourceServiceRegistryTest {
 
-  private static ServiceRegistry serviceRegistry = new ClassPathResourceServiceRegistry(true);
+  private static ServiceRegistry serviceRegistry;
+
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    serviceRegistry = new ClassPathResourceServiceRegistry(true);
+  }
 
   @Test
   public void testServiceProviders() throws Exception {

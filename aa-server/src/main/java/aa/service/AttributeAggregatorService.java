@@ -3,24 +3,17 @@ package aa.service;
 import aa.aggregators.AttributeAggregator;
 import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
-import aa.model.Attribute;
-import aa.model.AttributeAuthorityConfiguration;
-import aa.model.ServiceProvider;
-import aa.model.UserAttribute;
-import aa.util.StreamUtils;
+import aa.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
-import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
@@ -50,8 +43,8 @@ public class AttributeAggregatorService {
     LOG.debug("Started to aggregate attributes for SP {} and input {}", serviceProvider, input);
 
     //all of the Attributes that this SP may receive
-    List<Attribute> attributes = serviceProvider.getAggregations().stream().map(aggregation -> aggregation.getAttributes())
-        .flatMap(s -> s.stream()).collect(toList());
+    List<Attribute> attributes = serviceProvider.getAggregations().stream().map(Aggregation::getAttributes)
+        .flatMap(Collection::stream).collect(toList());
 
     //all of the unique AttributeAuthorityConfigurations for the attributes
     Set<AttributeAuthorityConfiguration> authorityConfigurations = attributes.stream().map(attribute -> configuration.getAuthorityById(attribute.getAttributeAuthorityId())).collect(toSet());
@@ -105,7 +98,7 @@ public class AttributeAggregatorService {
       List<UserAttribute> userAttributes = aggregator.aggregate(input);
       cache.put(cacheKey, userAttributes);
       return userAttributes;
-    } catch (RuntimeException e) {
+    } catch (IOException | RuntimeException e) {
       LOG.warn("AttributeAggregator {} threw exception: {} ", aggregator, e);
       return Collections.<UserAttribute>emptyList();
     }

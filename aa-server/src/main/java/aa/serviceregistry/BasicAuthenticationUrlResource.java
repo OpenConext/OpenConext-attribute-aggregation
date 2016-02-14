@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Base64;
@@ -32,20 +29,11 @@ public class BasicAuthenticationUrlResource extends UrlResource {
   public InputStream getInputStream() throws IOException {
     URLConnection con = this.getURL().openConnection();
     setHeaders(con);
-    try {
-      return con.getInputStream();
-    } catch (IOException ex) {
-      if (con instanceof HttpURLConnection) {
-        ((HttpURLConnection) con).disconnect();
-      }
-      throw ex;
-    }
+    return con.getInputStream();
   }
 
-  public boolean isModified(int minutes) {
-    HttpURLConnection con = null;
-    try {
-      con = (HttpURLConnection) this.getURL().openConnection();
+  public boolean isModified(int minutes) throws IOException {
+      HttpURLConnection con = (HttpURLConnection) this.getURL().openConnection();
       con.setRequestMethod("HEAD");
       setHeaders(con);
 
@@ -54,10 +42,6 @@ public class BasicAuthenticationUrlResource extends UrlResource {
 
       int responseCode = con.getResponseCode();
       return responseCode != HttpStatus.NOT_MODIFIED.value();
-    } catch (IOException ex) {
-      con.disconnect();
-      throw new RuntimeException(ex);
-    }
   }
 
   protected void setHeaders(URLConnection con) {

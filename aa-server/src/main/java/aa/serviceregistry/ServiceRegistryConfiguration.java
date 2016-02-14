@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 @Configuration
@@ -14,7 +15,7 @@ public class ServiceRegistryConfiguration {
 
   @Bean
   @Profile({"dev", "no-csrf", "aa-test"})
-  public ServiceRegistry classPathResourceServiceRegistry() {
+  public ServiceRegistry classPathResourceServiceRegistry() throws IOException {
     return new ClassPathResourceServiceRegistry(true);
   }
 
@@ -26,7 +27,7 @@ public class ServiceRegistryConfiguration {
       @Value("${metadata.username}") String username,
       @Value("${metadata.password}") String password,
       @Value("${metadata.spRemotePath}") String spRemotePath,
-      @Value("${metadata.refresh.minutes}") int period) throws MalformedURLException {
+      @Value("${metadata.refresh.minutes}") int period) throws IOException {
     return new UrlResourceServiceRegistry(username, password, spRemotePath, period);
   }
 

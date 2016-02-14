@@ -4,15 +4,22 @@ import aa.config.AuthorityConfiguration;
 import aa.model.*;
 import aa.serviceregistry.ClassPathResourceServiceRegistry;
 import aa.serviceregistry.ServiceRegistry;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.HashSet;
 
 import static java.util.Arrays.asList;
 
 public class AggregationValidatorTest {
 
-  private ServiceRegistry serviceRegistry = new ClassPathResourceServiceRegistry(true);
+  private static ServiceRegistry serviceRegistry;
+
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    serviceRegistry = new ClassPathResourceServiceRegistry(true);
+  }
 
   private AuthorityConfiguration authorityConfiguration = new AuthorityConfiguration(asList(
       new AttributeAuthorityConfiguration("aa1", asList(

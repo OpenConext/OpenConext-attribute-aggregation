@@ -18,51 +18,40 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
  * Do not use in clustered environment when accessing the Attribute Aggregator through
  * a load balancer.
  */
-public class SimpleInMemoryUserAttributeCache implements UserAttributeCache {
-
-  private final static Logger LOG = LoggerFactory.getLogger(SimpleInMemoryUserAttributeCache.class);
+public class SimpleInMemoryUserAttributeCache extends AbstractUserAttributeCache {
 
   private final Map<String, CachedAggregate> cache = new ConcurrentHashMap<>();
 
-  private final long cacheDuration;
-
   public SimpleInMemoryUserAttributeCache(long cacheDurationMilliseconds, long clearExpiredAggregatesPeriod) {
-    this.cacheDuration = cacheDurationMilliseconds;
-    Assert.isTrue(cacheDurationMilliseconds > 0);
+    super(cacheDurationMilliseconds);
     newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAggregates, 0, clearExpiredAggregatesPeriod, TimeUnit.MILLISECONDS);
+  }
+
+  @Override
+  protected List<UserAttribute> doGet(String cacheKey) {
+    CachedAggregate cachedAggregate = cache.get(cacheKey);
+    long now = System.currentTimeMillis();
+    if (cachedAggregate != null && cachedAggregate.timestamp + getCacheDuration() > now) {
+      return cachedAggregate.aggregate;
+    }
+    return null;
+  }
+
+  @Override
+  protected void doPut(String cacheKey, List<UserAttribute> userAttributes) {
+    long now = System.currentTimeMillis();
+    cache.put(cacheKey, new CachedAggregate(now, userAttributes));
   }
 
   private void clearExpiredAggregates() {
     long now = System.currentTimeMillis();
+    long cacheDuration = getCacheDuration();
     cache.forEach((key, aggregate) -> {
       if (aggregate.timestamp + cacheDuration < now) {
         LOG.debug("Removing expired aggregation with key {}", key);
         cache.remove(key);
       }
     });
-  }
-
-  @Override
-  public Optional<List<UserAttribute>> get(Optional<String> cacheKey) {
-    if (!cacheKey.isPresent()) {
-      return Optional.empty();
-    }
-    CachedAggregate cachedAggregate = cache.get(cacheKey.get());
-    long now = System.currentTimeMillis();
-    if (cachedAggregate != null && cachedAggregate.timestamp + cacheDuration > now) {
-      LOG.debug("Returning userAttributes from cache {}", cachedAggregate.aggregate);
-      return Optional.of(cachedAggregate.aggregate);
-    }
-    return Optional.empty();
-  }
-
-  @Override
-  public void put(Optional<String> cacheKey, List<UserAttribute> userAttributes) {
-    if (cacheKey.isPresent() && !CollectionUtils.isEmpty(userAttributes)) {
-      LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey.get());
-      long now = System.currentTimeMillis();
-      cache.put(cacheKey.get(), new CachedAggregate(now, userAttributes));
-    }
   }
 
   private class CachedAggregate {

@@ -113,6 +113,7 @@ public abstract class AbstractIntegrationTest {
     assertEquals("ResourceType", metaInformation.getResourceType());
   }
 
+  @SuppressWarnings("unchecked")
   protected void assertMeResult(Map<String, Object> body) {
     assertEquals(Collections.singletonList("urn:scim:schemas:extension:surf:http://mock-sp"), body.get("schemas"));
     assertNotNull(UUID.fromString((String) body.get("id")));

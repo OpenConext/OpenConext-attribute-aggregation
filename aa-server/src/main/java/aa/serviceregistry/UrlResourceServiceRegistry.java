@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -32,7 +33,7 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
       String username,
       String password,
       String spRemotePath,
-      int period) throws MalformedURLException {
+      int period) throws IOException {
     super(false);
     this.urlResource = new BasicAuthenticationUrlResource(spRemotePath, username, password);
     this.spRemotePath = spRemotePath;
@@ -52,7 +53,7 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
   }
 
   @Override
-  protected void initializeMetadata() {
+  protected void initializeMetadata() throws IOException {
     if (urlResource.isModified(period)) {
       super.initializeMetadata();
     } else {
@@ -63,7 +64,7 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
   private void refreshMetataData() {
     try {
       this.initializeMetadata();
-    } catch (RuntimeException e) {
+    } catch (IOException | RuntimeException e) {
       LOG.error("Error in refreshing metadata", e);
       //don't rethrow as this will stop the scheduled thread pool
     }

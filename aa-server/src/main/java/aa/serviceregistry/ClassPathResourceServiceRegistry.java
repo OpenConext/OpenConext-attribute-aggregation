@@ -22,14 +22,14 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
 
   private Map<String, ServiceProvider> entityMetaData = new ConcurrentHashMap<>();
 
-  public ClassPathResourceServiceRegistry(boolean initialize) {
+  public ClassPathResourceServiceRegistry(boolean initialize) throws IOException {
     //this provides subclasses a hook to set properties before initializing metadata
     if (initialize) {
       initializeMetadata();
     }
   }
 
-  protected void initializeMetadata() {
+  protected void initializeMetadata() throws IOException {
     long start = System.currentTimeMillis();
     LOG.debug("Starting refreshing SP metadata.");
     List<Resource> resources = getResources();
