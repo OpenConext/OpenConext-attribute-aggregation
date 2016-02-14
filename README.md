@@ -114,7 +114,7 @@ In dev modus the content is read from the file system:
 
 * [service-providers.json](aa-server/src/main/resources/service-registry/service-providers.json)
 
-To sync the data of the file system with the actual production data of `https://tools.surfconext.nl` run the [refreshEntityMetadata](aa-server/scripts/refreshEntityMetadata.sh) script.
+To sync the data of the file system with the actual test data run the [refreshEntityMetadata](aa-server/scripts/refreshEntityMetadata.sh) script.
 
 ### [Configuration and deployment](#configuration-and-deployment)
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-SP_ENTITY_META_DATA=$SCRIPT_DIR/../src/main/resources/service-registry/saml20-sp-remote.json
+SP_ENTITY_META_DATA=$SCRIPT_DIR/../src/main/resources/service-registry/service-providers.json
 
 if [ ! -f $SP_ENTITY_META_DATA ];
   then
@@ -10,4 +10,4 @@ fi
 
 rm -fr $SP_ENTITY_META_DATA;
 
-curl https://tools.surfconext.nl/export/saml20-sp-remote.json >> $SP_ENTITY_META_DATA
+curl -i -H "Content-Type: application/json" --user metadata.client:secret https://multidata.test.surfconext.nl/service-providers.json >> $SP_ENTITY_META_DATA
