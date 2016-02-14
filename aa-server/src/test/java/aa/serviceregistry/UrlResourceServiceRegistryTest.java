@@ -27,7 +27,7 @@ public class UrlResourceServiceRegistryTest {
 
     stubFor(head(urlEqualTo("/sp")).withHeader(IF_MODIFIED_SINCE, notMatching("X")).willReturn(aResponse().withStatus(200)));
 
-    this.subject = new UrlResourceServiceRegistry("user","password","http://localhost:8889/sp", 10);
+    this.subject = (UrlResourceServiceRegistry) new ServiceRegistryConfiguration().urlResourceServiceRegistry("user","password","http://localhost:8889/sp", 10);
   }
 
   @Test
