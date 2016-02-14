@@ -12,6 +12,7 @@ OpenConext Attribute Aggregation
 - Java 8
 - Maven 3
 - MySQL 5.5
+- Redis
 - node.js
 
 ### [Create database](#create-database)
@@ -105,13 +106,13 @@ Do not to forget to write Integration tests. For an example see [OrcidAttributeA
 
 ### [Service Registry](#service-registry)
 
-The aa-server needs to access the metadata of Service providers from the Service Registry. In production modus the content is read (and periodically refreshed) from:
+The aa-server needs to access the metadata of Service providers from the Service Registry. In all other modus then `dev` the metadata is read (and periodically refreshed) from:
   
-* https://tools.surfconext.nl/export/saml20-sp-remote.json
+* https://multidata.${env}.surfconext.nl/service-providers.json
 
-In any other modus the content is read from the file system:
+In dev modus the content is read from the file system:
 
-* [saml20-sp-remote.json](aa-server/src/main/resources/service-registry/saml20-sp-remote.json)
+* [service-providers.json](aa-server/src/main/resources/service-registry/service-providers.json)
 
 To sync the data of the file system with the actual production data of `https://tools.surfconext.nl` run the [refreshEntityMetadata](aa-server/scripts/refreshEntityMetadata.sh) script.
 

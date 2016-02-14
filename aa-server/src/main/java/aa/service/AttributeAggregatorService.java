@@ -1,6 +1,7 @@
 package aa.service;
 
 import aa.aggregators.AttributeAggregator;
+import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.model.Attribute;
 import aa.model.AttributeAuthorityConfiguration;
@@ -28,25 +29,19 @@ public class AttributeAggregatorService {
   private final static Logger LOG = LoggerFactory.getLogger(AttributeAggregatorService.class);
 
   private final Map<String, AttributeAggregator> aggregators;
-  private final Map<String, CachedAggregate> cache = new ConcurrentHashMap<>();
   private final ForkJoinPool forkJoinPool;
   private final AuthorityConfiguration configuration;
-  private final long cacheDuration;
-  private final boolean useCache;
+  private final UserAttributeCache cache;
 
   public AttributeAggregatorService(List<AttributeAggregator> aggregators,
                                     AuthorityConfiguration configuration,
-                                    long cacheDurationMilliseconds, long expiryIntervalCheckMilliseconds) {
+                                    UserAttributeCache cache
+                                    ) {
     Assert.notEmpty(aggregators);
     this.aggregators = aggregators.stream().collect(toMap(AttributeAggregator::getAttributeAuthorityId, identity()));
     this.forkJoinPool = new ForkJoinPool(20 /* number of threads in embedded tomcat */ * aggregators.size());
     this.configuration = configuration;
-    this.cacheDuration = cacheDurationMilliseconds;
-    this.useCache = expiryIntervalCheckMilliseconds > 0;
-
-    if (useCache) {
-      newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAggregates, 0, expiryIntervalCheckMilliseconds, TimeUnit.MILLISECONDS);
-    }
+    this.cache = cache;
   }
 
   public List<UserAttribute> aggregate(ServiceProvider serviceProvider, List<UserAttribute> input) {
@@ -102,21 +97,13 @@ public class AttributeAggregatorService {
 
   private List<UserAttribute> doAggregate(List<UserAttribute> input, AttributeAggregator aggregator) {
     try {
-      if (!useCache) {
-        return aggregator.aggregate(input);
-      }
       Optional<String> cacheKey = aggregator.cacheKey(input);
-      CachedAggregate cachedAggregate = cacheKey.isPresent() ? cache.get(cacheKey.get()) : null;
-      long now = System.currentTimeMillis();
-      if (cachedAggregate != null && cachedAggregate.timestamp + cacheDuration > now) {
-        LOG.debug("Returning userAttributes from cache {}", cachedAggregate.aggregate);
-        return cachedAggregate.aggregate;
+      Optional<List<UserAttribute>> userAttributesFromCache = cache.get(cacheKey);
+      if (userAttributesFromCache.isPresent()) {
+        return userAttributesFromCache.get();
       }
       List<UserAttribute> userAttributes = aggregator.aggregate(input);
-      if (cacheKey.isPresent() && userAttributes.size() > 0) {
-        LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey.get());
-        cache.put(cacheKey.get(), new CachedAggregate(now, userAttributes));
-      }
+      cache.put(cacheKey, userAttributes);
       return userAttributes;
     } catch (RuntimeException e) {
       LOG.warn("AttributeAggregator {} threw exception: {} ", aggregator, e);
@@ -129,24 +116,8 @@ public class AttributeAggregatorService {
         userAttribute.getName().equals(attribute.getName()));
   }
 
-  private void clearExpiredAggregates() {
-    long now = System.currentTimeMillis();
-    cache.forEach((key, aggregate) -> {
-      if (aggregate.timestamp + cacheDuration < now) {
-        LOG.debug("Removing expired aggregation with key {}", key);
-        cache.remove(key);
-      }
-    });
-  }
 
-  private class CachedAggregate {
-    long timestamp;
-    List<UserAttribute> aggregate;
 
-    public CachedAggregate(long timestamp, List<UserAttribute> aggregate) {
-      this.timestamp = timestamp;
-      this.aggregate = aggregate;
-    }
-  }
+
 
 }

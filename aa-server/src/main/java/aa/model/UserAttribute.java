@@ -1,6 +1,7 @@
 package aa.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class UserAttribute {
 
@@ -63,5 +64,21 @@ public class UserAttribute {
         ", source='" + source + '\'' +
         ", skipConsent=" + skipConsent +
         '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UserAttribute that = (UserAttribute) o;
+    return skipConsent == that.skipConsent &&
+        Objects.equals(name, that.name) &&
+        Objects.equals(values, that.values) &&
+        Objects.equals(source, that.source);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, values, source, skipConsent);
   }
 }

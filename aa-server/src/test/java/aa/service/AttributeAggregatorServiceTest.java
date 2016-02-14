@@ -2,6 +2,8 @@ package aa.service;
 
 import aa.aggregators.AttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
+import aa.cache.NoopUserAttributeCache;
+import aa.cache.SimpleInMemoryUserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.*;
@@ -30,7 +32,7 @@ public class AttributeAggregatorServiceTest {
   private AuthorityConfiguration configuration = new AuthorityResolver(
       new DefaultResourceLoader(), "classpath:testAttributeAuthorities.yml").getConfiguration();
   private AttributeAggregatorService subject = new AttributeAggregatorService(configuration.getAuthorities().stream()
-      .map(config -> new TestingAttributeAggregator(config, true)).collect(toList()), configuration, -1, 1000 * 60 * 5);
+      .map(config -> new TestingAttributeAggregator(config, true)).collect(toList()), configuration, new NoopUserAttributeCache());
 
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(8889);
@@ -54,8 +56,10 @@ public class AttributeAggregatorServiceTest {
     attributeAuthorityConfiguration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute("urn:mace:dir:attribute-def:eduPersonPrincipalName")));
 
     AuthorityConfiguration configuration = new AuthorityConfiguration(singletonList(attributeAuthorityConfiguration));
-    AttributeAggregatorService subject =
-        new AttributeAggregatorService(singletonList(new TestingAttributeAggregator(attributeAuthorityConfiguration, true)), configuration, 1 * 1000, 60 * 1000);
+    AttributeAggregatorService subject = new AttributeAggregatorService(
+        singletonList(new TestingAttributeAggregator(attributeAuthorityConfiguration, true)),
+        configuration,
+        new SimpleInMemoryUserAttributeCache(1 * 1000, 1000 * 60 * 5));
 
     ServiceProvider sp = new ServiceProvider(singleton(new Aggregation(singleton(attribute))));
 
@@ -94,7 +98,7 @@ public class AttributeAggregatorServiceTest {
     List<AttributeAuthorityConfiguration> configurations = singletonList(configuration);
     AuthorityConfiguration authorityConfiguration = new AuthorityConfiguration(configurations);
     List<AttributeAggregator> aggregators = singletonList(new TestingAttributeAggregator(configurations.get(0), false));
-    AttributeAggregatorService subject = new AttributeAggregatorService(aggregators, authorityConfiguration, 0, -1);
+    AttributeAggregatorService subject = new AttributeAggregatorService(aggregators, authorityConfiguration, new NoopUserAttributeCache());
 
     Set<Aggregation> aggregations = singleton(new Aggregation(new HashSet<>(attributes.subList(0, 3))));
     ServiceProvider serviceProvider = new ServiceProvider(aggregations);

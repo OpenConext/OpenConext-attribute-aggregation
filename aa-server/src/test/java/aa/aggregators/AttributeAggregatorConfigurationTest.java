@@ -1,5 +1,6 @@
 package aa.aggregators;
 
+import aa.cache.NoopUserAttributeCache;
 import aa.config.AuthorityResolver;
 import aa.service.AttributeAggregatorService;
 import org.junit.Before;
@@ -26,7 +27,7 @@ public class AttributeAggregatorConfigurationTest {
     subject = new AttributeAggregatorConfiguration();
     setField(subject, "authorityResolver", new AuthorityResolver(new DefaultResourceLoader(), configFileLocation));
     setField(subject, "environment", "test.surfconext");
-    setField(subject, "cacheDuration", 1200000L);
+    setField(subject, "userAttributeCache", new NoopUserAttributeCache());
     setField(subject, "authorizationAccessTokenUrl", "http://localhost:8889/oauth/token");
   }
 

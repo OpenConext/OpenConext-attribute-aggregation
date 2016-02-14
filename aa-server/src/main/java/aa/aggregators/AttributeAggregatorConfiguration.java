@@ -4,6 +4,7 @@ import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.sab.SabAttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
 import aa.aggregators.voot.VootAttributeAggregator;
+import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.AttributeAuthorityConfiguration;
@@ -23,19 +24,17 @@ import static java.util.stream.Collectors.toList;
 @Configuration
 public class AttributeAggregatorConfiguration {
 
-  private int expiryIntervalCheckMilliseconds = 1000 * 60 * 5;
-
   @Value("${authorization.accessToken.url}")
   private String authorizationAccessTokenUrl;
-
-  @Value("${aggregate.cache.duration.milliseconds}")
-  private long cacheDuration;
 
   @Value("${scim.server.environment}")
   private String environment;
 
   @Autowired
   private AuthorityResolver authorityResolver;
+
+  @Autowired
+  private UserAttributeCache userAttributeCache;
 
   @Bean
   @Profile({"aa-test"})
@@ -53,7 +52,7 @@ public class AttributeAggregatorConfiguration {
     AuthorityConfiguration configuration = authorityResolver.getConfiguration();
     List<AttributeAggregator> attributeAggregators = configuration.getAuthorities().stream()
         .map(aggregatorFunction).collect(toList());
-    return new AttributeAggregatorService(attributeAggregators, configuration, cacheDuration, expiryIntervalCheckMilliseconds);
+    return new AttributeAggregatorService(attributeAggregators, configuration, userAttributeCache);
   }
 
   private AttributeAggregator attributeAggregatorById(AttributeAuthorityConfiguration configuration) {
