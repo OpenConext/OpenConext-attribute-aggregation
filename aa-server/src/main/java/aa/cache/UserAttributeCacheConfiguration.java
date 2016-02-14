@@ -16,13 +16,13 @@ import java.net.MalformedURLException;
 public class UserAttributeCacheConfiguration {
 
   @Bean
-  @Profile({"dev", "no-csrf", "aa-test"})
+  @Profile({"!redis"})
   public UserAttributeCache inMemoryUserAttributeCache(@Value("${aggregate.cache.duration.milliseconds}") long cacheDuration) {
     return new SimpleInMemoryUserAttributeCache(cacheDuration, 1000 * 60 * 5);
   }
 
   @Bean
-  @Profile({"test", "acc", "prod"})
+  @Profile({"redis"})
   @Autowired
   @Primary
   public UserAttributeCache redisUserAttributeCache(@Value("${redis.url}") String redisUrl,

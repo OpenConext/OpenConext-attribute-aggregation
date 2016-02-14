@@ -31,7 +31,7 @@ public abstract class AbstractUserAttributeCacheTest {
   public void testCacheHit() throws InterruptedException {
     getSubject().put(key, userAttributes);
     Optional<List<UserAttribute>> result = getSubject().get(key);
-    assertEquals(new ArrayList<>(userAttributes), new ArrayList<>(result.get()));
+    assertEquals(userAttributes, result.get());
   }
 
   @Test
