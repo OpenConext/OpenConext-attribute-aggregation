@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
@@ -166,7 +167,8 @@ public class SCIMController {
     if (!sp.isPresent()) {
       throw new SchemaNotFoundException("ServiceProvider " + serviceProviderEntityId + " has no attribute aggregations configured");
     }
-    List<UserAttribute> input = getUserAttributes(authentication);
+    FederatedUserAuthenticationToken userAuthentication = (FederatedUserAuthenticationToken) authentication.getUserAuthentication();
+    List<UserAttribute> input = userAuthentication.getUserAttributes();
     List<UserAttribute> userAttributes = attributeAggregatorService.aggregate(sp.get(), input);
 
     Map<String, Object> result = new LinkedHashMap<>();
@@ -189,24 +191,6 @@ public class SCIMController {
 
   }
 
-  private List<UserAttribute> getUserAttributes(OAuth2Authentication authentication) {
-    //convert user information to UserAttributes
-    FederatedUserAuthenticationToken userAuthentication = (FederatedUserAuthenticationToken) authentication.getUserAuthentication();
-    String nameId = userAuthentication.getName();
-    String schacHomeOrganization = userAuthentication.getSchacHomeOrganization();
-    String eduPersonPrincipalName = userAuthentication.getEduPersonPrincipalName();
-
-    //need ArrayList otherwise we can't add anything
-    List<UserAttribute> input = new ArrayList<>(asList(
-        new UserAttribute(NAME_ID, singletonList(nameId)),
-        new UserAttribute(SCHAC_HOME, singletonList(schacHomeOrganization))
-    ));
-    if (StringUtils.hasText(eduPersonPrincipalName)) {
-      input.add(new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList(eduPersonPrincipalName)));
-    }
-    return input;
-  }
-
   private OAuth2Request buildOAuth2Request(String clientId) {
     return new OAuth2Request(Collections.emptyMap(), clientId,
         SecurityContextHolder.getContext().getAuthentication().getAuthorities(), true, Collections.emptySet(),
@@ -222,18 +206,21 @@ public class SCIMController {
   }
 
   private void assertClientCredentials(OAuth2Authentication authentication) {
-    if (!(authentication.getUserAuthentication() instanceof ClientCredentialsAuthentication)) {
-      throw new InvalidAuthenticationException(
-          String.format("Only accessible with Client Credentials authentication. Actual authentication %s",
-              authentication.getUserAuthentication()));
-    }
+    assertCorrectAuthentication(authentication, ClientCredentialsAuthentication.class);
   }
 
   private void assertAuthorizationCode(OAuth2Authentication authentication) {
-    if (!(authentication.getUserAuthentication() instanceof FederatedUserAuthenticationToken)) {
+    assertCorrectAuthentication(authentication, FederatedUserAuthenticationToken.class);
+  }
+
+  private void assertCorrectAuthentication(OAuth2Authentication authentication, Class expectedAuthentication) {
+    Authentication userAuthentication = authentication.getUserAuthentication();
+    if (!userAuthentication.getClass().isAssignableFrom(expectedAuthentication)) {
       throw new InvalidAuthenticationException(
-          String.format("Only accessible with Authorization code authentication. Actual authentication %s",
-              authentication.getUserAuthentication()));
+          String.format("Only accessible with %s code authentication. Actual authentication %s",
+              expectedAuthentication.getName(),
+              userAuthentication));
+
     }
   }
 

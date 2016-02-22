@@ -7,6 +7,7 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class UserAttributesTest {
 
@@ -21,7 +22,7 @@ public class UserAttributesTest {
   }
 
   @Test
-  public void testEquals() {
+  public void testHashCode() {
     List<UserAttribute> list = new ArrayList<>();
     list.add(createUserAttribute());
     list.add(createUserAttribute());
@@ -29,6 +30,14 @@ public class UserAttributesTest {
 
     Set<UserAttribute> set = new HashSet<>(list);
     assertEquals(1, set.size());
+  }
+
+  @Test
+  public void testEquals() {
+    UserAttribute userAttribute = new UserAttribute("name", singletonList("value"), "source");
+    assertNotEquals(userAttribute, new UserAttribute("name1", singletonList("value"), "source"));
+    assertNotEquals(userAttribute, new UserAttribute("name", singletonList("value1"), "source"));
+    assertNotEquals(userAttribute, new UserAttribute("name", singletonList("value"), "source1"));
   }
 
   private UserAttribute createUserAttribute() {
