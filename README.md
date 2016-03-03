@@ -96,6 +96,29 @@ To mimic the behaviour of attribute aggregation for an internal client - e.g. En
 curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/request.json -u eb:secret https://aa.test.surfconext.nl/aa/api/attribute/aggregate
 ```
 
+The Attribute Aggregator expects the following JSON format when called by a trusted client:
+
+```json
+{
+  "serviceProviderEntityId": "unique identifier of a service where an aggregation is in place",
+  "attributes": [
+    {
+      "name": "fully qualified urn - name of an input attribute",
+      "values": [
+        "value - can be multi value",
+        "value - can be multi value"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+      "values": [
+        "jstiglitz@harvard-example.edu"
+      ]
+    }
+  ]
+}
+```
+
 ### [New Attribute Authority](#new-attribute-authority)
 
 New Attribute Authorities first must be added and configured in `attributeAuthoritiesProductionTemplate.yml`. Then add the new authority implementation to `AttributeAggregatorConfiguration#attributeAggregatorById`.
@@ -125,3 +148,5 @@ When the application actually gets deployed to a meaningful platform, it is pre-
 environment specific properties in the group_vars. See the project OpenConext-deploy and the role aa for more information.
 
 For details, see the [Spring Boot manual](http://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/).
+
+When you want to run Attribute-Aggregator in a non-OpenConext environment you can use the [aa](aa-server/scripts/aa) script to stop / restart and start the application.
