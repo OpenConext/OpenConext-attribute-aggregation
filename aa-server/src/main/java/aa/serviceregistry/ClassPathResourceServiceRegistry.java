@@ -82,8 +82,11 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
   }
 
   private Comparator<? super ServiceProvider> sortEntityMetaData() {
-    return (e1, e2) ->
-        e1.getName() == null ? -1 : e2.getName() == null ? -1 : e1.getName().trim().compareTo(e2.getName().trim());
+    return (e1, e2) -> getServiceProviderComparatorId(e1).compareTo(getServiceProviderComparatorId(e2));
+  }
+
+  private String getServiceProviderComparatorId(ServiceProvider sp) {
+    return sp.getName() != null ? sp.getName() : sp.getDescription() != null ? sp.getDescription() : sp.getEntityId();
   }
 
   @SuppressWarnings("unchecked")
