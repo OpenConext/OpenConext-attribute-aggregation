@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static java.util.Collections.singletonList;
@@ -131,16 +132,24 @@ public abstract class AbstractIntegrationTest {
 
   @SuppressWarnings("unchecked")
   protected List<UserAttribute> doAttributeAggregate(String serviceProviderEntityId, String userAttributeName, int port) throws Exception {
+    return getUserAttributes(serviceProviderEntityId, userAttributeName, port, false);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected List<UserAttribute> doAttributeAggregateWithoutServiceCheck(String userAttributeName, int port) throws Exception {
+    return getUserAttributes(null, userAttributeName, port, true);
+  }
+
+  private List<UserAttribute> getUserAttributes(String serviceProviderEntityId, String userAttributeName, int port, boolean noServiceCheck) throws URISyntaxException {
     UserAttribute input = new UserAttribute(userAttributeName,
         singletonList("urn:collab:person:example.com:admin"),
         null);
     UserAttributes userAttributes = new UserAttributes(serviceProviderEntityId, singletonList(input));
-
-    RequestEntity requestEntity = new RequestEntity(userAttributes, headers, HttpMethod.POST, new URI("http://localhost:" + port + "/aa/api/attribute/aggregate"));
+    String path = noServiceCheck ? "aggregateNoServiceCheck" : "aggregate";
+    RequestEntity requestEntity = new RequestEntity(userAttributes, headers, HttpMethod.POST, new URI("http://localhost:" + port + "/aa/api/attribute/" + path));
     ResponseEntity<List<UserAttribute>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<UserAttribute>>() {
     });
 
     return response.getBody();
   }
-
 }

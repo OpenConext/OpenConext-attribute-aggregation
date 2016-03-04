@@ -84,7 +84,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter implemen
    * This needs to stay in sync with the apache configuration for Attribute Aggregation
    */
   public static final String NON_SHIBBOLETH_PROTECTED_METHODS =
-      "^(?!/attribute/aggregate|/health|/v2/ServiceProviderConfig|/v2/ResourceType|/v2/Schema|/v2/Me).*$";
+      "^(?!/attribute/aggregate|/attribute/aggregateNoServiceCheck/|/health|/v2/ServiceProviderConfig|/v2/ResourceType|/v2/Schema|/v2/Me).*$";
 
 
   /**

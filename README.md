@@ -96,6 +96,15 @@ To mimic the behaviour of attribute aggregation for an internal client - e.g. En
 curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/request.json -u eb:secret https://aa.test.surfconext.nl/aa/api/attribute/aggregate
 ```
 
+It is also possible to call the `/attribute/aggregateNoServiceCheck` endpoint. This endpoint queries all configured authorities and does not require a ServiceProviderEntityId. This use case if for
+environments where every Service will always receive all possible extra attributes from all attribute authorities.
+
+```bash
+curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/requestNoServiceCheck.json -u eb:secret https://aa.test.surfconext.nl/aa/api/attribute/aggregateNoServiceCheck
+```
+
+if you want to test all of the above curl commands against your locally running AttributeAggregation application then replace `https://aa.test.surfconext.nl` with `http://localhost:8080`.
+
 The Attribute Aggregator expects the following JSON format when called by a trusted client:
 
 ```json
@@ -118,6 +127,8 @@ The Attribute Aggregator expects the following JSON format when called by a trus
   ]
 }
 ```
+
+If you want to have attributes aggregated regardless if there is a configured Aggregation for the service then you can remove the `serviceProviderEntityId` and corresponding value.
 
 ### [New Attribute Authority](#new-attribute-authority)
 

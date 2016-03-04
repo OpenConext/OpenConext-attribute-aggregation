@@ -49,24 +49,7 @@ public class AttributeAggregatorService {
     //all of the unique AttributeAuthorityConfigurations for the attributes
     Set<AttributeAuthorityConfiguration> authorityConfigurations = attributes.stream().map(attribute -> configuration.getAuthorityById(attribute.getAttributeAuthorityId())).collect(toSet());
 
-    //all of the names of input UserAttributes that at least have one non-empty value
-    List<String> inputNames = input.stream().filter(userAttribute -> userAttribute.getValues().stream().anyMatch(StringUtils::hasText))
-        .map(UserAttribute::getName).collect(toList());
-
-    //the actual AttributeAggregators to query filtered on the required input parameters
-    List<AttributeAggregator> attributeAggregators = authorityConfigurations.stream()
-        .map(attributeAuthority -> aggregators.get(attributeAuthority.getId()))
-        .filter(attributeAggregator -> inputNames.containsAll(attributeAggregator.attributeKeysRequired()))
-        .collect(toList());
-
-    //all aggregatedAttributes
-    List<UserAttribute> aggregatedAttributes;
-    try {
-      aggregatedAttributes = forkJoinPool.submit(() -> attributeAggregators.parallelStream().map(aggregator ->
-          doAggregate(input, aggregator)).flatMap(List::stream).collect(toList())).get();
-    } catch (InterruptedException | ExecutionException e) {
-      throw new RuntimeException("Unable to schedule querying of attribute aggregators.", e);
-    }
+    List<UserAttribute> aggregatedAttributes = getUserAttributes(input, authorityConfigurations);
 
     //filter out those Attributes that are not allowed no return (rare case, but possible)
     List<UserAttribute> result = aggregatedAttributes.stream().filter(userAttribute -> allowedAttribute(attributes, userAttribute)).collect(toList());
@@ -86,6 +69,41 @@ public class AttributeAggregatorService {
         System.currentTimeMillis() - start, serviceProvider, input, result);
 
     return result;
+  }
+
+  public List<UserAttribute> aggregateNoServiceCheck(List<UserAttribute> input) {
+    long start = System.currentTimeMillis();
+    LOG.debug("Started to aggregate attributes without Service check for input {}", input);
+
+    //get attributes from all authorities
+    List<UserAttribute> aggregatedAttributes = getUserAttributes(input, configuration.getAuthorities());
+
+    LOG.debug("Finished aggregating attributes without Service check in {} millis for input {} with result {}",
+        System.currentTimeMillis() - start, input, aggregatedAttributes);
+
+    return aggregatedAttributes;
+  }
+
+  private List<UserAttribute> getUserAttributes(List<UserAttribute> input, Collection<AttributeAuthorityConfiguration> authorityConfigurations) {
+    //all of the names of input UserAttributes that at least have one non-empty value
+    List<String> inputNames = input.stream().filter(userAttribute -> userAttribute.getValues().stream().anyMatch(StringUtils::hasText))
+        .map(UserAttribute::getName).collect(toList());
+
+    //the actual AttributeAggregators to query filtered on the required input parameters
+    List<AttributeAggregator> attributeAggregators = authorityConfigurations.stream()
+        .map(attributeAuthority -> aggregators.get(attributeAuthority.getId()))
+        .filter(attributeAggregator -> inputNames.containsAll(attributeAggregator.attributeKeysRequired()))
+        .collect(toList());
+
+    //all aggregatedAttributes
+    List<UserAttribute> aggregatedAttributes;
+    try {
+      aggregatedAttributes = forkJoinPool.submit(() -> attributeAggregators.parallelStream().map(aggregator ->
+          doAggregate(input, aggregator)).flatMap(List::stream).collect(toList())).get();
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException("Unable to schedule querying of attribute aggregators.", e);
+    }
+    return aggregatedAttributes;
   }
 
   private List<UserAttribute> doAggregate(List<UserAttribute> input, AttributeAggregator aggregator) {

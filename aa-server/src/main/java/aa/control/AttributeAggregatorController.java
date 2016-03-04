@@ -43,4 +43,9 @@ public class AttributeAggregatorController {
     return attributeAggregatorService.aggregate(sp.get(), input.getAttributes());
   }
 
+  @RequestMapping(method = RequestMethod.POST, value = "/attribute/aggregateNoServiceCheck")
+  public List<UserAttribute> attributeAggregateNoServiceCheck(@RequestBody UserAttributes input) {
+    return attributeAggregatorService.aggregateNoServiceCheck(input.getAttributes());
+  }
+
 }

@@ -2,19 +2,13 @@ package aa.control;
 
 import aa.AbstractIntegrationTest;
 import aa.model.UserAttribute;
-import aa.model.UserAttributes;
 import org.junit.Test;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 
 @WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=no-csrf,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
@@ -43,6 +37,13 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     assertEquals("aa1", userAttribute.getSource());
   }
 
+  @Test
+  public void testAttributeAggregateWithoutServiceCheck() throws Exception {
+    List<UserAttribute> result = doAttributeAggregateWithoutServiceCheck("urn:mace:dir:attribute-def:eduPersonPrincipalName", port);
+
+    assertEquals(3, result.size());
+    result.forEach(userAttribute -> assertFalse(userAttribute.isSkipConsent()));
+  }
 
   @Test
   public void testNoServiceProvider() throws Exception {
