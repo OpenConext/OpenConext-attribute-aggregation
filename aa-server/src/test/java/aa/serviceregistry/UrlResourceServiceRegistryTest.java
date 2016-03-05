@@ -10,9 +10,9 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import static aa.util.StreamUtils.singletonCollector;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static junit.framework.TestCase.assertEquals;
 import static org.springframework.http.HttpHeaders.IF_MODIFIED_SINCE;
@@ -48,7 +48,14 @@ public class UrlResourceServiceRegistryTest {
 
     assertEquals("Bas Test-SP", serviceProviders.get(0).getName());
     assertEquals("OpenConext PDP", serviceProviders.get(serviceProviders.size() - 1).getName());
+  }
 
+  @Test
+  public void testNameEmptyFallback() throws IOException {
+    String spEntityId = "test_contact_persons";
+    doBefore("service-registry-test/service-providers.json");
+    ServiceProvider serviceProvider = subject.serviceProviders().stream().filter(sp -> sp.getEntityId().equals(spEntityId)).collect(singletonCollector());
+    assertEquals(spEntityId, serviceProvider.getName());
   }
 
   private void doBefore(String path) throws IOException {
@@ -57,7 +64,7 @@ public class UrlResourceServiceRegistryTest {
 
     stubFor(head(urlEqualTo("/sp")).withHeader(IF_MODIFIED_SINCE, notMatching("X")).willReturn(aResponse().withStatus(200)));
 
-    this.subject = (UrlResourceServiceRegistry) new ServiceRegistryConfiguration().urlResourceServiceRegistry("user","password","http://localhost:8889/sp", 10);
+    this.subject = (UrlResourceServiceRegistry) new ServiceRegistryConfiguration().urlResourceServiceRegistry("user", "password", "http://localhost:8889/sp", 10);
   }
 
 }
