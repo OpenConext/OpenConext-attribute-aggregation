@@ -32,6 +32,7 @@ public abstract class AbstractUserAttributeCache implements UserAttributeCache {
     return userAttributes != null ? Optional.of(userAttributes) : Optional.empty();
   }
 
+  //may return null as only used internally
   protected abstract List<UserAttribute> doGet(String cacheKey) throws IOException;
 
   @Override
@@ -42,6 +43,7 @@ public abstract class AbstractUserAttributeCache implements UserAttributeCache {
     }
   }
 
+  //may return null as only used internally
   protected abstract void doPut(String cacheKey, List<UserAttribute> userAttributes) throws JsonProcessingException;
 
   public long getCacheDuration() {
