@@ -76,6 +76,10 @@ class API {
     return this.doFetch('/aa/api/internal/authorityConfiguration', callback);
   }
 
+  getAppInformation(callback) {
+    return this.doFetch('/aa/api/internal/appInformation', callback);
+  }
+
   getServiceProviders(callback) {
     return this.doFetch('/aa/api/internal/serviceProviders', callback);
   }

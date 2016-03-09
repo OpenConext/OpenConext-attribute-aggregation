@@ -19,9 +19,17 @@ export default class Header extends React.Component {
     this.state = {
       user: {
         displayNmae : ''
+      },
+      app: {
+        version: ''
       }
     };
-    API.getUser((json) => this.setState({user: json}));
+    API.getUser((json) => {
+      this.setState({user: json});
+      //getUser is the first call and must be finished first
+      API.getAppInformation((json) => this.setState({app: json}));
+    });
+
   }
 
   renderMeta = () => {
@@ -44,7 +52,9 @@ export default class Header extends React.Component {
   render() {
     return (
       <div className={styles.header}>
-        <div className={styles.title}><a href='/'>{i18n.t('header.title')}</a></div>
+        <div className={styles.title}>
+          <a href='/'>{i18n.t('header.title')}</a><span>{'V' + this.state.app.version}</span>
+        </div>
         <Spinner />
         {this.renderMeta()}
       </div>
