@@ -29,13 +29,22 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
     }
   }
 
-  protected void initializeMetadata() throws IOException {
-    long start = System.currentTimeMillis();
-    LOG.debug("Starting refreshing SP metadata.");
-    List<Resource> resources = getResources();
-    Map<String, ServiceProvider> serviceProviderMap = resources.stream().map(this::parseEntities).flatMap(m -> m.entrySet().stream()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
-    entityMetaData.putAll(serviceProviderMap);
-    LOG.debug("Finished refreshing SP metadata in {} ms.", System.currentTimeMillis() - start);
+  protected void initializeMetadata() {
+    try {
+      long start = System.currentTimeMillis();
+      LOG.debug("Starting refreshing SP metadata.");
+      List<Resource> resources = getResources();
+      Map<String, ServiceProvider> serviceProviderMap = resources.stream().map(this::parseEntities).flatMap(m -> m.entrySet().stream()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+      entityMetaData.putAll(serviceProviderMap);
+      LOG.debug("Finished refreshing SP metadata in {} ms.", System.currentTimeMillis() - start);
+    } catch (RuntimeException e) {
+      /*
+       * By design we catch the error and not rethrow it.
+       * UrlResourceServiceRegistry has timing issues when the server reboots and required endpoints are not available yet.
+       * ClassPathResourceServiceRegistry is only used in dev mode and any logged errors will end up in Rollbar
+       */
+      LOG.error("Error in refreshing / initializing metadata", e);
+    }
   }
 
   protected List<Resource> getResources() {

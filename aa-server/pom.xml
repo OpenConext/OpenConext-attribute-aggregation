@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.openconext</groupId>
     <artifactId>aa</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -89,18 +89,6 @@
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4.7</version>
-    </dependency>
-    <dependency>
-      <groupId>com.tapstream</groupId>
-      <artifactId>rollbar-logback</artifactId>
-      <version>0.1.4</version>
-      <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>

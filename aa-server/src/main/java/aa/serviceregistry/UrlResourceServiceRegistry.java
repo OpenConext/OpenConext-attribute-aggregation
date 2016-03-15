@@ -42,7 +42,7 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
     SimpleClientHttpRequestFactory requestFactory = (SimpleClientHttpRequestFactory) restTemplate.getRequestFactory();
     requestFactory.setConnectTimeout(5 * 1000);
 
-    newScheduledThreadPool(1).scheduleAtFixedRate(this::refreshMetataData, period, period, TimeUnit.MINUTES);
+    newScheduledThreadPool(1).scheduleAtFixedRate(this::initializeMetadata, period, period, TimeUnit.MINUTES);
     super.initializeMetadata();
   }
 
@@ -53,21 +53,19 @@ public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry
   }
 
   @Override
-  protected void initializeMetadata() throws IOException {
-    if (urlResource.isModified(period)) {
-      super.initializeMetadata();
-    } else {
-      LOG.debug("Not refreshing SP metadata. Not modified");
-    }
-  }
-
-  private void refreshMetataData() {
+  protected void initializeMetadata() {
     try {
-      this.initializeMetadata();
-    } catch (IOException | RuntimeException e) {
-      LOG.error("Error in refreshing metadata", e);
-      //don't rethrow as this will stop the scheduled thread pool
+      if (urlResource.isModified(period)) {
+        super.initializeMetadata();
+      } else {
+        LOG.debug("Not refreshing SP metadata. Not modified");
+      }
+    } catch (IOException e) {
+      /**
+       * Don't throw as this breaks the periodically refresh
+       */
+      LOG.error("Error in refreshing / initializing metadata", e);
     }
-
   }
+
 }
