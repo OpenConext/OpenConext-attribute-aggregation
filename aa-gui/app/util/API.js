@@ -109,7 +109,7 @@ class API {
    * The following are API calls to test the SCIMController
    */
   getServiceProviderConfiguration(callback) {
-    return this.doFetch('/aa/api/v2/ServiceProviderConfig', callback);
+    return this.doFetch('/aa/api/internal/v2/ServiceProviderConfig', callback);
   }
 
   getResourceType(callback, serviceProviderEntityId) {
@@ -125,7 +125,7 @@ class API {
   }
 
   attributeAggregate(callback, userAttributes) {
-    return this.doFetch('/aa/api/attribute/aggregate', callback, 'post', userAttributes, false);
+    return this.doFetch('/aa/api/internal/attribute/aggregate', callback, 'post', userAttributes, false);
   }
 }
 

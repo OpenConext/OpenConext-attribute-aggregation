@@ -33,7 +33,7 @@ public class AttributeAggregatorController {
     this.attributeAggregatorService = attributeAggregatorService;
   }
 
-  @RequestMapping(method = RequestMethod.POST, value = "/attribute/aggregate")
+  @RequestMapping(method = RequestMethod.POST, value = {"/attribute/aggregate", "/internal/attribute/aggregate"})
   public List<UserAttribute> attributeAggregate(@RequestBody UserAttributes input) {
     Optional<ServiceProvider> sp = serviceProviderRepository.findByEntityId(input.getServiceProviderEntityId());
     if (!sp.isPresent()) {
@@ -43,7 +43,7 @@ public class AttributeAggregatorController {
     return attributeAggregatorService.aggregate(sp.get(), input.getAttributes());
   }
 
-  @RequestMapping(method = RequestMethod.POST, value = "/attribute/aggregateNoServiceCheck")
+  @RequestMapping(method = RequestMethod.POST, value = {"/attribute/aggregateNoServiceCheck", "/internal/attribute/aggregateNoServiceCheck"})
   public List<UserAttribute> attributeAggregateNoServiceCheck(@RequestBody UserAttributes input) {
     return attributeAggregatorService.aggregateNoServiceCheck(input.getAttributes());
   }

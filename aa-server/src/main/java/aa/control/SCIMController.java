@@ -80,7 +80,7 @@ public class SCIMController {
     this.userlocationPrefix = String.format("https://aa.%s.nl/v2/Users/", env);
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/v2/ServiceProviderConfig")
+  @RequestMapping(method = RequestMethod.GET, value = {"/v2/ServiceProviderConfig", "/internal/v2/ServiceProviderConfig"})
   public String serviceProviderConfiguration() {
     return serviceProviderConfigJson;
   }

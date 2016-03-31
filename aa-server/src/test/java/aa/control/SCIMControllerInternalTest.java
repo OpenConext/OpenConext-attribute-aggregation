@@ -61,6 +61,14 @@ public class SCIMControllerInternalTest extends AbstractIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void testInternalServiceProviderConfiguration() throws Exception {
+    Map body = restTemplate.exchange(new RequestEntity(headers, GET, new URI("http://localhost:" + port + "/aa/api/internal/v2/ServiceProviderConfig")), Map.class).getBody();
+    assertEquals("https://aa.test.surfconext.nl/v2/ServiceProviderConfig", ((Map) body.get("meta")).get("location"));
+  }
+
+
+  @Test
   public void testMe() throws Exception {
     Map<String, String> inputParameters = new HashMap<>();
     inputParameters.put(NAME_ID, "test");
