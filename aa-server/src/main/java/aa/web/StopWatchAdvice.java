@@ -1,5 +1,7 @@
 package aa.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,6 +21,8 @@ import java.io.IOException;
 @ControllerAdvice
 public class StopWatchAdvice extends OncePerRequestFilter implements ResponseBodyAdvice<Object> {
 
+  private static final Logger LOG = LoggerFactory.getLogger(StopWatchAdvice.class);
+
   @Override
   public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
     return true;
@@ -31,7 +35,11 @@ public class StopWatchAdvice extends OncePerRequestFilter implements ResponseBod
     if (req instanceof ServletServerHttpRequest) {
       Object start = ((ServletServerHttpRequest) req).getServletRequest().getAttribute("start_ms");
       if (start != null && start instanceof Long) {
-        response.getHeaders().add("X-Timer", String.valueOf(System.currentTimeMillis() - (Long) start));
+        String took = String.valueOf(System.currentTimeMillis() - (Long) start);
+        response.getHeaders().add("X-Timer", took);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("{} took {} ms", returnType.getMethod().getName(), took);
+        }
       }
     }
     return body;
