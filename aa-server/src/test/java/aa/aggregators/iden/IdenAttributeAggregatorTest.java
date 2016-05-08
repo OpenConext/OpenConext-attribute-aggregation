@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,9 +46,9 @@ public class IdenAttributeAggregatorTest {
     assertTrue(idenResponse.isEmpty());
   }
 
-  @Test(expected = HttpServerErrorException.class)
+  @Test(expected = HttpClientErrorException.class)
   public void testAggregateException() throws Exception {
-    getIdenResponse(null, 500);
+    getIdenResponse(null, 401);
   }
 
   @Test
