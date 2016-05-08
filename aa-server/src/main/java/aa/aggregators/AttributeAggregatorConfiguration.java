@@ -1,5 +1,6 @@
 package aa.aggregators;
 
+import aa.aggregators.iden.IdenAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.sab.SabAttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
@@ -64,6 +65,8 @@ public class AttributeAggregatorConfiguration {
         return new VootAttributeAggregator(configuration, authorizationAccessTokenUrl);
       case "orcid":
         return new OrcidAttributeAggregator(configuration, environment);
+      case "iden":
+        return new IdenAttributeAggregator(configuration);
       default:
         if (id.startsWith("test:")) {
           return new TestingAttributeAggregator(configuration, false);
