@@ -1,10 +1,10 @@
 package aa;
 
 
+import aa.aggregators.PrePopulatedJsonHttpHeaders;
 import aa.model.*;
 import aa.repository.AggregationRepository;
 import aa.repository.ServiceProviderRepository;
-import aa.web.PrePopulatedJsonHttpHeaders;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

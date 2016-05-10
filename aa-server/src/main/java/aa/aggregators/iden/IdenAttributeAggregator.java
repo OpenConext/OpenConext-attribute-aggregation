@@ -1,8 +1,11 @@
 package aa.aggregators.iden;
 
 import aa.aggregators.AbstractAttributeAggregator;
+import aa.aggregators.PrePopulatedJsonHttpHeaders;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.net.URI;
@@ -17,6 +20,8 @@ import static java.util.Collections.singletonList;
 
 public class IdenAttributeAggregator extends AbstractAttributeAggregator {
 
+  private final PrePopulatedJsonHttpHeaders headers = new PrePopulatedJsonHttpHeaders();
+
   public IdenAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     super(attributeAuthorityConfiguration);
   }
@@ -25,9 +30,12 @@ public class IdenAttributeAggregator extends AbstractAttributeAggregator {
   public List<UserAttribute> aggregate(List<UserAttribute> input) {
     String unspecifiedId = getUserAttributeSingleValue(input, NAME_ID);
     URI uri = uri(unspecifiedId);
+
+    LOG.debug("Retrieving iDEN with request: {}", uri);
+
     Map<String, Object> body = getUserMap(uri);
 
-    LOG.debug("Retrieved iDEN with request: {} and response: {}", uri, body);
+    LOG.debug("Retrieved iDEN with response: {}", body);
 
     if (body.isEmpty()) {
       //404
@@ -52,7 +60,8 @@ public class IdenAttributeAggregator extends AbstractAttributeAggregator {
   @SuppressWarnings("unchecked")
   private Map<String, Object> getUserMap(URI uri) {
     try {
-      return getRestTemplate().getForEntity(uri, Map.class).getBody();
+      RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, uri);
+      return getRestTemplate().exchange(requestEntity, Map.class).getBody();
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode().value() != 404) {
         throw e;

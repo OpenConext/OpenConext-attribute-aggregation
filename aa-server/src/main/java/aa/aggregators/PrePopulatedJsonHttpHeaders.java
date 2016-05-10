@@ -1,4 +1,4 @@
-package aa.web;
+package aa.aggregators;
 
 import org.springframework.http.HttpHeaders;
 
