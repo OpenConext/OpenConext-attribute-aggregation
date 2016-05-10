@@ -47,12 +47,12 @@ public class IdenAttributeAggregator extends AbstractAttributeAggregator {
     List<UserAttribute> userAttributes = new ArrayList<>();
 
     if (email != null) {
-      userAttributes.add(new UserAttribute(EMAIL, singletonList(email)));
+      userAttributes.add(new UserAttribute(EMAIL, singletonList(email), getAttributeAuthorityId()));
     }
     if (affiliations != null) {
-      userAttributes.add(new UserAttribute(EDU_PERSON_AFFILIATION, asList(affiliations.split(", "))));
+      userAttributes.add(new UserAttribute(EDU_PERSON_AFFILIATION, asList(affiliations.split(", ")), getAttributeAuthorityId()));
     }
-    userAttributes.add(new UserAttribute(IS_MEMBER_OF, singletonList("surf.nl")));
+    userAttributes.add(new UserAttribute(IS_MEMBER_OF, singletonList("surf.nl"), getAttributeAuthorityId()));
 
     return userAttributes;
   }
