@@ -32,14 +32,12 @@ public class StopWatchAdvice extends OncePerRequestFilter implements ResponseBod
   public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                 Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                 ServerHttpRequest req, ServerHttpResponse response) {
-    if (req instanceof ServletServerHttpRequest) {
+    if (req instanceof ServletServerHttpRequest && LOG.isTraceEnabled()) {
       Object start = ((ServletServerHttpRequest) req).getServletRequest().getAttribute("start_ms");
       if (start != null && start instanceof Long) {
         String took = String.valueOf(System.currentTimeMillis() - (Long) start);
         response.getHeaders().add("X-Timer", took);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("{} took {} ms", returnType.getMethod().getName(), took);
-        }
+        LOG.trace("{} took {} ms", returnType.getMethod().getName(), took);
       }
     }
     return body;
