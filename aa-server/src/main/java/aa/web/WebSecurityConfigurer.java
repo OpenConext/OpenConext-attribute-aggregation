@@ -70,7 +70,7 @@ public class WebSecurityConfigurer {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-      web.ignoring().antMatchers("/health","/info", "/v2/ServiceProviderConfig");
+      web.ignoring().antMatchers("/health", "/info", "/v2/ServiceProviderConfig");
     }
 
     @Override
