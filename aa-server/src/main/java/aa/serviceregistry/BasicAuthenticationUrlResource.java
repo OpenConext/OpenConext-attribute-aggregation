@@ -27,21 +27,32 @@ public class BasicAuthenticationUrlResource extends UrlResource {
 
   @Override
   public InputStream getInputStream() throws IOException {
-    URLConnection con = this.getURL().openConnection();
+    HttpURLConnection con = (HttpURLConnection) this.getURL().openConnection();
     setHeaders(con);
-    return con.getInputStream();
+    try {
+      return con.getInputStream();
+    } catch (IOException ex) {
+      con.disconnect();
+      throw ex;
+    }
   }
 
   public boolean isModified(int minutes) throws IOException {
-      HttpURLConnection con = (HttpURLConnection) this.getURL().openConnection();
-      con.setRequestMethod("HEAD");
-      setHeaders(con);
+      HttpURLConnection con = null;
+      try {
+        con = (HttpURLConnection) this.getURL().openConnection();
+        con.setRequestMethod("HEAD");
+        setHeaders(con);
 
-      String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(GMT).minusMinutes(minutes));
-      con.setRequestProperty(IF_MODIFIED_SINCE, lastRefresh);
+        String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(GMT).minusMinutes(minutes));
+        con.setRequestProperty(IF_MODIFIED_SINCE, lastRefresh);
 
-      int responseCode = con.getResponseCode();
-      return responseCode != HttpStatus.NOT_MODIFIED.value();
+        int responseCode = con.getResponseCode();
+        return responseCode != HttpStatus.NOT_MODIFIED.value();
+      } catch (IOException ex) {
+        con.disconnect();
+        throw new RuntimeException(ex);
+      }
   }
 
   protected void setHeaders(URLConnection con) {

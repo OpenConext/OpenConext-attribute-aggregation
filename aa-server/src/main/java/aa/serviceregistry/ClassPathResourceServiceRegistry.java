@@ -30,21 +30,14 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
   }
 
   protected void initializeMetadata() {
-    try {
-      long start = System.currentTimeMillis();
-      LOG.debug("Starting refreshing SP metadata.");
-      List<Resource> resources = getResources();
-      Map<String, ServiceProvider> serviceProviderMap = resources.stream().map(this::parseEntities).flatMap(m -> m.entrySet().stream()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
-      entityMetaData.putAll(serviceProviderMap);
-      LOG.debug("Finished refreshing SP metadata in {} ms.", System.currentTimeMillis() - start);
-    } catch (RuntimeException e) {
-      /*
-       * By design we catch the error and not rethrow it.
-       * UrlResourceServiceRegistry has timing issues when the server reboots and required endpoints are not available yet.
-       * ClassPathResourceServiceRegistry is only used in dev mode and any logged errors will end up in Rollbar
-       */
-      LOG.error("Error in refreshing / initializing metadata", e);
-    }
+    long start = System.currentTimeMillis();
+    LOG.debug("Starting refreshing SP metadata.");
+    Map<String, ServiceProvider> newEntityMetaData = new ConcurrentHashMap<>();
+    List<Resource> resources = getResources();
+    Map<String, ServiceProvider> serviceProviderMap = resources.stream().map(this::parseEntities).flatMap(m -> m.entrySet().stream()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+    newEntityMetaData.putAll(serviceProviderMap);
+    this.entityMetaData = newEntityMetaData;
+    LOG.debug("Finished refreshing SP metadata in {} ms.", System.currentTimeMillis() - start);
   }
 
   protected List<Resource> getResources() {
@@ -75,10 +68,7 @@ public class ClassPathResourceServiceRegistry implements ServiceRegistry {
 
   private boolean getAttributeAggregationRequired(Map<String, Object> entry) {
     String attributeAggregationRequired = (String) entry.get("coin:attribute_aggregation_required");
-    if (StringUtils.hasText(attributeAggregationRequired)) {
-      return attributeAggregationRequired.equals("1");
-    }
-    return false;
+    return StringUtils.hasText(attributeAggregationRequired) && attributeAggregationRequired.equals("1");
   }
 
   @SuppressWarnings("unchecked")
