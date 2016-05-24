@@ -1,4 +1,4 @@
-package aa.aggregators.iden;
+package aa.aggregators.idin;
 
 import aa.aggregators.AbstractAttributeAggregator;
 import aa.aggregators.PrePopulatedJsonHttpHeaders;
@@ -18,11 +18,11 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
-public class IdenAttributeAggregator extends AbstractAttributeAggregator {
+public class IdinAttributeAggregator extends AbstractAttributeAggregator {
 
   private final PrePopulatedJsonHttpHeaders headers = new PrePopulatedJsonHttpHeaders();
 
-  public IdenAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
+  public IdinAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     super(attributeAuthorityConfiguration);
   }
 

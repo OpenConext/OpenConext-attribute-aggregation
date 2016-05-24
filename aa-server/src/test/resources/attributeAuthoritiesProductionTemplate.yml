@@ -78,7 +78,7 @@ authorities:
       ]
     }
   - {
-      id: "iden",
+      id: "idin",
       description: "With iDIN, you can identify yourself online to companies and organisations using your banks log-in procedure - simple, secure and safe",
       endpoint: "https://attribute-mappper.test.surfconext.nl",
       user: "am_aa_client",

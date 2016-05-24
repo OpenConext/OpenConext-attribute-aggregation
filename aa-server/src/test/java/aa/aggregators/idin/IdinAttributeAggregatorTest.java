@@ -1,4 +1,4 @@
-package aa.aggregators.iden;
+package aa.aggregators.idin;
 
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.RequiredInputAttribute;
@@ -23,9 +23,9 @@ import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class IdenAttributeAggregatorTest {
+public class IdinAttributeAggregatorTest {
 
-  private IdenAttributeAggregator subject;
+  private IdinAttributeAggregator subject;
 
   private List<UserAttribute> input = singletonList(new UserAttribute(NAME_ID, singletonList("urn:collab:person:idin.nl:confirmed")));
 
@@ -37,23 +37,23 @@ public class IdenAttributeAggregatorTest {
     AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("iden");
     configuration.setEndpoint("http://localhost:8889/api/user");
     configuration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute(NAME_ID)));
-    subject = new IdenAttributeAggregator(configuration);
+    subject = new IdinAttributeAggregator(configuration);
   }
 
   @Test
   public void testAggregateNotFound() throws Exception {
-    List<UserAttribute> idenResponse = getIdenResponse(null, 404);
-    assertTrue(idenResponse.isEmpty());
+    List<UserAttribute> idinResponse = getIdinResponse(null, 404);
+    assertTrue(idinResponse.isEmpty());
   }
 
   @Test(expected = HttpClientErrorException.class)
   public void testAggregateException() throws Exception {
-    getIdenResponse(null, 401);
+    getIdinResponse(null, 401);
   }
 
   @Test
   public void testAggregateUser() throws Exception {
-    List<UserAttribute> idenResponse = getIdenResponse("iden/response_succes.json");
+    List<UserAttribute> idenResponse = getIdinResponse("iden/response_succes.json");
 
     List<String> email = userAttributeValues(idenResponse, EMAIL);
     assertEquals(email, singletonList("jdoe@example.com"));
@@ -65,11 +65,11 @@ public class IdenAttributeAggregatorTest {
     assertEquals(memberOf, singletonList("urn:collab:org:surf.nl"));
   }
 
-  private List<UserAttribute> getIdenResponse(String jsonFile) throws IOException {
-    return getIdenResponse(jsonFile, 200);
+  private List<UserAttribute> getIdinResponse(String jsonFile) throws IOException {
+    return getIdinResponse(jsonFile, 200);
   }
 
-  private List<UserAttribute> getIdenResponse(String jsonFile, int status) throws IOException {
+  private List<UserAttribute> getIdinResponse(String jsonFile, int status) throws IOException {
     ResponseDefinitionBuilder builder = aResponse().withStatus(status).withHeader("Content-Type", "application/json");
 
     if (status == 200) {
