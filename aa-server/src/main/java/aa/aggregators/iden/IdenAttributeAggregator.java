@@ -52,7 +52,7 @@ public class IdenAttributeAggregator extends AbstractAttributeAggregator {
     if (affiliations != null) {
       userAttributes.add(new UserAttribute(EDU_PERSON_AFFILIATION, asList(affiliations.split(", ")), getAttributeAuthorityId()));
     }
-    userAttributes.add(new UserAttribute(IS_MEMBER_OF, singletonList("surf.nl"), getAttributeAuthorityId()));
+    userAttributes.add(new UserAttribute(IS_MEMBER_OF, singletonList("urn:collab:org:surf.nl"), getAttributeAuthorityId()));
 
     return userAttributes;
   }

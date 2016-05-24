@@ -62,7 +62,7 @@ public class IdenAttributeAggregatorTest {
     assertEquals(affiliations, asList("researcher", "student"));
 
     List<String> memberOf = userAttributeValues(idenResponse, IS_MEMBER_OF);
-    assertEquals(memberOf, singletonList("surf.nl"));
+    assertEquals(memberOf, singletonList("urn:collab:org:surf.nl"));
   }
 
   private List<UserAttribute> getIdenResponse(String jsonFile) throws IOException {
