@@ -4,7 +4,6 @@ import aa.model.UserAttribute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
@@ -16,15 +15,16 @@ public abstract class AbstractUserAttributeCache implements UserAttributeCache {
   protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
   private final long cacheDuration;
+  private final boolean cacheInActive;
 
   public AbstractUserAttributeCache(long cacheDurationMilliseconds) {
     this.cacheDuration = cacheDurationMilliseconds;
-    Assert.isTrue(cacheDurationMilliseconds > 0);
+    cacheInActive = cacheDurationMilliseconds <= 0;
   }
 
   @Override
   public Optional<List<UserAttribute>> get(Optional<String> cacheKey) throws IOException {
-    if (!cacheKey.isPresent()) {
+    if (cacheInActive || !cacheKey.isPresent()) {
       return Optional.empty();
     }
     List<UserAttribute> userAttributes = this.doGet(cacheKey.get());
@@ -37,7 +37,7 @@ public abstract class AbstractUserAttributeCache implements UserAttributeCache {
 
   @Override
   public void put(Optional<String> cacheKey, List<UserAttribute> userAttributes) throws IOException {
-    if (cacheKey.isPresent() && !CollectionUtils.isEmpty(userAttributes)) {
+    if (!cacheInActive && cacheKey.isPresent() && !CollectionUtils.isEmpty(userAttributes)) {
       LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey.get());
       this.doPut(cacheKey.get(), userAttributes);
     }

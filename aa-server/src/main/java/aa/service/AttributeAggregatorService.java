@@ -28,8 +28,7 @@ public class AttributeAggregatorService {
 
   public AttributeAggregatorService(List<AttributeAggregator> aggregators,
                                     AuthorityConfiguration configuration,
-                                    UserAttributeCache cache
-                                    ) {
+                                    UserAttributeCache cache) {
     Assert.notEmpty(aggregators);
     this.aggregators = aggregators.stream().collect(toMap(AttributeAggregator::getAttributeAuthorityId, identity()));
     this.forkJoinPool = new ForkJoinPool(20 /* number of threads in embedded tomcat */ * aggregators.size());

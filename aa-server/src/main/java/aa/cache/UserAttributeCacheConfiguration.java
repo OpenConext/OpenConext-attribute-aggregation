@@ -18,7 +18,7 @@ public class UserAttributeCacheConfiguration {
   @Bean
   @Profile({"!redis"})
   public UserAttributeCache inMemoryUserAttributeCache(@Value("${aggregate.cache.duration.milliseconds}") long cacheDuration) {
-    return new SimpleInMemoryUserAttributeCache(cacheDuration, 1000 * 60 * 5);
+    return new SimpleInMemoryUserAttributeCache(cacheDuration, cacheDuration);
   }
 
   @Bean

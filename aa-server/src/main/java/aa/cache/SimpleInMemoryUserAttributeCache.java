@@ -24,7 +24,9 @@ public class SimpleInMemoryUserAttributeCache extends AbstractUserAttributeCache
 
   public SimpleInMemoryUserAttributeCache(long cacheDurationMilliseconds, long clearExpiredAggregatesPeriod) {
     super(cacheDurationMilliseconds);
-    newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAggregates, 0, clearExpiredAggregatesPeriod, TimeUnit.MILLISECONDS);
+    if (cacheDurationMilliseconds > 0) {
+      newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAggregates, 0, clearExpiredAggregatesPeriod, TimeUnit.MILLISECONDS);
+    }
   }
 
   @Override
