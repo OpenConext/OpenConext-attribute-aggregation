@@ -29,7 +29,11 @@ public class AuthorityConfiguration {
   }
 
   public AttributeAuthorityConfiguration getAuthorityById(String authorityId) {
-    return authorities.get(authorityId);
+    AttributeAuthorityConfiguration attributeAuthorityConfiguration = authorities.get(authorityId);
+    if (attributeAuthorityConfiguration == null) {
+      throw new IllegalArgumentException("AttributeAuthority " + authorityId + " is not configured. Configured are " + authorities);
+    }
+    return attributeAuthorityConfiguration;
   }
 
   public List<Attribute> getAttributes(Set<String> names) {

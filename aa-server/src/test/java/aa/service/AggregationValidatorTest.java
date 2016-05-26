@@ -56,7 +56,7 @@ public class AggregationValidatorTest {
   @Test(expected = UnknownAttributeException.class)
   public void testNoValidAttributeAuthorityId() throws Exception {
     Aggregation aggregation = validAggregation();
-    aggregation.setAttributes(new HashSet<>(asList(new Attribute("name1","unknown"))));
+    aggregation.setAttributes(new HashSet<>(asList(new Attribute("nope","aa1"))));
     subject.validate(authorityConfiguration, serviceRegistry, aggregation);
   }
 

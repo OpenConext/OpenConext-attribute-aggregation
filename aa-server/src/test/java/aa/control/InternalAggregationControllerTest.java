@@ -123,7 +123,7 @@ public class InternalAggregationControllerTest extends AbstractIntegrationTest {
     ResponseEntity<String> result = postAggregation(
         "test-aggregation",
         singletonList(
-            new Attribute("urn:mace:dir:attribute-def:eduPersonEntitlement", "unknown")),
+            new Attribute("bogus", "aa1")),
         singletonList(
             new ServiceProvider("http://mock-sp")), POST);
 
