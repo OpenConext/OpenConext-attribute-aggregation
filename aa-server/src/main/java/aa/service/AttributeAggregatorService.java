@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 
+import static java.lang.String.format;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
@@ -46,21 +47,23 @@ public class AttributeAggregatorService {
         .flatMap(Collection::stream).collect(toList());
 
     //all of the unique AttributeAuthorityConfigurations for the attributes
-    Set<AttributeAuthorityConfiguration> authorityConfigurations = attributes.stream().map(attribute -> configuration.getAuthorityById(attribute.getAttributeAuthorityId())).collect(toSet());
+    Set<AttributeAuthorityConfiguration> authorityConfigurations = attributes.stream()
+        .map(attribute -> configuration.getAuthorityById(attribute.getAttributeAuthorityId())).collect(toSet());
 
     List<UserAttribute> aggregatedAttributes = getUserAttributes(input, authorityConfigurations);
 
     //filter out those Attributes that are not allowed no return (rare case, but possible)
-    List<UserAttribute> result = aggregatedAttributes.stream().filter(userAttribute -> allowedAttribute(attributes, userAttribute)).collect(toList());
+    List<UserAttribute> result = aggregatedAttributes.stream()
+        .filter(userAttribute -> allowedAttribute(attributes, userAttribute)).collect(toList());
 
     //finally mark the UserAttributes with skipConsent based on the Attribute
     result.forEach(userAttribute -> {
       Attribute attribute = attributes.stream().filter(
           attr -> attr.getAttributeAuthorityId().equals(userAttribute.getSource()) &&
-          attr.getName().equals(userAttribute.getName()))
+                  attr.getName().equals(userAttribute.getName()))
           .findAny()
-          //this can not happen
-          .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown UserAttribute %s returned for SP %s", userAttribute, serviceProvider)));
+          //this can not happen as those would already have been filtered out
+          .orElseThrow(() -> new IllegalArgumentException(format("Unknown UserAttribute %s returned for SP %s", userAttribute, serviceProvider)));
       userAttribute.setSkipConsent(attribute.isSkipConsent());
     });
 
@@ -85,8 +88,10 @@ public class AttributeAggregatorService {
 
   private List<UserAttribute> getUserAttributes(List<UserAttribute> input, Collection<AttributeAuthorityConfiguration> authorityConfigurations) {
     //all of the names of input UserAttributes that at least have one non-empty value
-    List<String> inputNames = input.stream().filter(userAttribute -> userAttribute.getValues().stream().anyMatch(StringUtils::hasText))
-        .map(UserAttribute::getName).collect(toList());
+    List<String> inputNames = input.stream().filter(userAttribute -> userAttribute.getValues().stream()
+        .anyMatch(StringUtils::hasText))
+        .map(UserAttribute::getName)
+        .collect(toList());
 
     //the actual AttributeAggregators to query filtered on the required input parameters
     List<AttributeAggregator> attributeAggregators = authorityConfigurations.stream()

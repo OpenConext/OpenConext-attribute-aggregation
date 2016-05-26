@@ -26,7 +26,7 @@ public class AggregationValidator {
 
   private void attributeValid(Attribute attribute, AuthorityConfiguration configuration) {
     AttributeAuthorityConfiguration authorityById = configuration.getAuthorityById(attribute.getAttributeAuthorityId());
-    if (authorityById == null || !authorityById.getAttributes().stream().anyMatch(attr -> attr.getName().equals(attribute.getName()))) {
+    if (!authorityById.getAttributes().stream().anyMatch(attr -> attr.getName().equals(attribute.getName()))) {
       throw new UnknownAttributeException("Attribute with name " + attribute.getName() + " and authority " + attribute.getAttributeAuthorityId() + " is not configured " + configuration);
     }
 
