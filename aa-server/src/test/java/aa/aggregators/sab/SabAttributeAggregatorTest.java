@@ -1,6 +1,5 @@
 package aa.aggregators.sab;
 
-import aa.aggregators.AttributeAggregator;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
@@ -13,9 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
 import static aa.aggregators.AttributeAggregator.NAME_ID;

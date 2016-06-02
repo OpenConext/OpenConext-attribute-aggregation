@@ -3,7 +3,6 @@ package aa.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity(name = "attributes")
 @JsonInclude(JsonInclude.Include.NON_NULL)

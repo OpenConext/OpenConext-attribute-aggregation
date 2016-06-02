@@ -1,6 +1,5 @@
 package aa.control;
 
-import aa.aggregators.AttributeAggregator;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.*;
@@ -19,10 +18,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -30,16 +27,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
-import static aa.aggregators.AttributeAggregator.NAME_ID;
-import static aa.aggregators.AttributeAggregator.SCHAC_HOME;
+import static aa.aggregators.AttributeAggregator.*;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 @RestController
 @RequestMapping(headers = {"Content-Type=application/json"}, produces = {"application/json"})

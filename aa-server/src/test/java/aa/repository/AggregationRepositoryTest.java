@@ -4,14 +4,11 @@ import aa.AbstractIntegrationTest;
 import aa.model.Aggregation;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static aa.util.StreamUtils.listFromIterable;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AggregationRepositoryTest extends AbstractIntegrationTest {
 

@@ -10,7 +10,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 

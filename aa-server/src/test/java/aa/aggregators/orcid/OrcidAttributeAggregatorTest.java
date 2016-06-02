@@ -11,14 +11,15 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
-import static aa.aggregators.AttributeAggregator.*;
+import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
+import static aa.aggregators.AttributeAggregator.ORCID;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class OrcidAttributeAggregatorTest {
 

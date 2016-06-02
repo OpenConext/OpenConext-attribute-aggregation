@@ -1,26 +1,16 @@
 package aa.serviceregistry;
 
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static java.util.Collections.singletonList;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
-import static org.springframework.http.HttpHeaders.IF_MODIFIED_SINCE;
-import static org.springframework.http.HttpMethod.HEAD;
-import static org.springframework.http.HttpStatus.NOT_MODIFIED;
 
 public class UrlResourceServiceRegistry extends ClassPathResourceServiceRegistry {
 

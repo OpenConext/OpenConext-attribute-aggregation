@@ -6,7 +6,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BasicAuthenticationManagerTest {
 

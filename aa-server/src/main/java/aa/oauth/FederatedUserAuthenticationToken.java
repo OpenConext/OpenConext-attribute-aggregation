@@ -3,16 +3,13 @@ package aa.oauth;
 import aa.model.UserAttribute;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
-import static aa.aggregators.AttributeAggregator.NAME_ID;
-import static aa.aggregators.AttributeAggregator.SCHAC_HOME;
+import static aa.aggregators.AttributeAggregator.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 

@@ -1,16 +1,11 @@
 package aa.cache;
 
-import aa.serviceregistry.ClassPathResourceServiceRegistry;
-import aa.serviceregistry.ServiceRegistry;
-import aa.serviceregistry.UrlResourceServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-
-import java.net.MalformedURLException;
 
 @Configuration
 public class UserAttributeCacheConfiguration {

@@ -1,31 +1,24 @@
 package aa.control;
 
 import aa.AbstractIntegrationTest;
-import aa.aggregators.AttributeAggregator;
 import aa.model.ResourceType;
 import aa.model.Schema;
 import org.junit.Test;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
-import static aa.aggregators.AttributeAggregator.NAME_ID;
-import static aa.aggregators.AttributeAggregator.SCHAC_HOME;
+import static aa.aggregators.AttributeAggregator.*;
 import static java.net.URLEncoder.encode;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /*
  * Need separate Controller because of security environment. We want ADMIN rights here and not use OAuth. We also

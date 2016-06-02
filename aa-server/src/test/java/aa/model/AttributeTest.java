@@ -5,10 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 

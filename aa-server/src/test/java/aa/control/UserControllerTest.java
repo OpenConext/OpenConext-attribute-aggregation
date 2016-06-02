@@ -1,19 +1,15 @@
 package aa.control;
 
 import aa.AbstractIntegrationTest;
-import aa.model.ServiceProvider;
-import aa.shibboleth.FederatedUser;
 import org.junit.Test;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class UserControllerTest extends AbstractIntegrationTest {
 

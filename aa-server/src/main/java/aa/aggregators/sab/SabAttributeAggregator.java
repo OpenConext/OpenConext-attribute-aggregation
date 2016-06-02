@@ -18,9 +18,7 @@ import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 public class SabAttributeAggregator extends AbstractAttributeAggregator {

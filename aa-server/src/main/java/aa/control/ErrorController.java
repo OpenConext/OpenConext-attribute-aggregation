@@ -17,7 +17,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;

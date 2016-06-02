@@ -2,7 +2,6 @@ package aa.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;

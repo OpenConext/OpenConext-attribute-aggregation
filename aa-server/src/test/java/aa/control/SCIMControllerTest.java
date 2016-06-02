@@ -1,6 +1,5 @@
 package aa.control;
 
-import aa.model.MetaInformation;
 import aa.model.ResourceType;
 import aa.model.Schema;
 import aa.oidc.AbstractOidcIntegrationTest;
@@ -12,17 +11,11 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 public class SCIMControllerTest extends AbstractOidcIntegrationTest {
 

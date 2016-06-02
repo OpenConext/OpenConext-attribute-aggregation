@@ -6,10 +6,11 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URLConnection;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Base64;
 
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static java.util.Base64.getEncoder;
@@ -32,7 +33,9 @@ public class BasicAuthenticationUrlResource extends UrlResource {
     try {
       return con.getInputStream();
     } catch (IOException ex) {
-      con.disconnect();
+      if (con != null) {
+        con.disconnect();
+      }
       throw ex;
     }
   }
@@ -50,7 +53,9 @@ public class BasicAuthenticationUrlResource extends UrlResource {
         int responseCode = con.getResponseCode();
         return responseCode != HttpStatus.NOT_MODIFIED.value();
       } catch (IOException ex) {
-        con.disconnect();
+        if (con != null) {
+          con.disconnect();
+        }
         throw new RuntimeException(ex);
       }
   }

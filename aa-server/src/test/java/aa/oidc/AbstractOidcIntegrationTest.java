@@ -8,12 +8,10 @@ import org.junit.Rule;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static java.nio.charset.Charset.forName;
 
 @WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=aa-test",
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml",
