@@ -55,7 +55,6 @@ export default {
     create: 'Create new aggregation',
     created: 'Created by {{name}} on {{date}}',
     submit: 'Submit',
-    cancel: 'Cancel',
     authority: 'Attribute Authority',
     attributes: 'Attribute(s)',
     new_authority: "Add a new authority...",
