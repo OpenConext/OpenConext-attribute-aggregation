@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
  * a ':'. For example: https://sp.service.nl
  * <p/>
  * The corresponding OAuth2 client_id can not contain ':' because it is used in the Basic Authentication scheme
- * for requsting tokens.
+ * for requesting tokens.
  * <p/>
  * Therefore the client_id must be translated to a SP entity-id and vica-versa on order to fetch Aggregations.
  */
