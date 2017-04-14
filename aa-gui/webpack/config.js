@@ -26,7 +26,7 @@ if (DEBUG) {
   entry.app.push('webpack/hot/dev-server');
 }
 
-var config = {
+module.exports = {
   context: path.join(__dirname, '../app'),
   cache: DEBUG,
   debug: DEBUG,
@@ -55,11 +55,16 @@ var config = {
     noInfo: false,
     inline: true,
     stats: { colors: true },
-    proxy: [{
-      path: pkg.config.proxyPath,
-      target: pkg.config.proxyPathTarget
-    }]
+    port: 8000,
+    proxy: [
+      {
+        context: function(pathname, req) {
+          return pathname.match("^/aa/api");
+        },
+        target: {
+          port: 8080
+        }
+      }
+    ]
   }
 };
-
-module.exports = config;

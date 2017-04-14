@@ -1,11 +1,11 @@
 authorities:
   - {
-      id: "aa1",
-      description: "description1",
-      endpoint: "http://localhost:8889",
-      user: "user",
-      password: "secret",
-      timeOut: 100,
+      id: "orcid",
+      description: "ORCID provides a persistent digital identifier that distinguishes you from every other researcher and, through integration in key research workflows such as manuscript and grant submission, supports automated linkages between you and your professional activities ensuring that your work is recognized",
+      endpoint: "https://orcidaa.test.surfconext.nl/idp/profile/admin/resolvertest",
+      user: "",
+      password: "",
+      timeOut: 1000,
       attributes: [
         {
           name: "urn:mace:dir:attribute-def:eduPersonOrcid",
@@ -17,32 +17,21 @@ authorities:
           returned: "default",
           type: "string",
           uniqueness: "none"
-        },
-        {
-          name: "urn:mace:dir:attribute-def:eduPersonEntitlement",
-          caseExact: True,
-          description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
-          multiValued: False,
-          mutability: "readOnly",
-          required: False,
-          returned: "default",
-          type: "string",
-          uniqueness: "none"
         }
       ],
       requiredInputAttributes: [
         {
-          name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
+        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
         }
       ]
     }
   - {
-      id: "aa2",
-      description: "description2",
-      endpoint: "http://localhost:8889",
-      user: "john.doe",
-      password: "secret",
-      timeOut: 500,
+      id: "sab",
+      description: "SURFnet Autorisatie Beheer",
+      endpoint: "https://sab-ng.surfnet.nl/simplesaml/module.php/attributes/server.php",
+      user: "coin-test",
+      password: "QEPYQaa6bPmrksG",
+      timeOut: 1000,
       attributes: [
         {
           name: "urn:mace:dir:attribute-def:eduPersonEntitlement",
@@ -58,17 +47,17 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-          name: "urn:mace:terena.org:attribute-def:schacHomeOrganization"
+        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
         }
       ]
     }
   - {
-      id: "aa3",
-      description: "description3",
-      endpoint: "http://localhost:8889",
-      user: "john.doe",
-      password: "secret",
-      timeOut: 500,
+      id: "voot",
+      description: "An extensible protocol for dynamic exchange of group and authorization data",
+      endpoint: "https://voot.test.surfconext.nl",
+      user: "https@//aa.test.surfconext.nl",
+      password: "200063f4-fcd5-49fb-a504-eae30ed5e97e",
+      timeOut: 1000,
       attributes: [
         {
           name: "urn:mace:dir:attribute-def:isMemberOf",
@@ -84,7 +73,78 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-          name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+        }
+      ]
+    }
+  - {
+      id: "idin",
+      description: "With iDIN, you can identify yourself online to companies and organisations using your banks log-in procedure - simple, secure and safe",
+      endpoint: "https://attribute-mappper.test.surfconext.nl",
+      user: "am_aa_client",
+      password: "secret",
+      timeOut: 1000,
+      attributes: [
+        {
+          name: "urn:mace:dir:attribute-def:isMemberOf",
+          caseExact: True,
+          description: "Lists the collaborative organisations / groups the user is a member of",
+          multiValued: True,
+          mutability: "readOnly",
+          required: False,
+          returned: "default",
+          type: "string",
+          uniqueness: "none",
+        },
+        {
+          name: "urn:mace:dir:attribute-def:eduPersonAffiliation",
+          caseExact: True,
+          description: "Indicates a set of roles of the person.",
+          multiValued: True,
+          mutability: "readOnly",
+          required: False,
+          returned: "default",
+          type: "string",
+          uniqueness: "none",
+        },
+        {
+          name: "urn:mace:dir:attribute-def:mail",
+          caseExact: True,
+          description: "The email address of the person.",
+          multiValued: False,
+          mutability: "readOnly",
+          required: True,
+          returned: "default",
+          type: "string",
+          uniqueness: "none",
+        }
+      ],
+      requiredInputAttributes: [
+        {
+        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+        }
+      ]
+    }
+  - {
+      id: "test:mock",
+      description: "Test authority",
+      timeOut: 1000,
+      attributes: [
+        {
+          name: "urn:mace:dir:attribute-def:isMemberOf",
+          caseExact: True,
+          description: "Test memberOf membership",
+          multiValued: True,
+          mutability: "readOnly",
+          required: False,
+          returned: "default",
+          type: "string",
+          uniqueness: "none",
+        }
+      ],
+      requiredInputAttributes: [
+        {
+        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
         }
       ]
     }

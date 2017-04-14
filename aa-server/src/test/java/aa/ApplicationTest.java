@@ -20,7 +20,7 @@ public class ApplicationTest extends AbstractIntegrationTest {
     assertEquals(response.getBody().get("status"), "UP");
   }
 
-  @Test(expected = UnsatisfiedDependencyException.class)
+  @Test
   public void testMain() {
     Application application = new Application();
     application.main(new String[]{});
