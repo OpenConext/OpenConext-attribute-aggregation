@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ServiceRegistry {
 
-  Collection<ServiceProvider> serviceProviders();
+    Collection<ServiceProvider> serviceProviders();
 
-  Optional<ServiceProvider> serviceProviderByEntityId(String entityId);
+    Optional<ServiceProvider> serviceProviderByEntityId(String entityId);
 }

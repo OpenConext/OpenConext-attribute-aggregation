@@ -24,36 +24,36 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
     "checkToken.cache=false"})
 public abstract class AbstractAuthzIntegrationTest extends AbstractIntegrationTest {
 
-  private static final String accessToken = UUID.randomUUID().toString();
+    private static final String accessToken = UUID.randomUUID().toString();
 
-  private int authzPort = 12122;
+    private int authzPort = 12122;
 
-  protected HttpHeaders oauthHeaders;
+    protected HttpHeaders oauthHeaders;
 
-  protected String getAccessToken() {
-    return accessToken;
-  }
+    protected String getAccessToken() {
+        return accessToken;
+    }
 
-  @Rule
-  public WireMockRule authzServerMock = new WireMockRule(authzPort);
+    @Rule
+    public WireMockRule authzServerMock = new WireMockRule(authzPort);
 
-  @Before
-  public void before() throws Exception {
-    super.before();
-    oauthHeaders = oauthHeaders(getAccessToken());
+    @Before
+    public void before() throws Exception {
+        super.before();
+        oauthHeaders = oauthHeaders(getAccessToken());
 
-    doStubAuthzCheckToken("json/authz/check_token.success.json");
+        doStubAuthzCheckToken("json/authz/check_token.success.json");
 
-  }
+    }
 
-  protected void doStubAuthzCheckToken(String path) throws IOException {
-    InputStream inputStream = new ClassPathResource(path).getInputStream();
-    String json = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
-    authzServerMock.stubFor(post(urlMatching("/oauth/check_token")).willReturn(
-        aResponse().
-            withStatus(200).
-            withHeader("Content-type", "application/json").
-            withBody(json)
-    ));
-  }
+    protected void doStubAuthzCheckToken(String path) throws IOException {
+        InputStream inputStream = new ClassPathResource(path).getInputStream();
+        String json = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+        authzServerMock.stubFor(post(urlMatching("/oauth/check_token")).willReturn(
+            aResponse().
+                withStatus(200).
+                withHeader("Content-type", "application/json").
+                withBody(json)
+        ));
+    }
 }

@@ -13,16 +13,16 @@ import java.util.Collection;
 @RequestMapping(headers = {"Content-Type=application/json"}, produces = {"application/json"})
 public class ServiceRegistryController {
 
-  private final ServiceRegistry serviceRegistry;
+    private final ServiceRegistry serviceRegistry;
 
-  @Autowired
-  public ServiceRegistryController(ServiceRegistry serviceRegistry) {
-    this.serviceRegistry = serviceRegistry;
-  }
+    @Autowired
+    public ServiceRegistryController(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
+    }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/internal/serviceProviders")
-  public Collection<ServiceProvider> serviceProviders() {
-    return serviceRegistry.serviceProviders();
-  }
+    @RequestMapping(method = RequestMethod.GET, value = "/internal/serviceProviders")
+    public Collection<ServiceProvider> serviceProviders() {
+        return serviceRegistry.serviceProviders();
+    }
 
 }

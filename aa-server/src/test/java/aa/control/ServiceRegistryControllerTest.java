@@ -22,19 +22,19 @@ import static org.junit.Assert.assertEquals;
 @Ignore
 public class ServiceRegistryControllerTest extends AbstractIntegrationTest {
 
-  @Override
-  protected boolean isBasicAuthenticated() {
-    return true;
-  }
+    @Override
+    protected boolean isBasicAuthenticated() {
+        return true;
+    }
 
-  @Test
-  public void testServiceProviders() throws Exception {
-    RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/internal/serviceProviders"));
-    ResponseEntity<Collection<ServiceProvider>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Collection<ServiceProvider>>() {
-    });
+    @Test
+    public void testServiceProviders() throws Exception {
+        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/internal/serviceProviders"));
+        ResponseEntity<Collection<ServiceProvider>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Collection<ServiceProvider>>() {
+        });
 
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(30, response.getBody().size());
-  }
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(30, response.getBody().size());
+    }
 
 }

@@ -12,15 +12,15 @@ import static org.junit.Assert.assertEquals;
 
 public class AttributeTest {
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-  @Test
-  public void testClone() throws Exception {
-    String content = IOUtils.toString(new ClassPathResource("json/client/attribute.json").getInputStream(), Charset.defaultCharset());
-    Attribute attribute = objectMapper.readValue(content, Attribute.class);
-    Attribute cloned = (Attribute) attribute.clone();
+    @Test
+    public void testClone() throws Exception {
+        String content = IOUtils.toString(new ClassPathResource("json/client/attribute.json").getInputStream(), Charset.defaultCharset());
+        Attribute attribute = objectMapper.readValue(content, Attribute.class);
+        Attribute cloned = (Attribute) attribute.clone();
 
-    assertFalse(cloned == attribute);
-    assertEquals(attribute.toString(), cloned.toString());
-  }
+        assertFalse(cloned == attribute);
+        assertEquals(attribute.toString(), cloned.toString());
+    }
 }

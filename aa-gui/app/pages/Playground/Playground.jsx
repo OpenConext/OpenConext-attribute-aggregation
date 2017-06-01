@@ -34,7 +34,7 @@ export default class Playground extends React.Component {
   }
 
   updatePlayState(newPartialState) {
-    var newState = update(this.state.play, {$merge: newPartialState});
+    const newState = update(this.state.play, {$merge: newPartialState});
     this.setState({play: newState})
   }
 
@@ -48,7 +48,7 @@ export default class Playground extends React.Component {
     let handleOnChange = (val) => {
       let entityId = val ? val.serviceProviders[0].entityId : undefined;
       this.updatePlayState({aggregation: val || {}, serviceProvider: {entityId: entityId}, inputParameters: {}})
-    }
+    };
 
     let aggregations = this.state.aggregations;
     return (
@@ -97,17 +97,18 @@ export default class Playground extends React.Component {
     let handleOnChange = (e) => {
       this.state.play.inputParameters[e.target.name] = e.target.value;
       this.updatePlayState({inputParameters: this.state.play.inputParameters})
-    }
+    };
     let uniqueRequiredAttributeNames = [];
 
-    var attributes = this.state.play.aggregation.attributes;
+    const attributes = this.state.play.aggregation.attributes;
+    debugger;
     if (attributes) {
       //get all required attributes from the authorities linked to the attributes of the aggration
       let requiredAttributeNames = attributes
         .map((attribute) => attribute.attributeAuthorityId)
         .map((attributeAuthorityId) => this.state.authorities.find((authority) => authority.id === attributeAuthorityId).requiredInputAttributes)
         .reduce((attr1, attr2) => attr1.concat(attr2))
-        .map((requiredInputAttribute) => requiredInputAttribute.name)
+        .map((requiredInputAttribute) => requiredInputAttribute.name);
       uniqueRequiredAttributeNames = Array.from(new Set(requiredAttributeNames));
     }
     //we permit empty user attributes to see empty result

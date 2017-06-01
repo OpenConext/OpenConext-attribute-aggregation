@@ -8,10 +8,10 @@ import java.util.Map;
 
 public abstract class AbstractSchacHomeAwareUserAuthenticationConverterTest {
 
-  private static ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
-  @SuppressWarnings("unchecked")
-  protected Map<String, ?> readJson(String jsonFile) throws IOException {
-    return objectMapper.readValue(new ClassPathResource(jsonFile).getInputStream(), Map.class);
-  }
+    @SuppressWarnings("unchecked")
+    protected Map<String, ?> readJson(String jsonFile) throws IOException {
+        return objectMapper.readValue(new ClassPathResource(jsonFile).getInputStream(), Map.class);
+    }
 }

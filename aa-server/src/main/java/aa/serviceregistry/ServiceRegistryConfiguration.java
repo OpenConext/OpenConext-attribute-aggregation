@@ -12,22 +12,22 @@ import java.io.IOException;
 @Configuration
 public class ServiceRegistryConfiguration {
 
-  @Bean
-  @Profile({"dev", "no-csrf", "aa-test"})
-  public ServiceRegistry classPathResourceServiceRegistry() throws IOException {
-    return new ClassPathResourceServiceRegistry(true);
-  }
+    @Bean
+    @Profile({"dev", "no-csrf", "aa-test"})
+    public ServiceRegistry classPathResourceServiceRegistry() throws IOException {
+        return new ClassPathResourceServiceRegistry(true);
+    }
 
-  @Bean
-  @Profile({"test", "acc", "prod"})
-  @Autowired
-  @Primary
-  public ServiceRegistry urlResourceServiceRegistry(
-      @Value("${metadata.username}") String username,
-      @Value("${metadata.password}") String password,
-      @Value("${metadata.spRemotePath}") String spRemotePath,
-      @Value("${metadata.refresh.minutes}") int period) throws IOException {
-    return new UrlResourceServiceRegistry(username, password, spRemotePath, period);
-  }
+    @Bean
+    @Profile({"test", "acc", "prod"})
+    @Autowired
+    @Primary
+    public ServiceRegistry urlResourceServiceRegistry(
+        @Value("${metadata.username}") String username,
+        @Value("${metadata.password}") String password,
+        @Value("${metadata.spRemotePath}") String spRemotePath,
+        @Value("${metadata.refresh.minutes}") int period) throws IOException {
+        return new UrlResourceServiceRegistry(username, password, spRemotePath, period);
+    }
 
 }

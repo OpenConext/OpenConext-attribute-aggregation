@@ -18,7 +18,8 @@ CREATE TABLE attributes (
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
 
-ALTER TABLE attributes ADD UNIQUE INDEX attributes_attribute_authority_id_name (attribute_authority_id, name);
+ALTER TABLE attributes
+  ADD UNIQUE INDEX attributes_attribute_authority_id_name (attribute_authority_id, name);
 
 CREATE TABLE service_providers (
   id        MEDIUMINT    NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -28,7 +29,8 @@ CREATE TABLE service_providers (
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
 
-ALTER TABLE service_providers ADD UNIQUE INDEX service_providers_entity_id (entity_id);
+ALTER TABLE service_providers
+  ADD UNIQUE INDEX service_providers_entity_id (entity_id);
 
 CREATE TABLE aggregations_service_providers (
   aggregation_id      MEDIUMINT NOT NULL,
@@ -38,8 +40,10 @@ CREATE TABLE aggregations_service_providers (
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
 
-ALTER TABLE aggregations_service_providers ADD INDEX aggregations_service_providers_aggregation_id (aggregation_id);
-ALTER TABLE aggregations_service_providers ADD INDEX aggregations_service_providers_service_provider_id (service_provider_id);
+ALTER TABLE aggregations_service_providers
+  ADD INDEX aggregations_service_providers_aggregation_id (aggregation_id);
+ALTER TABLE aggregations_service_providers
+  ADD INDEX aggregations_service_providers_service_provider_id (service_provider_id);
 
 CREATE TABLE aggregations_attributes (
   aggregation_id MEDIUMINT NOT NULL,
@@ -49,5 +53,7 @@ CREATE TABLE aggregations_attributes (
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
 
-ALTER TABLE aggregations_attributes ADD INDEX aggregations_attributes_aggregation_id (aggregation_id);
-ALTER TABLE aggregations_attributes ADD INDEX aggregations_attributes_attribute_id (attribute_id);
+ALTER TABLE aggregations_attributes
+  ADD INDEX aggregations_attributes_aggregation_id (aggregation_id);
+ALTER TABLE aggregations_attributes
+  ADD INDEX aggregations_attributes_attribute_id (attribute_id);

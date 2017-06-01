@@ -14,33 +14,33 @@ import java.util.HashMap;
 
 public class MockShibbolethFilter extends GenericFilterBean {
 
-  private static class SetHeader extends HttpServletRequestWrapper {
+    private static class SetHeader extends HttpServletRequestWrapper {
 
-    private final HashMap<String, String> headers;
+        private final HashMap<String, String> headers;
 
-    public SetHeader(HttpServletRequest request) {
-      super(request);
-      this.headers = new HashMap<>();
-    }
+        public SetHeader(HttpServletRequest request) {
+            super(request);
+            this.headers = new HashMap<>();
+        }
 
-    public void setHeader(String name, String value) {
-      this.headers.put(name, value);
+        public void setHeader(String name, String value) {
+            this.headers.put(name, value);
+        }
+
+        @Override
+        public String getHeader(String name) {
+            if (headers.containsKey(name)) {
+                return headers.get(name);
+            }
+            return super.getHeader(name);
+        }
     }
 
     @Override
-    public String getHeader(String name) {
-      if (headers.containsKey(name)) {
-        return headers.get(name);
-      }
-      return super.getHeader(name);
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        SetHeader wrapper = new SetHeader((HttpServletRequest) servletRequest);
+        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.UID_HEADER_NAME, "saml2_user");
+        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.DISPLAY_NAME_HEADER_NAME, "John Doe");
+        filterChain.doFilter(wrapper, servletResponse);
     }
-  }
-
-  @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-    SetHeader wrapper = new SetHeader((HttpServletRequest) servletRequest);
-    wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.UID_HEADER_NAME, "saml2_user");
-    wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.DISPLAY_NAME_HEADER_NAME, "John Doe");
-    filterChain.doFilter(wrapper, servletResponse);
-  }
 }

@@ -12,41 +12,41 @@ import java.util.Optional;
 
 public abstract class AbstractUserAttributeCache implements UserAttributeCache {
 
-  protected final Logger LOG = LoggerFactory.getLogger(getClass());
+    protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
-  private final long cacheDuration;
-  private final boolean cacheInActive;
+    private final long cacheDuration;
+    private final boolean cacheInActive;
 
-  public AbstractUserAttributeCache(long cacheDurationMilliseconds) {
-    this.cacheDuration = cacheDurationMilliseconds;
-    cacheInActive = cacheDurationMilliseconds <= 0;
-  }
-
-  @Override
-  public Optional<List<UserAttribute>> get(Optional<String> cacheKey) throws IOException {
-    if (cacheInActive || !cacheKey.isPresent()) {
-      return Optional.empty();
+    public AbstractUserAttributeCache(long cacheDurationMilliseconds) {
+        this.cacheDuration = cacheDurationMilliseconds;
+        cacheInActive = cacheDurationMilliseconds <= 0;
     }
-    List<UserAttribute> userAttributes = this.doGet(cacheKey.get());
-    LOG.debug("Returning userAttributes from cache {}", userAttributes);
-    return userAttributes != null ? Optional.of(userAttributes) : Optional.empty();
-  }
 
-  //may return null as only used internally
-  protected abstract List<UserAttribute> doGet(String cacheKey) throws IOException;
-
-  @Override
-  public void put(Optional<String> cacheKey, List<UserAttribute> userAttributes) throws IOException {
-    if (!cacheInActive && cacheKey.isPresent() && !CollectionUtils.isEmpty(userAttributes)) {
-      LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey.get());
-      this.doPut(cacheKey.get(), userAttributes);
+    @Override
+    public Optional<List<UserAttribute>> get(Optional<String> cacheKey) throws IOException {
+        if (cacheInActive || !cacheKey.isPresent()) {
+            return Optional.empty();
+        }
+        List<UserAttribute> userAttributes = this.doGet(cacheKey.get());
+        LOG.debug("Returning userAttributes from cache {}", userAttributes);
+        return userAttributes != null ? Optional.of(userAttributes) : Optional.empty();
     }
-  }
 
-  //may return null as only used internally
-  protected abstract void doPut(String cacheKey, List<UserAttribute> userAttributes) throws JsonProcessingException;
+    //may return null as only used internally
+    protected abstract List<UserAttribute> doGet(String cacheKey) throws IOException;
 
-  public long getCacheDuration() {
-    return cacheDuration;
-  }
+    @Override
+    public void put(Optional<String> cacheKey, List<UserAttribute> userAttributes) throws IOException {
+        if (!cacheInActive && cacheKey.isPresent() && !CollectionUtils.isEmpty(userAttributes)) {
+            LOG.debug("Putting userAttributes in cache {} with key {}", userAttributes, cacheKey.get());
+            this.doPut(cacheKey.get(), userAttributes);
+        }
+    }
+
+    //may return null as only used internally
+    protected abstract void doPut(String cacheKey, List<UserAttribute> userAttributes) throws JsonProcessingException;
+
+    public long getCacheDuration() {
+        return cacheDuration;
+    }
 }

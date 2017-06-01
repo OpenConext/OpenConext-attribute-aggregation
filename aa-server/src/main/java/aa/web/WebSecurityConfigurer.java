@@ -52,157 +52,157 @@ import java.util.Arrays;
 @EnableResourceServer
 public class WebSecurityConfigurer {
 
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    //because Autowired this will end up in the global ProviderManager
-    PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
-    authenticationProvider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
-    auth.authenticationProvider(authenticationProvider);
-  }
-
-  @Order(1)
-  @Configuration
-  public static class InternalSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-
     @Autowired
-    private Environment environment;
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-      web.ignoring().antMatchers("/health", "/info", "/v2/ServiceProviderConfig");
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        //because Autowired this will end up in the global ProviderManager
+        PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
+        authenticationProvider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
+        auth.authenticationProvider(authenticationProvider);
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-      http
-          .antMatcher("/internal/**")
-          .sessionManagement()
-          .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-          .and()
-          .csrf()
-          .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
-          .and()
-          .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
-          .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
-          .addFilterBefore(
-              new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean()),
-              AbstractPreAuthenticatedProcessingFilter.class
-          )
-          .authorizeRequests()
-          .antMatchers("/internal/**").hasRole("ADMIN");
+    @Order(1)
+    @Configuration
+    public static class InternalSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-      if (environment.acceptsProfiles("no-csrf")) {
-        http.csrf().disable();
-      }
-      if (environment.acceptsProfiles("dev", "no-csrf")) {
-        //we can't use @Profile, because we need to add it before the real filter
-        http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
-      }
-    }
-  }
+        @Autowired
+        private Environment environment;
 
-  @Configuration
-  @Order
-  public static class ScimSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter implements ResourceServerConfigurer {
-
-    @Value("${attribute.aggregation.user.name}")
-    private String attributeAggregationUserName;
-
-    @Value("${attribute.aggregation.user.password}")
-    private String attributeAggregationPassword;
-
-    private boolean configured = false;
-
-    @Value("${authz.checkToken.endpoint.url}")
-    private String authzCheckTokenEndpointUrl;
-
-    @Value("${authz.checkToken.clientId}")
-    private String authzCheckTokenClientId;
-
-    @Value("${authz.checkToken.secret}")
-    private String authzCheckTokenSecret;
-
-    @Value("${oidc.checkToken.endpoint.url}")
-    private String oidcCheckTokenEndpointUrl;
-
-    @Value("${oidc.checkToken.clientId}")
-    private String oidcCheckTokenClientId;
-
-    @Value("${oidc.checkToken.secret}")
-    private String oidcCheckTokenSecret;
-
-    @Value("${checkToken.cache}")
-    private boolean checkTokenCache;
-
-    @Value("${checkToken.cache.duration.milliSeconds}")
-    private int checkTokenCacheDurationMilliseconds;
-
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-      //because we are both WebSecurityConfigurer and ResourceServerConfigurer
-      if (configured) {
-        return;
-      }
-      configured = true;
-      http
-          .antMatcher("/**")
-          .sessionManagement()
-          .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-          .and()
-          .csrf()
-          .disable()
-          .addFilterBefore(
-              new BasicAuthenticationFilter(
-                  new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
-              BasicAuthenticationFilter.class
-          )
-          .authorizeRequests()
-          .antMatchers("/v2/ResourceType", "/v2/Me", "/v2/Schema").access("#oauth2.hasScope('attribute-aggregation')")
-          .antMatchers("/v2/query").access("#oauth2.hasScope('saml-attribute-query')")
-          .antMatchers("/attribute/**").hasRole("ADMIN")
-          .antMatchers("/**").hasRole("USER");
-    }
-
-    @Override
-    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-      //if we run stateless, then only oauth2 is allowed to populate the security context and this is not what we want
-      resources
-          .resourceId("attribute-aggregator")
-          .stateless(false)
-          .tokenServices(resourceServerTokenServices())
-          .tokenExtractor(tokenExtractor());
-    }
-
-    private DecisionResourceServerTokenServices resourceServerTokenServices() {
-      CompositeDecisionResourceServerTokenServices tokenServices = new CompositeDecisionResourceServerTokenServices(
-          Arrays.asList(oidcResourceServerTokenServices(), authzResourceServerTokenServices())
-      );
-      return checkTokenCache ?
-          new CachedRemoteTokenServices(tokenServices, checkTokenCacheDurationMilliseconds, checkTokenCacheDurationMilliseconds) :
-          tokenServices;
-    }
-
-    private DecisionResourceServerTokenServices oidcResourceServerTokenServices() {
-      return new OidcRemoteTokenServices(oidcCheckTokenEndpointUrl, oidcCheckTokenClientId, oidcCheckTokenSecret);
-    }
-
-    private DecisionResourceServerTokenServices authzResourceServerTokenServices() {
-      final DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter();
-      accessTokenConverter.setUserTokenConverter(new AuthzSchacHomeAwareUserAuthenticationConverter());
-      return new AuthzResourceServerTokenServices(authzCheckTokenClientId, authzCheckTokenSecret, authzCheckTokenEndpointUrl, accessTokenConverter);
-    }
-
-    /*
-     * Explicitly deny other means of supplying oauth token than "bearer"
-     */
-    private TokenExtractor tokenExtractor() {
-      return new BearerTokenExtractor() {
-        protected String extractToken(HttpServletRequest request) {
-          // only check the header...
-          return extractHeaderToken(request);
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().antMatchers("/health", "/info", "/v2/ServiceProviderConfig");
         }
-      };
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                .antMatcher("/internal/**")
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
+                .csrf()
+                .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
+                .and()
+                .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
+                .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
+                .addFilterBefore(
+                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean()),
+                    AbstractPreAuthenticatedProcessingFilter.class
+                )
+                .authorizeRequests()
+                .antMatchers("/internal/**").hasRole("ADMIN");
+
+            if (environment.acceptsProfiles("no-csrf")) {
+                http.csrf().disable();
+            }
+            if (environment.acceptsProfiles("dev", "no-csrf")) {
+                //we can't use @Profile, because we need to add it before the real filter
+                http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
+            }
+        }
     }
-  }
+
+    @Configuration
+    @Order
+    public static class ScimSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter implements ResourceServerConfigurer {
+
+        @Value("${attribute.aggregation.user.name}")
+        private String attributeAggregationUserName;
+
+        @Value("${attribute.aggregation.user.password}")
+        private String attributeAggregationPassword;
+
+        private boolean configured = false;
+
+        @Value("${authz.checkToken.endpoint.url}")
+        private String authzCheckTokenEndpointUrl;
+
+        @Value("${authz.checkToken.clientId}")
+        private String authzCheckTokenClientId;
+
+        @Value("${authz.checkToken.secret}")
+        private String authzCheckTokenSecret;
+
+        @Value("${oidc.checkToken.endpoint.url}")
+        private String oidcCheckTokenEndpointUrl;
+
+        @Value("${oidc.checkToken.clientId}")
+        private String oidcCheckTokenClientId;
+
+        @Value("${oidc.checkToken.secret}")
+        private String oidcCheckTokenSecret;
+
+        @Value("${checkToken.cache}")
+        private boolean checkTokenCache;
+
+        @Value("${checkToken.cache.duration.milliSeconds}")
+        private int checkTokenCacheDurationMilliseconds;
+
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+            //because we are both WebSecurityConfigurer and ResourceServerConfigurer
+            if (configured) {
+                return;
+            }
+            configured = true;
+            http
+                .antMatcher("/**")
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .csrf()
+                .disable()
+                .addFilterBefore(
+                    new BasicAuthenticationFilter(
+                        new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
+                    BasicAuthenticationFilter.class
+                )
+                .authorizeRequests()
+                .antMatchers("/v2/ResourceType", "/v2/Me", "/v2/Schema").access("#oauth2.hasScope('attribute-aggregation')")
+                .antMatchers("/v2/query").access("#oauth2.hasScope('saml-attribute-query')")
+                .antMatchers("/attribute/**").hasRole("ADMIN")
+                .antMatchers("/**").hasRole("USER");
+        }
+
+        @Override
+        public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+            //if we run stateless, then only oauth2 is allowed to populate the security context and this is not what we want
+            resources
+                .resourceId("attribute-aggregator")
+                .stateless(false)
+                .tokenServices(resourceServerTokenServices())
+                .tokenExtractor(tokenExtractor());
+        }
+
+        private DecisionResourceServerTokenServices resourceServerTokenServices() {
+            CompositeDecisionResourceServerTokenServices tokenServices = new CompositeDecisionResourceServerTokenServices(
+                Arrays.asList(oidcResourceServerTokenServices(), authzResourceServerTokenServices())
+            );
+            return checkTokenCache ?
+                new CachedRemoteTokenServices(tokenServices, checkTokenCacheDurationMilliseconds, checkTokenCacheDurationMilliseconds) :
+                tokenServices;
+        }
+
+        private DecisionResourceServerTokenServices oidcResourceServerTokenServices() {
+            return new OidcRemoteTokenServices(oidcCheckTokenEndpointUrl, oidcCheckTokenClientId, oidcCheckTokenSecret);
+        }
+
+        private DecisionResourceServerTokenServices authzResourceServerTokenServices() {
+            final DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter();
+            accessTokenConverter.setUserTokenConverter(new AuthzSchacHomeAwareUserAuthenticationConverter());
+            return new AuthzResourceServerTokenServices(authzCheckTokenClientId, authzCheckTokenSecret, authzCheckTokenEndpointUrl, accessTokenConverter);
+        }
+
+        /*
+         * Explicitly deny other means of supplying oauth token than "bearer"
+         */
+        private TokenExtractor tokenExtractor() {
+            return new BearerTokenExtractor() {
+                protected String extractToken(HttpServletRequest request) {
+                    // only check the header...
+                    return extractHeaderToken(request);
+                }
+            };
+        }
+    }
 
 }

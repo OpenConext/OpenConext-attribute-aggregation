@@ -10,7 +10,7 @@
     "saml-attribute-query"
   ],
   "schacHomeOrganization": "surfteams.nl",
-  "active" : true,
+  "active": true,
   "eduPersonPrincipalName": "j.doe@example.com",
   "exp": 3600,
   "authorities": [

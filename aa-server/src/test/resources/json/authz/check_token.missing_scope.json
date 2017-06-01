@@ -5,7 +5,7 @@
     "read"
   ],
   "schacHomeOrganization": "surfteams.nl",
-  "active" : true,
+  "active": true,
   "exp": 3600,
   "authorities": [
     "ROLE_USER"

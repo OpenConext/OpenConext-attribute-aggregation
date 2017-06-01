@@ -25,55 +25,55 @@ import static java.util.stream.Collectors.toList;
 @Configuration
 public class AttributeAggregatorConfiguration {
 
-  @Value("${authorization.accessToken.url}")
-  private String authorizationAccessTokenUrl;
+    @Value("${authorization.accessToken.url}")
+    private String authorizationAccessTokenUrl;
 
-  @Value("${scim.server.environment}")
-  private String environment;
+    @Value("${scim.server.environment}")
+    private String environment;
 
-  @Autowired
-  private AuthorityResolver authorityResolver;
+    @Autowired
+    private AuthorityResolver authorityResolver;
 
-  @Autowired
-  private UserAttributeCache userAttributeCache;
+    @Autowired
+    private UserAttributeCache userAttributeCache;
 
-  @Bean
-  @Profile({"aa-test"})
-  public AttributeAggregatorService testingAttributeAggregatorService() {
-    return getAttributeAggregatorService(config -> new TestingAttributeAggregator(config, false));
-  }
-
-  @Bean
-  @Profile({"!aa-test"})
-  public AttributeAggregatorService attributeAggregatorService() {
-    return getAttributeAggregatorService(this::attributeAggregatorById);
-  }
-
-  private AttributeAggregatorService getAttributeAggregatorService(Function<AttributeAuthorityConfiguration, AttributeAggregator> aggregatorFunction) {
-    AuthorityConfiguration configuration = authorityResolver.getConfiguration();
-    List<AttributeAggregator> attributeAggregators = configuration.getAuthorities().stream()
-        .map(aggregatorFunction).collect(toList());
-    return new AttributeAggregatorService(attributeAggregators, configuration, userAttributeCache);
-  }
-
-  private AttributeAggregator attributeAggregatorById(AttributeAuthorityConfiguration configuration) {
-    String id = configuration.getId();
-    switch (id) {
-      case "sab":
-        return new SabAttributeAggregator(configuration);
-      case "voot":
-        return new VootAttributeAggregator(configuration, authorizationAccessTokenUrl);
-      case "orcid":
-        return new OrcidAttributeAggregator(configuration, environment);
-      case "idin":
-        return new IdinAttributeAggregator(configuration);
-      default:
-        if (id.startsWith("test:")) {
-          return new TestingAttributeAggregator(configuration, false);
-        } else {
-          throw new IllegalArgumentException(format("Authority with id %s is unknown", id));
-        }
-
+    @Bean
+    @Profile({"aa-test"})
+    public AttributeAggregatorService testingAttributeAggregatorService() {
+        return getAttributeAggregatorService(config -> new TestingAttributeAggregator(config, false));
     }
-  }
+
+    @Bean
+    @Profile({"!aa-test"})
+    public AttributeAggregatorService attributeAggregatorService() {
+        return getAttributeAggregatorService(this::attributeAggregatorById);
+    }
+
+    private AttributeAggregatorService getAttributeAggregatorService(Function<AttributeAuthorityConfiguration, AttributeAggregator> aggregatorFunction) {
+        AuthorityConfiguration configuration = authorityResolver.getConfiguration();
+        List<AttributeAggregator> attributeAggregators = configuration.getAuthorities().stream()
+            .map(aggregatorFunction).collect(toList());
+        return new AttributeAggregatorService(attributeAggregators, configuration, userAttributeCache);
+    }
+
+    private AttributeAggregator attributeAggregatorById(AttributeAuthorityConfiguration configuration) {
+        String id = configuration.getId();
+        switch (id) {
+            case "sab":
+                return new SabAttributeAggregator(configuration);
+            case "voot":
+                return new VootAttributeAggregator(configuration, authorizationAccessTokenUrl);
+            case "orcid":
+                return new OrcidAttributeAggregator(configuration, environment);
+            case "idin":
+                return new IdinAttributeAggregator(configuration);
+            default:
+                if (id.startsWith("test:")) {
+                    return new TestingAttributeAggregator(configuration, false);
+                } else {
+                    throw new IllegalArgumentException(format("Authority with id %s is unknown", id));
+                }
+
+        }
+    }
 }

@@ -16,36 +16,36 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class AttributeAggregatorConfigurationTest {
 
-  private AttributeAggregatorConfiguration subject;
+    private AttributeAggregatorConfiguration subject;
 
-  @Before
-  public void before() throws Exception {
-    this.doBefore("classpath:/attributeAuthoritiesProductionTemplate.yml");
-  }
+    @Before
+    public void before() throws Exception {
+        this.doBefore("classpath:/attributeAuthoritiesProductionTemplate.yml");
+    }
 
-  private void doBefore(String configFileLocation) {
-    subject = new AttributeAggregatorConfiguration();
-    setField(subject, "authorityResolver", new AuthorityResolver(new DefaultResourceLoader(), configFileLocation));
-    setField(subject, "environment", "test.surfconext");
-    setField(subject, "userAttributeCache", new NoopUserAttributeCache());
-    setField(subject, "authorizationAccessTokenUrl", "http://localhost:8889/oauth/token");
-  }
+    private void doBefore(String configFileLocation) {
+        subject = new AttributeAggregatorConfiguration();
+        setField(subject, "authorityResolver", new AuthorityResolver(new DefaultResourceLoader(), configFileLocation));
+        setField(subject, "environment", "test.surfconext");
+        setField(subject, "userAttributeCache", new NoopUserAttributeCache());
+        setField(subject, "authorizationAccessTokenUrl", "http://localhost:8889/oauth/token");
+    }
 
-  @Test
-  @SuppressWarnings("unchecked")
-  public void testAttributeAggregatorService() throws Exception {
-    AttributeAggregatorService attributeAggregatorService = subject.attributeAggregatorService();
-    Map<String, AttributeAggregator> aggregators = (Map<String, AttributeAggregator>) getField(attributeAggregatorService, "aggregators");
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testAttributeAggregatorService() throws Exception {
+        AttributeAggregatorService attributeAggregatorService = subject.attributeAggregatorService();
+        Map<String, AttributeAggregator> aggregators = (Map<String, AttributeAggregator>) getField(attributeAggregatorService, "aggregators");
 
-    assertEquals(5, aggregators.size());
-    asList("orcid", "sab", "voot", "idin", "test:mock").forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
-  }
+        assertEquals(5, aggregators.size());
+        asList("orcid", "sab", "voot", "idin", "test:mock").forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
+    }
 
-  @Test(expected = IllegalArgumentException.class)
-  @SuppressWarnings("unchecked")
-  public void testAttributeAggregatorServiceIllegalAuthorityId() throws Exception {
-    this.doBefore("classpath:/testAttributeAuthorities.yml");
-    subject.attributeAggregatorService();
-  }
+    @Test(expected = IllegalArgumentException.class)
+    @SuppressWarnings("unchecked")
+    public void testAttributeAggregatorServiceIllegalAuthorityId() throws Exception {
+        this.doBefore("classpath:/testAttributeAuthorities.yml");
+        subject.attributeAggregatorService();
+    }
 
 }

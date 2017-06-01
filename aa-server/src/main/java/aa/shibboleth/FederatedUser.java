@@ -7,20 +7,20 @@ import java.util.List;
 
 public class FederatedUser extends User {
 
-  public final String uid;
-  public final String displayName;
+    public final String uid;
+    public final String displayName;
 
-  public FederatedUser(String uid, String displayName, List<GrantedAuthority> authorities) {
-    super(uid, "N/A", authorities);
-    this.uid = uid;
-    this.displayName = displayName;
-  }
+    public FederatedUser(String uid, String displayName, List<GrantedAuthority> authorities) {
+        super(uid, "N/A", authorities);
+        this.uid = uid;
+        this.displayName = displayName;
+    }
 
-  public String getUid() {
-    return uid;
-  }
+    public String getUid() {
+        return uid;
+    }
 
-  public String getDisplayName() {
-    return displayName;
-  }
+    public String getDisplayName() {
+        return displayName;
+    }
 }

@@ -10,5 +10,7 @@ DELETE FROM service_providers;
 --
 -- Because an attribute can be marked as skip_consent we can't re-use attributes over aggregations
 --
-ALTER TABLE attributes DROP INDEX attributes_attribute_authority_id_name;
-ALTER TABLE attributes ADD skip_consent tinyint(1) DEFAULT 0;
+ALTER TABLE attributes
+  DROP INDEX attributes_attribute_authority_id_name;
+ALTER TABLE attributes
+  ADD skip_consent TINYINT(1) DEFAULT 0;

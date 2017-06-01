@@ -15,66 +15,66 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 public class CachedRemoteTokenServices implements DecisionResourceServerTokenServices {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CachedRemoteTokenServices.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CachedRemoteTokenServices.class);
 
-  private final Map<String, CachedOAuth2Authentication> authentications = new ConcurrentHashMap<>();
+    private final Map<String, CachedOAuth2Authentication> authentications = new ConcurrentHashMap<>();
 
-  private final long duration;
+    private final long duration;
 
-  private final DecisionResourceServerTokenServices tokenServices;
+    private final DecisionResourceServerTokenServices tokenServices;
 
-  public CachedRemoteTokenServices(DecisionResourceServerTokenServices tokenServices, long durationMilliseconds, long expiryIntervalCheckMilliseconds) {
-    this.tokenServices = tokenServices;
-    this.duration = durationMilliseconds;
-    newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAuthentications, 0, expiryIntervalCheckMilliseconds, TimeUnit.MILLISECONDS);
-  }
-
-  @Override
-  public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
-    CachedOAuth2Authentication cachedAuthentication = authentications.get(accessToken);
-    long now = System.currentTimeMillis();
-    if (cachedAuthentication != null && cachedAuthentication.timestamp + duration > now) {
-      LOG.debug("Returning OAuth2Authentication from cache {}", cachedAuthentication.authentication);
-      return cachedAuthentication.authentication;
+    public CachedRemoteTokenServices(DecisionResourceServerTokenServices tokenServices, long durationMilliseconds, long expiryIntervalCheckMilliseconds) {
+        this.tokenServices = tokenServices;
+        this.duration = durationMilliseconds;
+        newScheduledThreadPool(1).scheduleAtFixedRate(this::clearExpiredAuthentications, 0, expiryIntervalCheckMilliseconds, TimeUnit.MILLISECONDS);
     }
-    OAuth2Authentication oAuth2Authentication = tokenServices.loadAuthentication(accessToken);
-    //will not happen, but just to ensure this does not cause memory problems
-    int size = authentications.size();
-    if (size < 10000) {
-      LOG.debug("Putting OAuth2Authentication in cache {} current size: {}", oAuth2Authentication, size + 1);
-      authentications.put(accessToken, new CachedOAuth2Authentication(now, oAuth2Authentication));
+
+    @Override
+    public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
+        CachedOAuth2Authentication cachedAuthentication = authentications.get(accessToken);
+        long now = System.currentTimeMillis();
+        if (cachedAuthentication != null && cachedAuthentication.timestamp + duration > now) {
+            LOG.debug("Returning OAuth2Authentication from cache {}", cachedAuthentication.authentication);
+            return cachedAuthentication.authentication;
+        }
+        OAuth2Authentication oAuth2Authentication = tokenServices.loadAuthentication(accessToken);
+        //will not happen, but just to ensure this does not cause memory problems
+        int size = authentications.size();
+        if (size < 10000) {
+            LOG.debug("Putting OAuth2Authentication in cache {} current size: {}", oAuth2Authentication, size + 1);
+            authentications.put(accessToken, new CachedOAuth2Authentication(now, oAuth2Authentication));
+        }
+        return oAuth2Authentication;
     }
-    return oAuth2Authentication;
-  }
 
-  @Override
-  public OAuth2AccessToken readAccessToken(String accessToken) {
-    return tokenServices.readAccessToken(accessToken);
-  }
-
-  private void clearExpiredAuthentications() {
-    long now = System.currentTimeMillis();
-    authentications.forEach((accessToken, authentication) -> {
-      if (authentication.timestamp + duration < now) {
-        LOG.debug("Removing expired authentication with access token {}", accessToken);
-        authentications.remove(accessToken);
-      }
-    });
-  }
-
-  @Override
-  public boolean canHandle(String accessToken) {
-    return tokenServices.canHandle(accessToken);
-  }
-
-  private class CachedOAuth2Authentication {
-    long timestamp;
-    OAuth2Authentication authentication;
-
-    public CachedOAuth2Authentication(long timestamp, OAuth2Authentication authentication) {
-      this.timestamp = timestamp;
-      this.authentication = authentication;
+    @Override
+    public OAuth2AccessToken readAccessToken(String accessToken) {
+        return tokenServices.readAccessToken(accessToken);
     }
-  }
+
+    private void clearExpiredAuthentications() {
+        long now = System.currentTimeMillis();
+        authentications.forEach((accessToken, authentication) -> {
+            if (authentication.timestamp + duration < now) {
+                LOG.debug("Removing expired authentication with access token {}", accessToken);
+                authentications.remove(accessToken);
+            }
+        });
+    }
+
+    @Override
+    public boolean canHandle(String accessToken) {
+        return tokenServices.canHandle(accessToken);
+    }
+
+    private class CachedOAuth2Authentication {
+        long timestamp;
+        OAuth2Authentication authentication;
+
+        public CachedOAuth2Authentication(long timestamp, OAuth2Authentication authentication) {
+            this.timestamp = timestamp;
+            this.authentication = authentication;
+        }
+    }
 
 }

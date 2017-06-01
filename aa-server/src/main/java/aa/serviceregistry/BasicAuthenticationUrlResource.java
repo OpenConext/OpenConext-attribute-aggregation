@@ -18,52 +18,52 @@ import static org.springframework.http.HttpHeaders.IF_MODIFIED_SINCE;
 
 public class BasicAuthenticationUrlResource extends UrlResource {
 
-  private static final ZoneId GMT = ZoneId.of("GMT");
-  private final String basicAuth;
+    private static final ZoneId GMT = ZoneId.of("GMT");
+    private final String basicAuth;
 
-  public BasicAuthenticationUrlResource(String path, String username, String password) throws MalformedURLException {
-    super(path);
-    this.basicAuth = "Basic " + new String(getEncoder().encode((username + ":" + password).getBytes()));
-  }
-
-  @Override
-  public InputStream getInputStream() throws IOException {
-    HttpURLConnection con = (HttpURLConnection) this.getURL().openConnection();
-    setHeaders(con);
-    try {
-      return con.getInputStream();
-    } catch (IOException ex) {
-      if (con != null) {
-        con.disconnect();
-      }
-      throw ex;
+    public BasicAuthenticationUrlResource(String path, String username, String password) throws MalformedURLException {
+        super(path);
+        this.basicAuth = "Basic " + new String(getEncoder().encode((username + ":" + password).getBytes()));
     }
-  }
 
-  public boolean isModified(int minutes) throws IOException {
-      HttpURLConnection con = null;
-      try {
-        con = (HttpURLConnection) this.getURL().openConnection();
-        con.setRequestMethod("HEAD");
+    @Override
+    public InputStream getInputStream() throws IOException {
+        HttpURLConnection con = (HttpURLConnection) this.getURL().openConnection();
         setHeaders(con);
-
-        String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(GMT).minusMinutes(minutes));
-        con.setRequestProperty(IF_MODIFIED_SINCE, lastRefresh);
-
-        int responseCode = con.getResponseCode();
-        return responseCode != HttpStatus.NOT_MODIFIED.value();
-      } catch (IOException ex) {
-        if (con != null) {
-          con.disconnect();
+        try {
+            return con.getInputStream();
+        } catch (IOException ex) {
+            if (con != null) {
+                con.disconnect();
+            }
+            throw ex;
         }
-        throw new RuntimeException(ex);
-      }
-  }
+    }
 
-  protected void setHeaders(URLConnection con) {
-    con.setRequestProperty("Authorization", basicAuth);
-    con.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
-    con.setConnectTimeout(5 * 1000);
-  }
+    public boolean isModified(int minutes) throws IOException {
+        HttpURLConnection con = null;
+        try {
+            con = (HttpURLConnection) this.getURL().openConnection();
+            con.setRequestMethod("HEAD");
+            setHeaders(con);
+
+            String lastRefresh = RFC_1123_DATE_TIME.format(ZonedDateTime.now(GMT).minusMinutes(minutes));
+            con.setRequestProperty(IF_MODIFIED_SINCE, lastRefresh);
+
+            int responseCode = con.getResponseCode();
+            return responseCode != HttpStatus.NOT_MODIFIED.value();
+        } catch (IOException ex) {
+            if (con != null) {
+                con.disconnect();
+            }
+            throw new RuntimeException(ex);
+        }
+    }
+
+    protected void setHeaders(URLConnection con) {
+        con.setRequestProperty("Authorization", basicAuth);
+        con.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
+        con.setConnectTimeout(5 * 1000);
+    }
 
 }

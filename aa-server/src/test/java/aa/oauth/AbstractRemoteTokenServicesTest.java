@@ -21,83 +21,83 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractRemoteTokenServicesTest {
 
-  private DecisionResourceServerTokenServices subject = getRemoteTokenServices();
+    private DecisionResourceServerTokenServices subject = getRemoteTokenServices();
 
-  protected static final int PORT = 8889;
+    protected static final int PORT = 8889;
 
-  @Rule
-  public WireMockRule wireMockRule = new WireMockRule(PORT);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(PORT);
 
-  protected abstract DecisionResourceServerTokenServices getRemoteTokenServices();
+    protected abstract DecisionResourceServerTokenServices getRemoteTokenServices();
 
-  protected abstract void stubCallToAuthorisationEndpoint(String responseJson);
+    protected abstract void stubCallToAuthorisationEndpoint(String responseJson);
 
-  protected abstract String getUnspecifiedNameId();
+    protected abstract String getUnspecifiedNameId();
 
-  protected abstract String getClientId();
+    protected abstract String getClientId();
 
-  protected abstract String getSuccesCheckTokenJsonPath();
+    protected abstract String getSuccesCheckTokenJsonPath();
 
-  protected abstract String getFailureCheckTokenJsonPath();
+    protected abstract String getFailureCheckTokenJsonPath();
 
-  protected abstract String getErrorCheckTokenJsonPath();
+    protected abstract String getErrorCheckTokenJsonPath();
 
-  protected abstract String getSuccesCheckTokenClientCredentialsJsonPath();
+    protected abstract String getSuccesCheckTokenClientCredentialsJsonPath();
 
-  @Test
-  public void testLoadAuthenticationSuccess() throws Exception {
-    OAuth2Authentication oAuth2Authentication = introspect(getSuccesCheckTokenJsonPath());
+    @Test
+    public void testLoadAuthenticationSuccess() throws Exception {
+        OAuth2Authentication oAuth2Authentication = introspect(getSuccesCheckTokenJsonPath());
 
-    FederatedUserAuthenticationToken authentication = (FederatedUserAuthenticationToken) oAuth2Authentication.getUserAuthentication();
-    assertPrincipal(getUnspecifiedNameId(), authentication);
-    assertEquals("surfteams.nl", authentication.getSchacHomeOrganization());
+        FederatedUserAuthenticationToken authentication = (FederatedUserAuthenticationToken) oAuth2Authentication.getUserAuthentication();
+        assertPrincipal(getUnspecifiedNameId(), authentication);
+        assertEquals("surfteams.nl", authentication.getSchacHomeOrganization());
 
-    assertAuthentication(oAuth2Authentication, authentication);
-  }
+        assertAuthentication(oAuth2Authentication, authentication);
+    }
 
-  @Test
-  public void testLoadAuthenticationSuccessClientCredentials() throws Exception {
-    OAuth2Authentication oAuth2Authentication = introspect(getSuccesCheckTokenClientCredentialsJsonPath());
+    @Test
+    public void testLoadAuthenticationSuccessClientCredentials() throws Exception {
+        OAuth2Authentication oAuth2Authentication = introspect(getSuccesCheckTokenClientCredentialsJsonPath());
 
-    ClientCredentialsAuthentication authentication = (ClientCredentialsAuthentication) oAuth2Authentication.getUserAuthentication();
-    assertPrincipal(getClientId(), authentication);
+        ClientCredentialsAuthentication authentication = (ClientCredentialsAuthentication) oAuth2Authentication.getUserAuthentication();
+        assertPrincipal(getClientId(), authentication);
 
-    assertAuthentication(oAuth2Authentication, authentication);
-  }
+        assertAuthentication(oAuth2Authentication, authentication);
+    }
 
-  @Test(expected = InvalidTokenException.class)
-  public void testLoadAuthenticationError() throws Exception {
-    introspect(getErrorCheckTokenJsonPath());
-  }
+    @Test(expected = InvalidTokenException.class)
+    public void testLoadAuthenticationError() throws Exception {
+        introspect(getErrorCheckTokenJsonPath());
+    }
 
-  public DecisionResourceServerTokenServices getSubject() {
-    return subject;
-  }
+    public DecisionResourceServerTokenServices getSubject() {
+        return subject;
+    }
 
-  private void assertAuthentication(OAuth2Authentication oAuth2Authentication, Authentication authentication) {
-    assertTrue(oAuth2Authentication.isAuthenticated());
+    private void assertAuthentication(OAuth2Authentication oAuth2Authentication, Authentication authentication) {
+        assertTrue(oAuth2Authentication.isAuthenticated());
 
-    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-    assertEquals(1, authorities.size());
-    assertEquals("ROLE_USER", authorities.iterator().next().getAuthority());
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        assertEquals(1, authorities.size());
+        assertEquals("ROLE_USER", authorities.iterator().next().getAuthority());
 
-    OAuth2Request oAuth2Request = oAuth2Authentication.getOAuth2Request();
-    assertEquals(getClientId(), oAuth2Request.getClientId());
-  }
+        OAuth2Request oAuth2Request = oAuth2Authentication.getOAuth2Request();
+        assertEquals(getClientId(), oAuth2Request.getClientId());
+    }
 
-  private void assertPrincipal(String unspecifiedNameId, Authentication authentication) {
-    assertEquals(unspecifiedNameId, authentication.getName());
-    assertEquals(unspecifiedNameId, authentication.getPrincipal());
-  }
+    private void assertPrincipal(String unspecifiedNameId, Authentication authentication) {
+        assertEquals(unspecifiedNameId, authentication.getName());
+        assertEquals(unspecifiedNameId, authentication.getPrincipal());
+    }
 
-  protected OAuth2Authentication introspect(String jsonFile) throws IOException {
-    InputStream inputStream = new ClassPathResource(jsonFile).getInputStream();
-    String response = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+    protected OAuth2Authentication introspect(String jsonFile) throws IOException {
+        InputStream inputStream = new ClassPathResource(jsonFile).getInputStream();
+        String response = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
 
-    stubCallToAuthorisationEndpoint(response);
+        stubCallToAuthorisationEndpoint(response);
 
-    return subject.loadAuthentication("access-token");
-  }
+        return subject.loadAuthentication("access-token");
+    }
 
 
 }

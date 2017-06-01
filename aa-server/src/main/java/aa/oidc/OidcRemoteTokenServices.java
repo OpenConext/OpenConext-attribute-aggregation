@@ -25,78 +25,78 @@ import java.util.Map;
 
 public class OidcRemoteTokenServices implements DecisionResourceServerTokenServices {
 
-  private static Logger LOG = LoggerFactory.getLogger(OidcRemoteTokenServices.class);
+    private static Logger LOG = LoggerFactory.getLogger(OidcRemoteTokenServices.class);
 
-  private String checkTokenEndpointUrl;
-  private String clientId;
-  private String clientSecret;
+    private String checkTokenEndpointUrl;
+    private String clientId;
+    private String clientSecret;
 
-  private AccessTokenConverter accessTokenConverter;
+    private AccessTokenConverter accessTokenConverter;
 
-  private RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
-  public OidcRemoteTokenServices(String checkTokenEndpointUrl, String clientId, String clientSecret) {
-    this.checkTokenEndpointUrl = checkTokenEndpointUrl;
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
+    public OidcRemoteTokenServices(String checkTokenEndpointUrl, String clientId, String clientSecret) {
+        this.checkTokenEndpointUrl = checkTokenEndpointUrl;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
 
-    this.restTemplate = new RestTemplate();
-    accessTokenConverter = new DefaultAccessTokenConverter();
-    ((DefaultAccessTokenConverter) accessTokenConverter).setUserTokenConverter(new OidcSchacHomeAwareUserAuthenticationConverter());
+        this.restTemplate = new RestTemplate();
+        accessTokenConverter = new DefaultAccessTokenConverter();
+        ((DefaultAccessTokenConverter) accessTokenConverter).setUserTokenConverter(new OidcSchacHomeAwareUserAuthenticationConverter());
 
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
-    String introspectUri = UriComponentsBuilder.fromHttpUrl(checkTokenEndpointUrl)
-        .queryParam("token", accessToken)
-        .build().toUriString();
-
-    HttpEntity<Object> entity = new HttpEntity<>(headersForIntrospection());
-    Map<String, Object> map = restTemplate.exchange(introspectUri, HttpMethod.GET, entity, Map.class).getBody();
-
-    if (map.containsKey("error")) {
-      LOG.warn("introspect returned error: " + map.get("error"));
-      throw new InvalidTokenException(accessToken);
-    }
-    if (!map.containsKey("active") || !(Boolean) map.get("active")) {
-      LOG.warn("introspect returned inactive access_token: " + accessToken);
-      throw new InvalidTokenException(accessToken);
     }
 
-    Assert.state(map.containsKey("client_id"), "Client id must be present in response from auth server");
-    //DefaultAccessTokenConverter#extractAuthentication expects the scope to be a Collection of Strings
-    if (map.containsKey("scope")) {
-      Object scope = map.get("scope");
-      if (scope instanceof String) {
-        map.put("scope", Arrays.asList(((String) scope).split(" ")));
-      }
+    @Override
+    @SuppressWarnings("unchecked")
+    public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
+        String introspectUri = UriComponentsBuilder.fromHttpUrl(checkTokenEndpointUrl)
+            .queryParam("token", accessToken)
+            .build().toUriString();
+
+        HttpEntity<Object> entity = new HttpEntity<>(headersForIntrospection());
+        Map<String, Object> map = restTemplate.exchange(introspectUri, HttpMethod.GET, entity, Map.class).getBody();
+
+        if (map.containsKey("error")) {
+            LOG.warn("introspect returned error: " + map.get("error"));
+            throw new InvalidTokenException(accessToken);
+        }
+        if (!map.containsKey("active") || !(Boolean) map.get("active")) {
+            LOG.warn("introspect returned inactive access_token: " + accessToken);
+            throw new InvalidTokenException(accessToken);
+        }
+
+        Assert.state(map.containsKey("client_id"), "Client id must be present in response from auth server");
+        //DefaultAccessTokenConverter#extractAuthentication expects the scope to be a Collection of Strings
+        if (map.containsKey("scope")) {
+            Object scope = map.get("scope");
+            if (scope instanceof String) {
+                map.put("scope", Arrays.asList(((String) scope).split(" ")));
+            }
+        }
+        return accessTokenConverter.extractAuthentication(map);
     }
-    return accessTokenConverter.extractAuthentication(map);
-  }
 
-  @Override
-  public OAuth2AccessToken readAccessToken(String accessToken) {
-    return new DefaultOAuth2AccessToken(accessToken);
-  }
+    @Override
+    public OAuth2AccessToken readAccessToken(String accessToken) {
+        return new DefaultOAuth2AccessToken(accessToken);
+    }
 
-  public void setRestTemplate(RestTemplate restTemplate) {
-    this.restTemplate = restTemplate;
-  }
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
-  private MultiValueMap<String, String> headersForIntrospection() {
-    HttpHeaders headers = new HttpHeaders();
-    String basicAuthz = clientId + ":" + clientSecret;
-    String authenticationCredentials = "Basic " + new String(Base64.encode(basicAuthz.getBytes(Charset.forName("UTF-8"))));
-    headers.add("Authorization", authenticationCredentials);
-    headers.add("Accept", "application/json");
-    return headers;
-  }
+    private MultiValueMap<String, String> headersForIntrospection() {
+        HttpHeaders headers = new HttpHeaders();
+        String basicAuthz = clientId + ":" + clientSecret;
+        String authenticationCredentials = "Basic " + new String(Base64.encode(basicAuthz.getBytes(Charset.forName("UTF-8"))));
+        headers.add("Authorization", authenticationCredentials);
+        headers.add("Accept", "application/json");
+        return headers;
+    }
 
-  @Override
-  public boolean canHandle(String accessToken) {
-    //we don't do UUIDs
-    return !uuidPattern.matcher(accessToken).matches();
-  }
+    @Override
+    public boolean canHandle(String accessToken) {
+        //we don't do UUIDs
+        return !uuidPattern.matcher(accessToken).matches();
+    }
 }

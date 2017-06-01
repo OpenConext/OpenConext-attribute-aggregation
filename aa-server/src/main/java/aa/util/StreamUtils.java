@@ -14,28 +14,28 @@ import static java.util.stream.StreamSupport.stream;
 
 public class StreamUtils {
 
-  public static <T> Collector<T, List<T>, Optional<T>> singletonOptionalCollector() {
-    return Collector.of(
-        ArrayList::new, List::add, (left, right) -> left, list -> list.isEmpty() ? Optional.empty() : Optional.of(list.get(0))
-    );
-  }
+    public static <T> Collector<T, List<T>, Optional<T>> singletonOptionalCollector() {
+        return Collector.of(
+            ArrayList::new, List::add, (left, right) -> left, list -> list.isEmpty() ? Optional.empty() : Optional.of(list.get(0))
+        );
+    }
 
-  public static <T> Collector<T, List<T>, T> singletonCollector() {
-    return Collector.of(ArrayList::new, List::add, (left, right) -> left, list -> {
-          if (list.isEmpty() || list.size() > 1) {
-            throw new IllegalArgumentException("Expected only one element in the List");
-          }
-          return list.get(0);
-        }
-    );
-  }
+    public static <T> Collector<T, List<T>, T> singletonCollector() {
+        return Collector.of(ArrayList::new, List::add, (left, right) -> left, list -> {
+                if (list.isEmpty() || list.size() > 1) {
+                    throw new IllegalArgumentException("Expected only one element in the List");
+                }
+                return list.get(0);
+            }
+        );
+    }
 
-  public static <T> List<T> iteratorToList(Iterator<T> iterator) {
-    return stream(spliteratorUnknownSize(iterator, ORDERED), false).collect(toCollection(ArrayList::new));
-  }
+    public static <T> List<T> iteratorToList(Iterator<T> iterator) {
+        return stream(spliteratorUnknownSize(iterator, ORDERED), false).collect(toCollection(ArrayList::new));
+    }
 
-  public static <T> List<T> listFromIterable(Iterable<T> iterable) {
-    return stream(iterable.spliterator(), false).collect(toList());
+    public static <T> List<T> listFromIterable(Iterable<T> iterable) {
+        return stream(iterable.spliterator(), false).collect(toList());
 
-  }
+    }
 }

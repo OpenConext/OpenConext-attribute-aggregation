@@ -1,9 +1,25 @@
 package aa.model;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.List;
+import java.util.Map;
+
+@Getter
+@AllArgsConstructor
+@ToString
 public class ArpAggregationRequest {
 
-    private List<UserAttribute> attributes;
+    @NotNull
+    @Size(min = 1)
+    private List<UserAttribute> userAttributes;
+
+    @NotNull
+    @Size
+    private Map<String, List<ArpValue>> arpAttributes;
 
 }

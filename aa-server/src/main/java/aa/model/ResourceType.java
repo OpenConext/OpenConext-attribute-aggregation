@@ -9,77 +9,77 @@ import static java.util.Collections.singletonList;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResourceType {
 
-  private List<String> schemas = singletonList("urn:ietf:params:scim:schemas:core:2.0:ResourceType");
-  private String description = "SCIM Attributes resource type for use with SURFconext Attribute Aggregation";
-  private String endpoint = "/Me";
-  private String id;
-  private String name;
-  private String schema;
-  private MetaInformation meta;
+    private List<String> schemas = singletonList("urn:ietf:params:scim:schemas:core:2.0:ResourceType");
+    private String description = "SCIM Attributes resource type for use with SURFconext Attribute Aggregation";
+    private String endpoint = "/Me";
+    private String id;
+    private String name;
+    private String schema;
+    private MetaInformation meta;
 
-  public ResourceType() {
-  }
+    public ResourceType() {
+    }
 
-  public ResourceType(String spEntityId, MetaInformation meta) {
-    this.id = spEntityId;
-    this.name = spEntityId;
-    this.schema = "urn:scim:schemas:extension:surf:".concat(spEntityId);
-    this.meta = meta;
-  }
+    public ResourceType(String spEntityId, MetaInformation meta) {
+        this.id = spEntityId;
+        this.name = spEntityId;
+        this.schema = "urn:scim:schemas:extension:surf:".concat(spEntityId);
+        this.meta = meta;
+    }
 
-  public List<String> getSchemas() {
-    return schemas;
-  }
+    public List<String> getSchemas() {
+        return schemas;
+    }
 
-  public void setSchemas(List<String> schemas) {
-    this.schemas = schemas;
-  }
+    public void setSchemas(List<String> schemas) {
+        this.schemas = schemas;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public String getEndpoint() {
-    return endpoint;
-  }
+    public String getEndpoint() {
+        return endpoint;
+    }
 
-  public void setEndpoint(String endpoint) {
-    this.endpoint = endpoint;
-  }
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public String getSchema() {
-    return schema;
-  }
+    public String getSchema() {
+        return schema;
+    }
 
-  public void setSchema(String schema) {
-    this.schema = schema;
-  }
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
-  public MetaInformation getMeta() {
-    return meta;
-  }
+    public MetaInformation getMeta() {
+        return meta;
+    }
 
-  public void setMeta(MetaInformation meta) {
-    this.meta = meta;
-  }
+    public void setMeta(MetaInformation meta) {
+        this.meta = meta;
+    }
 }

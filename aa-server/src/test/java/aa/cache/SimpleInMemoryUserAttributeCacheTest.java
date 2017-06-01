@@ -12,20 +12,20 @@ import static org.junit.Assert.assertFalse;
 
 public class SimpleInMemoryUserAttributeCacheTest extends AbstractUserAttributeCacheTest {
 
-  private SimpleInMemoryUserAttributeCache subject = new SimpleInMemoryUserAttributeCache(250, 150);
+    private SimpleInMemoryUserAttributeCache subject = new SimpleInMemoryUserAttributeCache(250, 150);
 
-  @Override
-  public UserAttributeCache getSubject() {
-    return subject;
-  }
+    @Override
+    public UserAttributeCache getSubject() {
+        return subject;
+    }
 
-  @Test
-  public void testCacheInactive() throws IOException {
-    UserAttributeCache cache = new SimpleInMemoryUserAttributeCache(-1, 150);
-    Optional<String> key = Optional.of("key");
-    cache.put(key, singletonList(new UserAttribute("name", singletonList("value"), "source")));
-    Optional<List<UserAttribute>> userAttributes = cache.get(key);
-    assertFalse(userAttributes.isPresent());
+    @Test
+    public void testCacheInactive() throws IOException {
+        UserAttributeCache cache = new SimpleInMemoryUserAttributeCache(-1, 150);
+        Optional<String> key = Optional.of("key");
+        cache.put(key, singletonList(new UserAttribute("name", singletonList("value"), "source")));
+        Optional<List<UserAttribute>> userAttributes = cache.get(key);
+        assertFalse(userAttributes.isPresent());
 
-  }
+    }
 }

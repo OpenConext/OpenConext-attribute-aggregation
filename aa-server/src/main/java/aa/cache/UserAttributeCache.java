@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserAttributeCache {
 
-  Optional<List<UserAttribute>> get(Optional<String> cacheKey) throws IOException;
+    Optional<List<UserAttribute>> get(Optional<String> cacheKey) throws IOException;
 
-  void put(Optional<String> cacheKey, List<UserAttribute> userAttributes)throws IOException;
+    void put(Optional<String> cacheKey, List<UserAttribute> userAttributes) throws IOException;
 }

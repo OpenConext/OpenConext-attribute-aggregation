@@ -14,33 +14,33 @@ import static java.util.stream.Collectors.toList;
 
 public class VootAttributeAggregator extends AbstractAttributeAggregator {
 
-  private final OAuth2RestTemplate vootService;
+    private final OAuth2RestTemplate vootService;
 
-  public VootAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration,
-                                 String authorizationAccessTokenUrl) {
-    super(attributeAuthorityConfiguration);
-    this.vootService = vootRestTemplate(attributeAuthorityConfiguration, authorizationAccessTokenUrl);
-  }
+    public VootAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration,
+                                   String authorizationAccessTokenUrl) {
+        super(attributeAuthorityConfiguration);
+        this.vootService = vootRestTemplate(attributeAuthorityConfiguration, authorizationAccessTokenUrl);
+    }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<UserAttribute> aggregate(List<UserAttribute> input) {
-    String userId = getUserAttributeSingleValue(input, NAME_ID);
-    String url = endpoint() + "/internal/groups/{userUrn}";
-    List<Map<String, Object>> listOfGroupMaps = (List<Map<String, Object>>) vootService.getForObject(url, List.class, userId);
-    List<String> groups = listOfGroupMaps.stream().map(entry -> (String) entry.get("id")).collect(toList());
-    LOG.debug("Retrieved VOOT groups with request: {} and response: {}", url, groups);
-    return mapValuesToUserAttribute(IS_MEMBER_OF, groups);
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<UserAttribute> aggregate(List<UserAttribute> input) {
+        String userId = getUserAttributeSingleValue(input, NAME_ID);
+        String url = endpoint() + "/internal/groups/{userUrn}";
+        List<Map<String, Object>> listOfGroupMaps = (List<Map<String, Object>>) vootService.getForObject(url, List.class, userId);
+        List<String> groups = listOfGroupMaps.stream().map(entry -> (String) entry.get("id")).collect(toList());
+        LOG.debug("Retrieved VOOT groups with request: {} and response: {}", url, groups);
+        return mapValuesToUserAttribute(IS_MEMBER_OF, groups);
+    }
 
-  private OAuth2RestTemplate vootRestTemplate(AttributeAuthorityConfiguration configuration,
-                                              String authorizationAccessTokenUrl) {
-    ClientCredentialsResourceDetails details = new ClientCredentialsResourceDetails();
-    details.setId("aa");
-    details.setClientId(configuration.getUser());
-    details.setClientSecret(configuration.getPassword());
-    details.setAccessTokenUri(authorizationAccessTokenUrl);
-    details.setScope(singletonList("groups"));
-    return new OAuth2RestTemplate(details);
-  }
+    private OAuth2RestTemplate vootRestTemplate(AttributeAuthorityConfiguration configuration,
+                                                String authorizationAccessTokenUrl) {
+        ClientCredentialsResourceDetails details = new ClientCredentialsResourceDetails();
+        details.setId("aa");
+        details.setClientId(configuration.getUser());
+        details.setClientSecret(configuration.getPassword());
+        details.setAccessTokenUri(authorizationAccessTokenUrl);
+        details.setScope(singletonList("groups"));
+        return new OAuth2RestTemplate(details);
+    }
 }

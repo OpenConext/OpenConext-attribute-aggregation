@@ -14,16 +14,16 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RequestMapping(headers = {"Content-Type=application/json"}, produces = {"application/json"})
 public class AppInformationController {
 
-  private final String version;
+    private final String version;
 
-  @Autowired
-  public AppInformationController(@Value("${app.version}") String version) {
-    this.version = version;
-  }
+    @Autowired
+    public AppInformationController(@Value("${app.version}") String version) {
+        this.version = version;
+    }
 
-  @RequestMapping(method = GET, value = "internal/appInformation")
-  public Map<String, String> info() {
-    return singletonMap("version", version);
-  }
+    @RequestMapping(method = GET, value = "internal/appInformation")
+    public Map<String, String> info() {
+        return singletonMap("version", version);
+    }
 
 }

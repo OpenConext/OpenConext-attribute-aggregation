@@ -14,21 +14,21 @@ import static org.junit.Assert.assertEquals;
 
 public class AuthorityConfigurationControllerTest extends AbstractIntegrationTest {
 
-  @Override
-  protected boolean isBasicAuthenticated() {
-    return false;
-  }
+    @Override
+    protected boolean isBasicAuthenticated() {
+        return false;
+    }
 
-  @Test
-  public void testAuthorityConfiguration() throws Exception {
-    RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/internal/authorityConfiguration"));
-    ResponseEntity<AuthorityConfiguration> response = restTemplate.exchange(requestEntity, AuthorityConfiguration.class);
+    @Test
+    public void testAuthorityConfiguration() throws Exception {
+        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/internal/authorityConfiguration"));
+        ResponseEntity<AuthorityConfiguration> response = restTemplate.exchange(requestEntity, AuthorityConfiguration.class);
 
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    AuthorityConfiguration authorityConfiguration = response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        AuthorityConfiguration authorityConfiguration = response.getBody();
 
-    assertEquals(2, authorityConfiguration.getAuthorityById("aa1").getAttributes().size());
-    assertEquals(1, authorityConfiguration.getAuthorityById("aa2").getAttributes().size());
-  }
+        assertEquals(2, authorityConfiguration.getAuthorityById("aa1").getAttributes().size());
+        assertEquals(1, authorityConfiguration.getAuthorityById("aa2").getAttributes().size());
+    }
 
 }

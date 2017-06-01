@@ -16,28 +16,28 @@ import static java.util.Collections.singleton;
 
 public class OidcSchacHomeAwareUserAuthenticationConverter extends DefaultUserAuthenticationConverter {
 
-  private static final String SCHAC_HOME_KEY = "schac_home";
-  private static final String CLIENT_ID = "client_id";
-  private static final String UNSPECIFIED_ID = "unspecified_id";
+    private static final String SCHAC_HOME_KEY = "schac_home";
+    private static final String CLIENT_ID = "client_id";
+    private static final String UNSPECIFIED_ID = "unspecified_id";
 
-  private static final Set<GrantedAuthority> DEFAULT_AUTHORITIES = singleton(new SimpleGrantedAuthority("ROLE_USER"));
+    private static final Set<GrantedAuthority> DEFAULT_AUTHORITIES = singleton(new SimpleGrantedAuthority("ROLE_USER"));
 
-  @Override
-  public Authentication extractAuthentication(final Map<String, ?> authenticationAttributes) {
-    if (!authenticationAttributes.containsKey(UNSPECIFIED_ID) &&
-        authenticationAttributes.containsKey(CLIENT_ID)) {
-      return new ClientCredentialsAuthentication((String) authenticationAttributes.get(CLIENT_ID), DEFAULT_AUTHORITIES);
-    } else if (authenticationAttributes.containsKey(UNSPECIFIED_ID) &&
-        authenticationAttributes.containsKey(SCHAC_HOME_KEY)) {
-      return new FederatedUserAuthenticationToken(
-          (String) authenticationAttributes.get("edu_person_principal_name"),
-          (String) authenticationAttributes.get(SCHAC_HOME_KEY),
-          authenticationAttributes.get(UNSPECIFIED_ID),
-          "N/A",
-          DEFAULT_AUTHORITIES);
+    @Override
+    public Authentication extractAuthentication(final Map<String, ?> authenticationAttributes) {
+        if (!authenticationAttributes.containsKey(UNSPECIFIED_ID) &&
+            authenticationAttributes.containsKey(CLIENT_ID)) {
+            return new ClientCredentialsAuthentication((String) authenticationAttributes.get(CLIENT_ID), DEFAULT_AUTHORITIES);
+        } else if (authenticationAttributes.containsKey(UNSPECIFIED_ID) &&
+            authenticationAttributes.containsKey(SCHAC_HOME_KEY)) {
+            return new FederatedUserAuthenticationToken(
+                (String) authenticationAttributes.get("edu_person_principal_name"),
+                (String) authenticationAttributes.get(SCHAC_HOME_KEY),
+                authenticationAttributes.get(UNSPECIFIED_ID),
+                "N/A",
+                DEFAULT_AUTHORITIES);
+        }
+        throw new InvalidClientException(String.format("Unsupported client authentication. Must contain either %s or %s and %s",
+            CLIENT_ID, UNSPECIFIED_ID, SCHAC_HOME_KEY));
     }
-    throw new InvalidClientException(String.format("Unsupported client authentication. Must contain either %s or %s and %s",
-        CLIENT_ID, UNSPECIFIED_ID, SCHAC_HOME_KEY));
-  }
 
 }

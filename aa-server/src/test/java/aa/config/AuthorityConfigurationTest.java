@@ -6,8 +6,8 @@ import java.util.Collections;
 
 public class AuthorityConfigurationTest {
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testGetAuthorityById() throws Exception {
-    new AuthorityConfiguration(Collections.emptyList()).getAuthorityById("nope");
-  }
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetAuthorityById() throws Exception {
+        new AuthorityConfiguration(Collections.emptyList()).getAuthorityById("nope");
+    }
 }

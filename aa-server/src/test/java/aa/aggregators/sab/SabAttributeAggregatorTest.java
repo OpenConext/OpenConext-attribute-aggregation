@@ -17,7 +17,11 @@ import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
 import static aa.aggregators.AttributeAggregator.NAME_ID;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
@@ -26,53 +30,53 @@ import static org.junit.Assert.assertTrue;
 
 public class SabAttributeAggregatorTest {
 
-  private SabAttributeAggregator subject;
+    private SabAttributeAggregator subject;
 
-  private List<UserAttribute> input = singletonList(new UserAttribute(NAME_ID, singletonList("urn")));
+    private List<UserAttribute> input = singletonList(new UserAttribute(NAME_ID, singletonList("urn")));
 
-  @Rule
-  public WireMockRule wireMockRule = new WireMockRule(8889);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(8889);
 
-  @Before
-  public void before() {
-    AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("sab");
-    configuration.setUser("user");
-    configuration.setPassword("password");
-    configuration.setEndpoint("http://localhost:8889/sab");
-    configuration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute(NAME_ID)));
-    subject = new SabAttributeAggregator(configuration);
-  }
-
-  @Test
-  public void testGetRolesHappyFlow() throws Exception {
-    String response = IOUtils.toString(new ClassPathResource("sab/response_success.xml").getInputStream(), Charset.defaultCharset());
-    stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
-        .willReturn(aResponse().withStatus(200).withBody(response)));
-    List<UserAttribute> userAttributes = subject.aggregate(input);
-    assertEquals(1, userAttributes.size());
-    UserAttribute userAttribute = userAttributes.get(0);
-    assertEquals(EDU_PERSON_ENTITLEMENT, userAttribute.getName());
-
-    List<String> expected = Arrays.asList("Superuser", "Instellingsbevoegde", "Infraverantwoordelijke",
-        "OperationeelBeheerder", "Mailverantwoordelijke", "Domeinnamenverantwoordelijke", "DNS-Beheerder",
-        "AAIverantwoordelijke", "Beveiligingsverantwoordelijke");
-
-    assertEquals(expected.stream().map(role -> "urn:x-surfnet:surfnet.nl:sab:role:".concat(role)).collect(toList()),
-        userAttribute.getValues());
-  }
-
-  @Test
-  public void testGetRolesFailures() throws Exception {
-    //if something goes wrong, we just don't get roles. We log all requests and responses
-    for (String fileName : Arrays.asList("response_acl_blocked.xml", "response_invalid_user.xml", "response_unknown_user.xml")) {
-      assertEmptyRoles(fileName);
+    @Before
+    public void before() {
+        AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("sab");
+        configuration.setUser("user");
+        configuration.setPassword("password");
+        configuration.setEndpoint("http://localhost:8889/sab");
+        configuration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute(NAME_ID)));
+        subject = new SabAttributeAggregator(configuration);
     }
-  }
 
-  private void assertEmptyRoles(String fileName) throws IOException {
-    String response = IOUtils.toString(new ClassPathResource("sab/" + fileName).getInputStream(), Charset.defaultCharset());
-    stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
-        .willReturn(aResponse().withStatus(200).withBody(response)));
-    assertTrue(subject.aggregate(input).isEmpty());
-  }
+    @Test
+    public void testGetRolesHappyFlow() throws Exception {
+        String response = IOUtils.toString(new ClassPathResource("sab/response_success.xml").getInputStream(), Charset.defaultCharset());
+        stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
+            .willReturn(aResponse().withStatus(200).withBody(response)));
+        List<UserAttribute> userAttributes = subject.aggregate(input);
+        assertEquals(1, userAttributes.size());
+        UserAttribute userAttribute = userAttributes.get(0);
+        assertEquals(EDU_PERSON_ENTITLEMENT, userAttribute.getName());
+
+        List<String> expected = Arrays.asList("Superuser", "Instellingsbevoegde", "Infraverantwoordelijke",
+            "OperationeelBeheerder", "Mailverantwoordelijke", "Domeinnamenverantwoordelijke", "DNS-Beheerder",
+            "AAIverantwoordelijke", "Beveiligingsverantwoordelijke");
+
+        assertEquals(expected.stream().map(role -> "urn:x-surfnet:surfnet.nl:sab:role:".concat(role)).collect(toList()),
+            userAttribute.getValues());
+    }
+
+    @Test
+    public void testGetRolesFailures() throws Exception {
+        //if something goes wrong, we just don't get roles. We log all requests and responses
+        for (String fileName : Arrays.asList("response_acl_blocked.xml", "response_invalid_user.xml", "response_unknown_user.xml")) {
+            assertEmptyRoles(fileName);
+        }
+    }
+
+    private void assertEmptyRoles(String fileName) throws IOException {
+        String response = IOUtils.toString(new ClassPathResource("sab/" + fileName).getInputStream(), Charset.defaultCharset());
+        stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
+            .willReturn(aResponse().withStatus(200).withBody(response)));
+        assertTrue(subject.aggregate(input).isEmpty());
+    }
 }

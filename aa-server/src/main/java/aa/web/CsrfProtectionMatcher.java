@@ -7,12 +7,12 @@ import java.util.regex.Pattern;
 
 public class CsrfProtectionMatcher implements RequestMatcher {
 
-  private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+    private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
 
-  @Override
-  public boolean matches(HttpServletRequest request) {
-    return request.getServletPath().startsWith("/internal")
-        && !allowedMethods.matcher(request.getMethod().toUpperCase()).matches();
-  }
+    @Override
+    public boolean matches(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/internal")
+            && !allowedMethods.matcher(request.getMethod().toUpperCase()).matches();
+    }
 
 }

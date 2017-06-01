@@ -25,48 +25,48 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RestController
 public class ErrorController implements org.springframework.boot.autoconfigure.web.ErrorController {
 
-  @Autowired
-  private Environment environment;
+    @Autowired
+    private Environment environment;
 
-  private final ErrorAttributes errorAttributes;
+    private final ErrorAttributes errorAttributes;
 
-  @Autowired
-  public ErrorController(ErrorAttributes errorAttributes) {
-    Assert.notNull(errorAttributes, "ErrorAttributes must not be null");
-    this.errorAttributes = errorAttributes;
-  }
-
-  @Override
-  public String getErrorPath() {
-    return "/error";
-  }
-
-  @RequestMapping("/error")
-  public ResponseEntity<Map<String, Object>> error(HttpServletRequest aRequest) {
-    RequestAttributes requestAttributes = new ServletRequestAttributes(aRequest);
-    Map<String, Object> result = this.errorAttributes.getErrorAttributes(requestAttributes, false);
-
-    Throwable error = this.errorAttributes.getError(requestAttributes);
-    if (error instanceof MethodArgumentNotValidException) {
-      BindingResult bindingResult = ((MethodArgumentNotValidException) error).getBindingResult();
-      if (bindingResult.hasErrors()) {
-        Map<String, String> details = bindingResult.getAllErrors().stream().filter(e -> e instanceof FieldError)
-            .map(e -> (FieldError) e).collect(toMap(FieldError::getField, FieldError::getDefaultMessage));
-        result.put("details", details);
-      }
+    @Autowired
+    public ErrorController(ErrorAttributes errorAttributes) {
+        Assert.notNull(errorAttributes, "ErrorAttributes must not be null");
+        this.errorAttributes = errorAttributes;
     }
-    if (result.containsKey("details")) {
-      result.remove("exception");
-      result.remove("message");
+
+    @Override
+    public String getErrorPath() {
+        return "/error";
     }
-    result.put("profiles", String.join(", ", environment.getActiveProfiles()));
-    HttpStatus statusCode = INTERNAL_SERVER_ERROR;
-    if (error != null) {
-      ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
-      //https://github.com/spring-projects/spring-boot/issues/3057
-      statusCode = annotation != null ? annotation.value() : statusCode;
+
+    @RequestMapping("/error")
+    public ResponseEntity<Map<String, Object>> error(HttpServletRequest aRequest) {
+        RequestAttributes requestAttributes = new ServletRequestAttributes(aRequest);
+        Map<String, Object> result = this.errorAttributes.getErrorAttributes(requestAttributes, false);
+
+        Throwable error = this.errorAttributes.getError(requestAttributes);
+        if (error instanceof MethodArgumentNotValidException) {
+            BindingResult bindingResult = ((MethodArgumentNotValidException) error).getBindingResult();
+            if (bindingResult.hasErrors()) {
+                Map<String, String> details = bindingResult.getAllErrors().stream().filter(e -> e instanceof FieldError)
+                    .map(e -> (FieldError) e).collect(toMap(FieldError::getField, FieldError::getDefaultMessage));
+                result.put("details", details);
+            }
+        }
+        if (result.containsKey("details")) {
+            result.remove("exception");
+            result.remove("message");
+        }
+        result.put("profiles", String.join(", ", environment.getActiveProfiles()));
+        HttpStatus statusCode = INTERNAL_SERVER_ERROR;
+        if (error != null) {
+            ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
+            //https://github.com/spring-projects/spring-boot/issues/3057
+            statusCode = annotation != null ? annotation.value() : statusCode;
+        }
+        return new ResponseEntity<>(result, statusCode);
     }
-    return new ResponseEntity<>(result, statusCode);
-  }
 
 }

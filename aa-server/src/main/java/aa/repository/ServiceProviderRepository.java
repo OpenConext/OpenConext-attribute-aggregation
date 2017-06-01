@@ -10,13 +10,13 @@ import java.util.Optional;
 
 public interface ServiceProviderRepository extends CrudRepository<ServiceProvider, Long> {
 
-  Optional<ServiceProvider> findByEntityId(String entityId);
+    Optional<ServiceProvider> findByEntityId(String entityId);
 
-  @Transactional
-  @Modifying
-  @Query(value = "DELETE FROM service_providers WHERE NOT EXISTS (SELECT service_provider_id " +
-      "FROM aggregations_service_providers WHERE service_provider_id = id)", nativeQuery = true)
-  int deleteOrphanedServiceProviders();
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM service_providers WHERE NOT EXISTS (SELECT service_provider_id " +
+        "FROM aggregations_service_providers WHERE service_provider_id = id)", nativeQuery = true)
+    int deleteOrphanedServiceProviders();
 
 
 }

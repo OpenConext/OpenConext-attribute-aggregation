@@ -13,19 +13,19 @@ import static org.junit.Assert.assertTrue;
 
 public class ServiceProviderRepositoryTest extends AbstractIntegrationTest {
 
-  @Test
-  public void testFindByEntityId() throws Exception {
-    Optional<ServiceProvider> sp = serviceProviderRepository.findByEntityId("http://mock-sp");
-    assertTrue(sp.isPresent());
+    @Test
+    public void testFindByEntityId() throws Exception {
+        Optional<ServiceProvider> sp = serviceProviderRepository.findByEntityId("http://mock-sp");
+        assertTrue(sp.isPresent());
 
-    Set<Aggregation> aggregations = sp.get().getAggregations();
-    assertAggregations(aggregations);
-  }
+        Set<Aggregation> aggregations = sp.get().getAggregations();
+        assertAggregations(aggregations);
+    }
 
-  @Test
-  public void testFindByEntityIdNotExists() throws Exception {
-    Optional<ServiceProvider> sp = serviceProviderRepository.findByEntityId("http://unknon-sp");
-    assertFalse(sp.isPresent());
-  }
+    @Test
+    public void testFindByEntityIdNotExists() throws Exception {
+        Optional<ServiceProvider> sp = serviceProviderRepository.findByEntityId("http://unknon-sp");
+        assertFalse(sp.isPresent());
+    }
 
 }

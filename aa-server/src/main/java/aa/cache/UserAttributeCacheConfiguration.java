@@ -10,19 +10,19 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class UserAttributeCacheConfiguration {
 
-  @Bean
-  @Profile({"!redis"})
-  public UserAttributeCache inMemoryUserAttributeCache(@Value("${aggregate.cache.duration.milliseconds}") long cacheDuration) {
-    return new SimpleInMemoryUserAttributeCache(cacheDuration, cacheDuration);
-  }
+    @Bean
+    @Profile({"!redis"})
+    public UserAttributeCache inMemoryUserAttributeCache(@Value("${aggregate.cache.duration.milliseconds}") long cacheDuration) {
+        return new SimpleInMemoryUserAttributeCache(cacheDuration, cacheDuration);
+    }
 
-  @Bean
-  @Profile({"redis"})
-  @Autowired
-  @Primary
-  public UserAttributeCache redisUserAttributeCache(@Value("${redis.url}") String redisUrl,
-                                                    @Value("${aggregate.cache.duration.milliseconds}") long cacheDuration) {
-    return new RedisUserAttributeCache(redisUrl, cacheDuration);
-  }
+    @Bean
+    @Profile({"redis"})
+    @Autowired
+    @Primary
+    public UserAttributeCache redisUserAttributeCache(@Value("${redis.url}") String redisUrl,
+                                                      @Value("${aggregate.cache.duration.milliseconds}") long cacheDuration) {
+        return new RedisUserAttributeCache(redisUrl, cacheDuration);
+    }
 
 }

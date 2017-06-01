@@ -15,39 +15,40 @@ import java.nio.charset.Charset;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     value = {"spring.profiles.active=aa-test",
-    "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml",
-    "oidc.checkToken.endpoint.url=http://localhost:12121/introspect",
-    "checkToken.cache=false"})
+        "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml",
+        "oidc.checkToken.endpoint.url=http://localhost:12121/introspect",
+        "checkToken.cache=false"})
 public abstract class AbstractOidcIntegrationTest extends AbstractIntegrationTest {
 
-  private int oidcPort = 12121;
+    private int oidcPort = 12121;
 
-  protected HttpHeaders oauthHeaders = oauthHeaders(getAccessToken());
+    protected HttpHeaders oauthHeaders = oauthHeaders(getAccessToken());
 
-  protected String getAccessToken() {
-    return "TOKEN_VALUE";
-  }
+    protected String getAccessToken() {
+        return "TOKEN_VALUE";
+    }
 
-  @Rule
-  public WireMockRule oidcServerMock = new WireMockRule(oidcPort);
+    @Rule
+    public WireMockRule oidcServerMock = new WireMockRule(oidcPort);
 
-  @Before
-  public void before() throws Exception {
-    super.before();
-    stubOidcCheckTokenUser("json/oidc/introspect.success.json");
-  }
+    @Before
+    public void before() throws Exception {
+        super.before();
+        stubOidcCheckTokenUser("json/oidc/introspect.success.json");
+    }
 
-  @Override
-  protected boolean isBasicAuthenticated() {
-    return false;
-  }
+    @Override
+    protected boolean isBasicAuthenticated() {
+        return false;
+    }
 
-  protected void stubOidcCheckTokenUser(String path) throws IOException {
-    String json = IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
-    oidcServerMock.stubFor(get(urlPathEqualTo("/introspect")).willReturn(
-        aResponse().withStatus(200).withHeader("Content-type", "application/json").withBody(json)
-    ));
-  }
+    protected void stubOidcCheckTokenUser(String path) throws IOException {
+        String json = IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
+        oidcServerMock.stubFor(get(urlPathEqualTo("/introspect")).willReturn(
+            aResponse().withStatus(200).withHeader("Content-type", "application/json").withBody(json)
+        ));
+    }
 }
