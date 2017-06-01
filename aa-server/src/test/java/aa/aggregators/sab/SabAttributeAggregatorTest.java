@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class SabAttributeAggregatorTest {
 
   @Test
   public void testGetRolesHappyFlow() throws Exception {
-    String response = IOUtils.toString(new ClassPathResource("sab/response_success.xml").getInputStream());
+    String response = IOUtils.toString(new ClassPathResource("sab/response_success.xml").getInputStream(), Charset.defaultCharset());
     stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
         .willReturn(aResponse().withStatus(200).withBody(response)));
     List<UserAttribute> userAttributes = subject.aggregate(input);
@@ -69,7 +70,7 @@ public class SabAttributeAggregatorTest {
   }
 
   private void assertEmptyRoles(String fileName) throws IOException {
-    String response = IOUtils.toString(new ClassPathResource("sab/" + fileName).getInputStream());
+    String response = IOUtils.toString(new ClassPathResource("sab/" + fileName).getInputStream(), Charset.defaultCharset());
     stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
         .willReturn(aResponse().withStatus(200).withBody(response)));
     assertTrue(subject.aggregate(input).isEmpty());

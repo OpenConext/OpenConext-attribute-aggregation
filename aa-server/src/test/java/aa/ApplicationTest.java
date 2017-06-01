@@ -1,8 +1,7 @@
 package aa;
 
 import org.junit.Test;
-import org.springframework.beans.factory.UnsatisfiedDependencyException;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -10,7 +9,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev,aa-test", "attribute.authorities.config.path=classpath:attributeAuthorities.yml"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, value = {"spring.profiles.active=dev,aa-test", "attribute.authorities.config.path=classpath:attributeAuthorities.yml"})
 public class ApplicationTest extends AbstractIntegrationTest {
 
   @Test

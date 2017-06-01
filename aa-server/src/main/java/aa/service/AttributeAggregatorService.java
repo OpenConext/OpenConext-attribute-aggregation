@@ -30,7 +30,7 @@ public class AttributeAggregatorService {
   public AttributeAggregatorService(List<AttributeAggregator> aggregators,
                                     AuthorityConfiguration configuration,
                                     UserAttributeCache cache) {
-    Assert.notEmpty(aggregators);
+    Assert.notEmpty(aggregators, "Aggregators must not be empty");
     this.aggregators = aggregators.stream().collect(toMap(AttributeAggregator::getAttributeAuthorityId, identity()));
     this.forkJoinPool = new ForkJoinPool(20 /* number of threads in embedded tomcat */ * aggregators.size());
     this.configuration = configuration;

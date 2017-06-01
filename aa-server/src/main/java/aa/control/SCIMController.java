@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -65,7 +66,7 @@ public class SCIMController {
     this.authorityConfiguration = authorityResolver.getConfiguration();
     this.serviceRegistry = serviceRegistry;
 
-    this.serviceProviderConfigJson = String.format(IOUtils.toString(new ClassPathResource("scim/ServiceProviderConfig.template.json").getInputStream()), env);
+    this.serviceProviderConfigJson = String.format(IOUtils.toString(new ClassPathResource("scim/ServiceProviderConfig.template.json").getInputStream(), Charset.defaultCharset()), env);
 
     this.dateTime = RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
     this.resourcelocation = String.format("https://aa.%s.nl/v2/ResourceTypes/Me", env);

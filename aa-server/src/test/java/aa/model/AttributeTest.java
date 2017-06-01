@@ -5,6 +5,8 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
+import java.nio.charset.Charset;
+
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +16,7 @@ public class AttributeTest {
 
   @Test
   public void testClone() throws Exception {
-    String content = IOUtils.toString(new ClassPathResource("json/client/attribute.json").getInputStream());
+    String content = IOUtils.toString(new ClassPathResource("json/client/attribute.json").getInputStream(), Charset.defaultCharset());
     Attribute attribute = objectMapper.readValue(content, Attribute.class);
     Attribute cloned = (Attribute) attribute.clone();
 

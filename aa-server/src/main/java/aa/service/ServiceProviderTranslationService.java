@@ -16,12 +16,12 @@ import org.springframework.util.Assert;
 public class ServiceProviderTranslationService {
 
   public String translateServiceProviderEntityId(String entityId) {
-    Assert.notNull(entityId);
+    Assert.notNull(entityId, "EntityId is required");
     return entityId.replace("@", "@@").replaceAll(":", "@");
   }
 
   public String translateClientId(String clientId) {
-    Assert.notNull(clientId);
+    Assert.notNull(clientId, "ClientId is required");
     return clientId.replaceAll("(?<!@)@(?!@)", ":").replaceAll("@@", "@");
   }
 

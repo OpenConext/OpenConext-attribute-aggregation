@@ -2,34 +2,47 @@ package aa;
 
 
 import aa.aggregators.PrePopulatedJsonHttpHeaders;
-import aa.model.*;
+import aa.model.Aggregation;
+import aa.model.Attribute;
+import aa.model.MetaInformation;
+import aa.model.ResourceType;
+import aa.model.Schema;
+import aa.model.UserAttribute;
+import aa.model.UserAttributes;
 import aa.repository.AggregationRepository;
 import aa.repository.ServiceProviderRepository;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.TestRestTemplate;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.FAIL_ON_ERROR;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
@@ -38,10 +51,10 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
  * Override the @WebIntegrationTest annotation if you don't want to have mock shibboleth headers (e.g. you want to
  * impersonate EB or other identity).
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=dev,aa-test",
-    "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml")
+@ActiveProfiles("dev,aa-test")
 @Transactional
 @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed.sql"},
     config = @SqlConfig(errorMode = FAIL_ON_ERROR, transactionMode = ISOLATED))
@@ -146,7 +159,7 @@ public abstract class AbstractIntegrationTest {
         null);
     UserAttributes userAttributes = new UserAttributes(serviceProviderEntityId, singletonList(input));
     String path = noServiceCheck ? "aggregateNoServiceCheck" : "aggregate";
-    RequestEntity requestEntity = new RequestEntity(userAttributes, headers, HttpMethod.POST, new URI("http://localhost:" + port + "/aa/api/attribute/" + path));
+    RequestEntity<UserAttributes> requestEntity = new RequestEntity<>(userAttributes, headers, HttpMethod.POST, new URI("http://localhost:" + port + "/aa/api/attribute/" + path));
     ResponseEntity<List<UserAttribute>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<UserAttribute>>() {
     });
 

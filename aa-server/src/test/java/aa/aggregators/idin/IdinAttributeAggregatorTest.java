@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.*;
@@ -73,7 +74,7 @@ public class IdinAttributeAggregatorTest {
     ResponseDefinitionBuilder builder = aResponse().withStatus(status).withHeader("Content-Type", "application/json");
 
     if (status == 200) {
-      builder = builder.withBody(IOUtils.toString(new ClassPathResource(jsonFile).getInputStream()));
+      builder = builder.withBody(IOUtils.toString(new ClassPathResource(jsonFile).getInputStream(), Charset.defaultCharset()));
     }
 
     stubFor(get(urlPathMatching("/api/user/.*")).willReturn(builder));

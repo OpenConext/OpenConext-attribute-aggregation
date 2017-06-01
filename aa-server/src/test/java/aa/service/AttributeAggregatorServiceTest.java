@@ -15,6 +15,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -127,7 +128,7 @@ public class AttributeAggregatorServiceTest {
   }
 
   private void stubAggregationCall(int milliseconds, String path) throws IOException {
-    String response = IOUtils.toString(new ClassPathResource(path).getInputStream());
+    String response = IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
 
     //the delay will cause the Attribute Aggregators to return empty list
     stubFor(get(urlEqualTo("/")).willReturn(aResponse().withFixedDelay(milliseconds).withStatus(200).withHeader("Content-Type", "application/json").withBody(response)));

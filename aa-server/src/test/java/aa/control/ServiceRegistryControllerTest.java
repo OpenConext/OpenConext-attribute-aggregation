@@ -4,7 +4,7 @@ import aa.AbstractIntegrationTest;
 import aa.model.ServiceProvider;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,8 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=acc,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    value = {"spring.profiles.active=acc,aa-test", "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml"})
 // this one tries to go to https://multidata.test.surfconext.nl and Travis can't do that
 @Ignore
 public class ServiceRegistryControllerTest extends AbstractIntegrationTest {

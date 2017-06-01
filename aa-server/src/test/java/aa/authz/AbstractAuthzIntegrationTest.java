@@ -4,7 +4,7 @@ import aa.AbstractIntegrationTest;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Before;
 import org.junit.Rule;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StreamUtils;
@@ -14,9 +14,11 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=aa-test",
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, value = {"spring.profiles.active=aa-test",
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml",
     "authz.checkToken.endpoint.url=http://localhost:12122/oauth/check_token",
     "checkToken.cache=false"})

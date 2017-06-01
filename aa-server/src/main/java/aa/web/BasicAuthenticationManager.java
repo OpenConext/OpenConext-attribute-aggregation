@@ -20,8 +20,8 @@ import static org.springframework.security.core.authority.AuthorityUtils.createA
   private final String password;
 
   public BasicAuthenticationManager(String userName, String password) {
-    Assert.notNull(userName);
-    Assert.notNull(password);
+    Assert.notNull(userName, "userName is required");
+    Assert.notNull(password, "password is required");
 
     this.userName = userName;
     this.password = password;

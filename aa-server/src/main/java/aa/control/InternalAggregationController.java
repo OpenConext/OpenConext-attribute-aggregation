@@ -15,7 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,7 +28,10 @@ import java.util.Optional;
 
 import static aa.util.StreamUtils.listFromIterable;
 import static java.util.stream.Collectors.toSet;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping(headers = {"Content-Type=application/json"}, produces = {"application/json"})
@@ -55,7 +62,7 @@ public class InternalAggregationController {
     aggregationValidator.validate(configuration, serviceRegistry, aggregation);
 
     aggregation.setServiceProviders(aggregation.getServiceProviders().stream().map(this::serviceProviderOrExists).collect(toSet()));
-    aggregation.setAttributes(new HashSet(aggregation.getAttributes()));
+    aggregation.setAttributes(new HashSet<>(aggregation.getAttributes()));
 
     FederatedUser federatedUser = federatedUser();
     aggregation.setUserDisplayName(federatedUser.getDisplayName());

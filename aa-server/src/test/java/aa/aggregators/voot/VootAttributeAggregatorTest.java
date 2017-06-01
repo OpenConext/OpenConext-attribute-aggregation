@@ -11,6 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.IS_MEMBER_OF;
@@ -47,7 +49,7 @@ public class VootAttributeAggregatorTest {
 
   @Test
   public void testGetGroupsHappyFlow() throws Exception {
-    String response = IOUtils.toString(new ClassPathResource("voot/groups.json").getInputStream());
+    String response = read("voot/groups.json");
     stubForVoot(response);
     List<UserAttribute> userAttributes = subject.aggregate(input);
     assertEquals(1, userAttributes.size());
@@ -63,7 +65,7 @@ public class VootAttributeAggregatorTest {
   @Test
   public void testGetGroupFailures() throws Exception {
     //if something goes wrong, we just don't get groups. We log all requests and responses
-    String response = IOUtils.toString(new ClassPathResource("voot/empty_groups.json").getInputStream());
+    String response = read("voot/empty_groups.json");
     stubForVoot(response);
     assertTrue(subject.aggregate(input).isEmpty());
   }
@@ -77,10 +79,10 @@ public class VootAttributeAggregatorTest {
     testGetGroupsHappyFlow();
 
     //ask for groups again, but now throw 401 - access token is not valid - the first time
-    String response = IOUtils.toString(new ClassPathResource("voot/invalid_token.json").getInputStream());
+    String response = read("voot/invalid_token.json");
     stubForVootInScenario(response, 401, "first_call_done", "token_invalid_call_done");
 
-    String correctResponse = IOUtils.toString(new ClassPathResource("voot/groups.json").getInputStream());
+    String correctResponse = read("voot/groups.json");
     stubForVootInScenario(correctResponse, 200, "token_invalid_call_done", "exit");
 
     List<UserAttribute> userAttributes = subject.aggregate(input);
@@ -99,6 +101,10 @@ public class VootAttributeAggregatorTest {
         .willSetStateTo(newScenarioState)
     );
 
+  }
+
+  private String read(String path) throws IOException {
+      return IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
   }
 
 }

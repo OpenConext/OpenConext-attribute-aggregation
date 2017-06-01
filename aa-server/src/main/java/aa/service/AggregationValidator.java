@@ -10,9 +10,9 @@ import java.util.Optional;
 public class AggregationValidator {
 
   public void validate(AuthorityConfiguration configuration, ServiceRegistry serviceRegistry, Aggregation aggregation) {
-    Assert.hasText(aggregation.getName());
-    Assert.notEmpty(aggregation.getServiceProviders());
-    Assert.notEmpty(aggregation.getAttributes());
+    Assert.hasText(aggregation.getName(), "Aggregation name is required");
+    Assert.notEmpty(aggregation.getServiceProviders(), "Service Providers are required");
+    Assert.notEmpty(aggregation.getAttributes(), "Attributes are required");
     aggregation.getServiceProviders().forEach(sp -> serviceProviderValid(sp, serviceRegistry));
     aggregation.getAttributes().forEach(attribute -> attributeValid(attribute, configuration));
   }

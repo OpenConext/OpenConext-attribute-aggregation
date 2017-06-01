@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
@@ -90,7 +91,7 @@ public class OrcidAttributeAggregatorTest {
   }
 
   private List<UserAttribute> getOrcidResponse(String jsonFile) throws IOException {
-    String response = IOUtils.toString(new ClassPathResource(jsonFile).getInputStream());
+    String response = IOUtils.toString(new ClassPathResource(jsonFile).getInputStream(), Charset.defaultCharset());
     stubFor(get(urlPathEqualTo("/orcid")).willReturn(aResponse().withStatus(200).withBody(response).withHeader("Content-Type", "application/json")));
     return subject.aggregate(input);
   }

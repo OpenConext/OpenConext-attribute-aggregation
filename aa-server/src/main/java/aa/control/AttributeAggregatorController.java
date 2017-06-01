@@ -48,4 +48,8 @@ public class AttributeAggregatorController {
     return attributeAggregatorService.aggregateNoServiceCheck(input.getAttributes());
   }
 
+    @RequestMapping(method = RequestMethod.POST, value = {"/attribute/aggregateIncludingArp", "/internal/attribute/aggregateIncludingArp"})
+    public List<UserAttribute> aggregateIncludingArp(@RequestBody UserAttributes input) {
+        return attributeAggregatorService.aggregateNoServiceCheck(input.getAttributes());
+    }
 }

@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class UrlResourceServiceRegistryTest {
   }
 
   private void doBefore(String path) throws IOException {
-    String spResponse = IOUtils.toString(new ClassPathResource(path).getInputStream());
+    String spResponse = IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
     stubFor(get(urlEqualTo("/sp")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody(spResponse)));
 
     stubFor(head(urlEqualTo("/sp")).withHeader(IF_MODIFIED_SINCE, notMatching("X")).willReturn(aResponse().withStatus(200)));

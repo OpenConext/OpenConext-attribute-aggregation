@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +33,7 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
   public SabAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
     super(attributeAuthorityConfiguration);
     try {
-      this.template = IOUtils.toString(new ClassPathResource("sab/request.xml").getInputStream());
+      this.template = IOUtils.toString(new ClassPathResource("sab/request.xml").getInputStream(), Charset.defaultCharset());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

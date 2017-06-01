@@ -7,6 +7,7 @@ import org.springframework.core.io.ClassPathResource;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class SabResponseParserTest {
   }
 
   private void dpParse(String jsonResponse) throws IOException, XMLStreamException {
-    String soap = IOUtils.toString(new ClassPathResource(jsonResponse).getInputStream());
+    String soap = IOUtils.toString(new ClassPathResource(jsonResponse).getInputStream(), Charset.defaultCharset());
     List<String> roles = subject.parse(new StringReader(soap));
     assertEquals(Arrays.asList(
         "Superuser", "Instellingsbevoegde", "Infraverantwoordelijke", "OperationeelBeheerder", "Mailverantwoordelijke",

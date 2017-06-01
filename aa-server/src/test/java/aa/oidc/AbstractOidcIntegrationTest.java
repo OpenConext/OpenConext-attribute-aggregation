@@ -5,15 +5,18 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-
-@WebIntegrationTest(randomPort = true, value = {"spring.profiles.active=aa-test",
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    value = {"spring.profiles.active=aa-test",
     "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml",
     "oidc.checkToken.endpoint.url=http://localhost:12121/introspect",
     "checkToken.cache=false"})
@@ -42,7 +45,7 @@ public abstract class AbstractOidcIntegrationTest extends AbstractIntegrationTes
   }
 
   protected void stubOidcCheckTokenUser(String path) throws IOException {
-    String json = IOUtils.toString(new ClassPathResource(path).getInputStream());
+    String json = IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
     oidcServerMock.stubFor(get(urlPathEqualTo("/introspect")).willReturn(
         aResponse().withStatus(200).withHeader("Content-type", "application/json").withBody(json)
     ));

@@ -3,6 +3,7 @@ package aa.authz;
 import aa.oauth.AbstractRemoteTokenServicesTest;
 import aa.oauth.DecisionResourceServerTokenServices;
 import org.junit.Test;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 
 import java.util.UUID;
@@ -55,7 +56,7 @@ public class AuthzResourceServerTokenServicesTest extends AbstractRemoteTokenSer
     return "json/authz/check_token.client_credentials.json";
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = InvalidTokenException.class)
   public void testLoadAuthenticationFailure() throws Exception {
     introspect(getFailureCheckTokenJsonPath());
   }
