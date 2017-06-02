@@ -4,5 +4,5 @@ build
 .DS_Store
 .idea
 *.iml
-todo.txt
+TODO.txt
 target

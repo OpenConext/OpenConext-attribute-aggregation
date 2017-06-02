@@ -5,7 +5,6 @@ import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.model.Aggregation;
 import aa.model.ArpAggregationRequest;
-import aa.model.ArpAttribute;
 import aa.model.ArpValue;
 import aa.model.Attribute;
 import aa.model.AttributeAuthorityConfiguration;
@@ -25,9 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
@@ -35,7 +32,6 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Collectors.groupingBy;
 public class AttributeAggregatorService {
 
     private final static Logger LOG = LoggerFactory.getLogger(AttributeAggregatorService.class);

@@ -26,7 +26,7 @@
     "test-travis": "NODE_ENV=test karma start --single-run",
     "webpack": "webpack --colors --progress --config ./webpack/config"
   },
-  "dependencies": {
+  "devDependencies": {
     "classnames": "^2.1.3",
     "exports-loader": "^0.6.2",
     "history": "1.17.0",
@@ -44,9 +44,7 @@
     "whatwg-fetch": "latest",
     "font-awesome": "^4.5.0",
     "react-select": "1.0.0-beta8",
-    "lodash": "^3.10.1"
-  },
-  "devDependencies": {
+    "lodash": "^3.10.1",
     "autoprefixer-core": "^5.2.1",
     "babel-core": "^5.8.3",
     "babel-eslint": "^3.1.23",
@@ -72,11 +70,10 @@
     "karma-source-map-support": "^1.0.0",
     "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.5.1",
-    "lodash": "^3.10.0",
     "mocha": "^2.2.5",
     "mocha-loader": "^0.7.1",
     "node-libs-browser": "^0.5.2",
-    "node-sass": "^3.2.0",
+    "node-sass": "^4.5.3",
     "opn": "^3.0.2",
     "phantomjs": "^1.9.17",
     "postcss-loader": "^0.5.1",
@@ -93,7 +90,7 @@
     "webpack-dev-server": "^1.10.1",
     "font-awesome-webpack": "^0.0.4",
     "less": "^2.3.1",
-    "url-loader":"^0.5.7"
+    "url-loader": "^0.5.7"
   },
   "engines": {
     "node": ">=0.12.0"

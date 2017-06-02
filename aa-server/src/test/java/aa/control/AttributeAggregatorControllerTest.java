@@ -4,7 +4,6 @@ import aa.AbstractIntegrationTest;
 import aa.model.ArpAggregationRequest;
 import aa.model.ArpValue;
 import aa.model.UserAttribute;
-import aa.model.UserAttributes;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,13 +13,11 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 

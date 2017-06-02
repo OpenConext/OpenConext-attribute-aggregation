@@ -10,4 +10,4 @@ fi
 
 rm -fr $SP_ENTITY_META_DATA;
 
-curl -i -H "Content-Type: application/json" --user metadata.client:secret https://multidata.test.surfconext.nl/service-providers.json >> $SP_ENTITY_META_DATA
+curl -i -H "Content-Type: application/json" --user metadata.client:secret https://multidata.test2.surfconext.nl/service-providers.json >> $SP_ENTITY_META_DATA
