@@ -25,13 +25,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
  * <p>
  * Protect the internal endpoint for EB with basic authentication.
  * <p>
- * Protect all other endpoints - except the public ones - with OAuth2 with support for both Authz and OIDC.
- * <p>
  * Do not protect public endpoints like /health, /info and /ServiceProviderConfig
- * <p>
- * Protect the /Me endpoint with an OAuth2 access_token associated with an User authentication
- * <p>
- * Protect the /Schema endpoint with an OAuth2 client credentials access_token
  */
 @Configuration
 @EnableWebSecurity

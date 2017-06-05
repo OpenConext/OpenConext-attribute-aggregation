@@ -1,6 +1,5 @@
 package aa.control;
 
-import aa.model.SchemaNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 public class ErrorControllerTest {
 
@@ -61,15 +59,6 @@ public class ErrorControllerTest {
         when(errorAttributes.getError(any())).thenReturn(new MethodArgumentNotValidException(mock(MethodParameter.class), bindingResult));
 
         assertResponse(request, INTERNAL_SERVER_ERROR, "{entityId=required}", true);
-    }
-
-    @Test
-    public void testErrorWithRespsoneType() throws Exception {
-        HttpServletRequest request = new MockHttpServletRequest();
-
-        when(errorAttributes.getError(any())).thenReturn(new SchemaNotFoundException("schema not found"));
-
-        assertResponse(request, NOT_FOUND, "message", false);
     }
 
     private void assertResponse(HttpServletRequest request, HttpStatus httpStatus, String expectedBodyResponse, boolean details) {
