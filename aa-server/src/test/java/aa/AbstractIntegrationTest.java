@@ -29,9 +29,9 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = "attribute.authorities.config.path=classpath:testAttributeAuthorities.yml")
 @ActiveProfiles("dev,aa-test")
-//@Transactional
-//@Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed.sql"},
-//    config = @SqlConfig(errorMode = FAIL_ON_ERROR, transactionMode = ISOLATED))
+@Transactional
+@Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed.sql"},
+    config = @SqlConfig(errorMode = FAIL_ON_ERROR, transactionMode = ISOLATED))
 public abstract class AbstractIntegrationTest {
 
     protected static final String spEntityID = "http://mock-sp";

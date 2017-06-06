@@ -1,0 +1,102 @@
+.authorities {
+
+    @include page;
+    display: flex;
+    background-color: $light-grey;
+    padding: 0;
+
+
+    @include phone {
+        flex-direction: column;
+    }
+
+    .left {
+        @include card;
+        min-width: 200px;
+        border-top: none;
+    }
+
+    .right {
+        @include card;
+        flex-grow: 2;
+        border-top: none;
+    }
+
+    .header {
+        background: lighten($light-grey, 5);
+        border-bottom: 2px solid $light-grey;
+        font-weight: bolder;
+        margin: 0;
+        padding: 10px;
+        border-top-left-radius: $br;
+        border-top-right-radius: $br;
+    }
+    .authority_link {
+        border-bottom: 1px solid $light-grey;
+        background: lighten($light-grey, 5);
+        padding: 10px;
+        margin: 0;
+        display: block;
+        position: relative;
+    }
+
+    .authority_selected {
+        @extend .authority_link;
+        background: white;
+
+        &:before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 2px;
+            content: "";
+            background-color: $blue;
+        }
+    }
+
+    .authority_details {
+
+        span {
+            display: block;
+            margin: 15px 0 5px 10px;
+            color: darken($medium-grey, 20)
+        }
+        p {
+            padding: 5px;
+            margin: 0 0 0 10px;
+            border-radius: $br;
+            width: 50%;
+            min-width: 400px;
+            border: 1px solid $light-grey;
+            background: lighten($light-grey, 5);
+        }
+        ul {
+            @extend p;
+            list-style-type: none;
+        }
+    }
+
+    .attribute {
+        background: lighten($light-grey, 5);
+        border-top: 1px solid $light-grey;
+        border-bottom: 1px solid $light-grey;
+        margin: 20px 0 10px 0;
+        padding: 10px;
+        font-size: 14px;
+        span {
+            margin: 0
+        }
+        em {
+            display: inline-block;
+            margin-left: 10px;
+        }
+    }
+
+    .attributeDetails {
+        margin-left: 25px;
+    }
+
+
+}
+

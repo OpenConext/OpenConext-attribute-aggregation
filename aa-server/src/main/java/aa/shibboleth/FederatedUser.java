@@ -16,11 +16,4 @@ public class FederatedUser extends User {
         this.displayName = displayName;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
 }

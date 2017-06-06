@@ -1,3 +1,4 @@
 #!/bin/bash
-npm install
-npm run build
+rm -Rf dist/*
+rm -Rf target/*
+yarn install && yarn lint && yarn test && yarn run webpack

@@ -27,8 +27,8 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest {
         request.addHeader(DISPLAY_NAME_HEADER_NAME, "John Doe");
         FederatedUser user = (FederatedUser) subject.getPreAuthenticatedPrincipal(request);
 
-        assertEquals("urn:collab:person:example.com:admin", user.getUid());
-        assertEquals("John Doe", user.getDisplayName());
+        assertEquals("urn:collab:person:example.com:admin", user.uid);
+        assertEquals("John Doe", user.displayName);
         assertTrue(user.getAuthorities().containsAll(AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_USER")));
     }
 

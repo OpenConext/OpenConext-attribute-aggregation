@@ -25,21 +25,11 @@ public class Attribute implements Cloneable {
 
     private boolean skipConsent;
 
-    private boolean caseExact;
-
     private String description;
-
-    private boolean multiValued;
-
-    private String mutability;
-
-    private boolean required;
-
-    private String returned;
 
     private String type;
 
-    private String uniqueness;
+    private String example;
 
     @Override
     public Attribute clone() {

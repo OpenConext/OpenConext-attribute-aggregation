@@ -19,6 +19,11 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.util.List;
 
 /**
  * Protect endpoints for the internal API with Shibboleth AbstractPreAuthenticatedProcessingFilter.
@@ -107,6 +112,16 @@ public class WebSecurityConfigurer {
                 .authorizeRequests()
                 .antMatchers("/attribute/**").hasRole("ADMIN")
                 .antMatchers("/**").hasRole("USER");
+        }
+
+    }
+
+    @Configuration
+    public class MvcConfig extends WebMvcConfigurerAdapter {
+
+        @Override
+        public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+            argumentResolvers.add(new FederatedUserHandlerMethodArgumentResolver());
         }
 
     }

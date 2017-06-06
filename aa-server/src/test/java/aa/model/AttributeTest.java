@@ -18,7 +18,7 @@ public class AttributeTest {
     public void testClone() throws Exception {
         String content = IOUtils.toString(new ClassPathResource("json/client/attribute.json").getInputStream(), Charset.defaultCharset());
         Attribute attribute = objectMapper.readValue(content, Attribute.class);
-        Attribute cloned = (Attribute) attribute.clone();
+        Attribute cloned = attribute.clone();
 
         assertFalse(cloned == attribute);
         assertEquals(attribute.toString(), cloned.toString());

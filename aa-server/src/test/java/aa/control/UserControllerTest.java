@@ -1,6 +1,7 @@
 package aa.control;
 
 import aa.AbstractIntegrationTest;
+import aa.shibboleth.mock.MockShibbolethFilter;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
@@ -19,7 +20,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         ResponseEntity<Map> response = restTemplate.exchange(requestEntity, Map.class);
 
         Map body = response.getBody();
-        assertEquals(body.get("username"), "saml2_user");
+        assertEquals(body.get("username"), MockShibbolethFilter.SAML2_USER);
         assertEquals(body.get("displayName"), "John Doe");
     }
 }
