@@ -1,12 +1,27 @@
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
+node_js:
+- '7'
 services:
-  - mysql
-  - redis-server
+- mysql
+cache:
+  yarn: true
+  directories:
+  - node_modules
 before_install:
-  - pip install --user codecov
-  - mysql -e "create database IF NOT EXISTS aaserver; grant all on aaserver.* to 'root';" -uroot
+- pip install --user codecov
+- nvm install 7
+- npm install -g yarn
+- yarn install
+install:
+- cd aa-gui && yarn install && cd ..
+- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+before_script:
+- mysql -e "create database IF NOT EXISTS aaserver; grant all on aaserver.* to 'root';SET
+  GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;" -uroot
+script:
+- mvn test
+- cd aa-gui && yarn install && yarn run lint && yarn test
 after_success:
-  - codecov
-
+- codecov
