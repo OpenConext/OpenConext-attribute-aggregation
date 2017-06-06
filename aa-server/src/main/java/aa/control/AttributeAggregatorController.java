@@ -25,7 +25,7 @@ public class AttributeAggregatorController {
         this.attributeAggregatorService = attributeAggregatorService;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = {"/attribute/arpBasedAggregation", "/internal/attribute/arpBasedAggregation"})
+    @RequestMapping(method = RequestMethod.POST, value = {"/internal/attribute/aggregation", "/client/attribute/aggregation"})
     public List<UserAttribute> arpBasedAggregation(@Valid @RequestBody ArpAggregationRequest arpAggregationRequest) {
         return attributeAggregatorService.aggregateBasedOnArp(arpAggregationRequest);
     }

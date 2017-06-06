@@ -21,7 +21,7 @@ public class AuthorityConfigurationControllerTest extends AbstractIntegrationTes
 
     @Test
     public void testAuthorityConfiguration() throws Exception {
-        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/internal/authorityConfiguration"));
+        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/client/authorityConfiguration"));
         ResponseEntity<AuthorityConfiguration> response = restTemplate.exchange(requestEntity, AuthorityConfiguration.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -24,7 +24,7 @@ public class AuthorityResolver {
 
     @Autowired
     public AuthorityResolver(ResourceLoader resourceLoader,
-                             @Value("${attribute.authorities.config.path}") String configFileLocation) {
+                             @Value("${attribute_authorities_config_path}") String configFileLocation) {
         try {
             this.parse(resourceLoader, configFileLocation);
             this.references();

@@ -1,6 +1,6 @@
 import spinner from "../lib/spin";
 
-const apiPath = "/aa/api/internal/";
+const apiPath = "/aa/api/client/";
 let csrfToken = null;
 
 function apiUrl(path) {

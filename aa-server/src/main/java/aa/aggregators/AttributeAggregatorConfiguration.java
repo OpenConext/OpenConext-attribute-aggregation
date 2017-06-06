@@ -25,10 +25,10 @@ import static java.util.stream.Collectors.toList;
 @Configuration
 public class AttributeAggregatorConfiguration {
 
-    @Value("${authorization.accessToken.url}")
+    @Value("${authorization_access_token_url}")
     private String authorizationAccessTokenUrl;
 
-    @Value("${scim.server.environment}")
+    @Value("${scim_server_environment}")
     private String environment;
 
     @Autowired

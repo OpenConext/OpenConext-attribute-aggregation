@@ -16,7 +16,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void testUser() throws Exception {
-        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/internal/users/me"));
+        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/client/users/me"));
         ResponseEntity<Map> response = restTemplate.exchange(requestEntity, Map.class);
 
         Map body = response.getBody();

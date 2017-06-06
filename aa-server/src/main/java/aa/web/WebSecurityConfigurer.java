@@ -14,13 +14,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
@@ -28,9 +26,9 @@ import java.util.List;
 /**
  * Protect endpoints for the internal API with Shibboleth AbstractPreAuthenticatedProcessingFilter.
  * <p>
- * Protect the internal endpoint for EB with basic authentication.
+ * Protect the internal endpoints for EB with basic authentication.
  * <p>
- * Do not protect public endpoints like /health, /info and /ServiceProviderConfig
+ * Do not protect public endpoints like /health and /info
  */
 @Configuration
 @EnableWebSecurity
@@ -52,14 +50,10 @@ public class WebSecurityConfigurer {
         private Environment environment;
 
         @Override
-        public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/health", "/info");
-        }
-
-        @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                .antMatcher("/internal/**")
+                .requestMatchers().antMatchers("/client/**", "/redirect")
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
@@ -73,7 +67,7 @@ public class WebSecurityConfigurer {
                     AbstractPreAuthenticatedProcessingFilter.class
                 )
                 .authorizeRequests()
-                .antMatchers("/internal/**").hasRole("ADMIN");
+                .antMatchers("/client/**").hasRole("ADMIN");
 
             if (environment.acceptsProfiles("no-csrf")) {
                 http.csrf().disable();
@@ -89,11 +83,16 @@ public class WebSecurityConfigurer {
     @Order
     public static class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter  {
 
-        @Value("${attribute.aggregation.user.name}")
+        @Value("${security.internal_user_name}")
         private String attributeAggregationUserName;
 
-        @Value("${attribute.aggregation.user.password}")
+        @Value("${security.internal_password}")
         private String attributeAggregationPassword;
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().antMatchers("/health", "/info");
+        }
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
@@ -110,7 +109,7 @@ public class WebSecurityConfigurer {
                     BasicAuthenticationFilter.class
                 )
                 .authorizeRequests()
-                .antMatchers("/attribute/**").hasRole("ADMIN")
+                .antMatchers("/internal/**").hasRole("ADMIN")
                 .antMatchers("/**").hasRole("USER");
         }
 

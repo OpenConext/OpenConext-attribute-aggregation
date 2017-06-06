@@ -10,7 +10,7 @@ import static org.springframework.security.core.authority.AuthorityUtils.createA
 
 public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
 
-    public static final String UID_HEADER_NAME = "uid";
+    public static final String NAME_ID_HEADER_NAME = "name-id";
     public static final String DISPLAY_NAME_HEADER_NAME = "displayname";
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager) {
@@ -20,7 +20,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
     @Override
     protected Object getPreAuthenticatedPrincipal(final HttpServletRequest request) {
-        String uid = request.getHeader(UID_HEADER_NAME);
+        String uid = request.getHeader(NAME_ID_HEADER_NAME);
         String displayName = request.getHeader(DISPLAY_NAME_HEADER_NAME);
         if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(displayName)) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate

@@ -46,4 +46,11 @@ public class Account {
 
     @Column
     private Instant created;
+
+    public Account(String urn, String name, AccountType accountType) {
+        this.urn = urn;
+        this.name = name;
+        this.accountType = accountType;
+    }
+
 }

@@ -33,20 +33,20 @@ public class UserController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @GetMapping("/internal/users/me")
+    @GetMapping("/client/users/me")
     public FederatedUser user() {
         FederatedUser federatedUser = (FederatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         LOG.debug("Returning user {}", federatedUser);
         return federatedUser;
     }
 
-    @DeleteMapping("/internal/users/logout")
+    @DeleteMapping("/client/users/logout")
     public void logout(HttpServletRequest request) {
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
     }
 
-    @PostMapping("/internal/error")
+    @PostMapping("/client/error")
     public void error(@RequestBody Map<String, Object> payload, FederatedUser federatedUser) throws JsonProcessingException, UnknownHostException {
         payload.put("dateTime", new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss").format(new Date()));
         payload.put("machine", InetAddress.getLocalHost().getHostName());

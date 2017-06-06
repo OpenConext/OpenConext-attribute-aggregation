@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class UserAttributeCacheConfiguration {
 
     @Bean
-    public UserAttributeCache inMemoryUserAttributeCache(@Value("${aggregate.cache.duration.milliseconds}") long cacheDuration) {
+    public UserAttributeCache inMemoryUserAttributeCache(@Value("${aggregate_cache_duration_milliseconds}") long cacheDuration) {
         return new SimpleInMemoryUserAttributeCache(cacheDuration, cacheDuration);
     }
 

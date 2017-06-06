@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>SURFConext ORCID</title>
+    <meta http-equiv="expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset='utf-8'>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+        html {
+            min-height: 100% !important;
+            height: 100%;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e8e8e7;
+            min-height: 100% !important;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            display: flex;
+            box-shadow: 0 0 4px 0 rgba(0,0,0,0.05);
+            border-radius: 5px;
+            max-width: 75%;
+            padding: 30px;
+            background-color: white;
+        }
+        @media (min-width: 900px) {
+            .container {
+                max-width: 40%;
+            }
+        }
+        section.left {
+            margin-right: 25px;
+        }
+        section.right {
+            padding: 0 0 40px 35px;
+            border-left: 1px solid #B9B9B8;
+            margin-right: 10px;
+        }
+        div.info {
+            display: flex;
+        }
+        div.info p {
+            margin: 0 auto 0 5px;
+        }
+        div.buttons {
+            margin-top: 45px;
+        }
+        div.buttons a {
+            padding: 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            background-color: #4DB2CF;
+            color: white;
+        }
+        div.buttons a:visited, div.buttons a:hover {
+            text-decoration: none;
+
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <section class="left">
+        <img src="/aa/api/client/oidc_logo.png" style="height:75px;">
+    </section>
+    <section class="right">
+        <h2>Add ORCID to OpenConext</h2>
+        <div class="info">
+            <svg enable-background="new 0 0 24 24" height="24px" id="Layer_1" version="1.1" viewBox="0 0 24 24" width="24px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" >
+            <path clip-rule="evenodd" stroke="#33CD2E" fill="#33CD2E" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/>
+            </svg>
+            <p>We already know your OpenConext login.</p>
+        </div>
+        <p class="text">You now will be forwarded to the ORCID to login or register so we can store your ORCID in our attribute authority.</p>
+        <div class="buttons">
+            <a id="connect-link" href="/api/aa/client/connect">Login / Register ORICD</a>
+        </div>
+    </section>
+
+</div>
+</body>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        var parseQueryString = function() {
+            var str = window.location.search;
+            var objURL = {};
+            str.replace(
+                new RegExp( "([^?=&]+)(=([^&]*))?", "g" ),
+                function( $0, $1, $2, $3 ){
+                    objURL[ $1 ] = $3;
+                }
+            );
+            return objURL;
+        };
+
+        var connectLink = document.getElementById("connect-link");
+        var href = connectLink.getAttribute("href");
+        var params = parseQueryString();
+        var redirectUrl = params["redirectUrl"];
+        if (redirectUrl) {
+            connectLink.setAttribute("href", href + "?redirectUrl=" + redirectUrl)
+        }
+
+    });
+</script>
+</html>

@@ -18,7 +18,7 @@ public class AuthorityConfigurationController {
         this.configuration = authorityResolver.getConfiguration();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/internal/authorityConfiguration")
+    @RequestMapping(method = RequestMethod.GET, value = "/client/authorityConfiguration")
     public AuthorityConfiguration authorityConfiguration() {
         return configuration;
     }
