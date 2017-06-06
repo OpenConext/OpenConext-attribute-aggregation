@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -70,15 +71,16 @@ public class AccountController {
     }
 
     @GetMapping("/client/connect")
-    public void connect(FederatedUser federatedUser, HttpServletResponse response) throws IOException {
+    public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser, @RequestParam("redirectUrl") String redirectUrl) throws IOException {
         LOG.debug("Starting ORCID connection linking for {}", federatedUser.uid);
+        request.getSession().setAttribute("client_redirect_url", redirectUrl);
         String uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s",
             orcidAuthorizationUri, orcidClientId, orcidRedirectUri);
         response.sendRedirect(uri);
     }
 
     @GetMapping("/redirect")
-    public void redirect(FederatedUser federatedUser, @RequestParam("code") String code) {
+    public void redirect(HttpServletRequest request,HttpServletResponse response, FederatedUser federatedUser, @RequestParam("code") String code) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {}", federatedUser.uid, code);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -88,8 +90,8 @@ public class AccountController {
         map.add("code", code);
         map.add("redirect_uri", orcidRedirectUri);
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, httpHeaders);
-        ResponseEntity<Map> responseEntity = restTemplate.exchange(orcidAccessTokenUri, HttpMethod.POST, request, Map.class);
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(map, httpHeaders);
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(orcidAccessTokenUri, HttpMethod.POST, httpEntity, Map.class);
         if (!responseEntity.getStatusCode().is2xxSuccessful()) {
             throw new IllegalArgumentException(String.format("Unable to exchange code for ORCID id {}", responseEntity));
         }
@@ -102,6 +104,8 @@ public class AccountController {
         LOG.debug("Saving ORCID linked account {}", account);
 
         accountRepository.save(account);
+
+        response.sendRedirect(String.class.cast(request.getSession().getAttribute("redirectUrl")));
     }
 
     @GetMapping("/internal/accounts/{urn}")
