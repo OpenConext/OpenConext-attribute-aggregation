@@ -105,7 +105,8 @@ public class AccountController {
 
         accountRepository.save(account);
 
-        response.sendRedirect(String.class.cast(request.getSession().getAttribute("redirectUrl")));
+        Object redirectUrl = request.getSession().getAttribute("client_redirect_url");
+        response.sendRedirect(String.class.cast(redirectUrl));
     }
 
     @GetMapping("/internal/accounts/{urn}")

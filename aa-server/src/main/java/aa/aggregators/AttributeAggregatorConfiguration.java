@@ -9,6 +9,7 @@ import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.AttributeAuthorityConfiguration;
+import aa.repository.AccountRepository;
 import aa.service.AttributeAggregatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +38,10 @@ public class AttributeAggregatorConfiguration {
     @Autowired
     private UserAttributeCache userAttributeCache;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+
     @Bean
     @Profile({"aa-test"})
     public AttributeAggregatorService testingAttributeAggregatorService() {
@@ -64,7 +69,7 @@ public class AttributeAggregatorConfiguration {
             case "voot":
                 return new VootAttributeAggregator(configuration, authorizationAccessTokenUrl);
             case "orcid":
-                return new OrcidAttributeAggregator(configuration, environment);
+                return new OrcidAttributeAggregator(configuration, accountRepository);
             case "idin":
                 return new IdinAttributeAggregator(configuration);
             default:

@@ -28,15 +28,20 @@
         }
         .container {
             display: flex;
-            box-shadow: 0 0 4px 0 rgba(0,0,0,0.05);
+            box-shadow: 2px 2px 4px 1px rgba(94, 94, 94, 0.55);
             border-radius: 5px;
             max-width: 75%;
             padding: 30px;
             background-color: white;
         }
-        @media (min-width: 900px) {
+        @media (min-width: 1200px) {
             .container {
-                max-width: 40%;
+                max-width: 50%;
+            }
+        }
+        @media (max-width: 800px) {
+            .container {
+                flex-direction: column;
             }
         }
         section.left {
@@ -55,6 +60,12 @@
         }
         div.buttons {
             margin-top: 45px;
+            display: flex;
+        }
+        @media (max-width: 800px) {
+            div.buttons {
+                flex-direction: column;
+            }
         }
         div.buttons a {
             padding: 15px;
@@ -62,6 +73,18 @@
             text-decoration: none;
             background-color: #4DB2CF;
             color: white;
+        }
+        div.buttons a.cancel {
+            padding: 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            background-color: #c7c7c7;
+            margin: 0 20px 0 0;
+        }
+        @media (max-width: 800px) {
+            div.buttons a.cancel {
+                margin: 10px 0 0 0;
+            }
         }
         div.buttons a:visited, div.buttons a:hover {
             text-decoration: none;
@@ -82,9 +105,10 @@
             </svg>
             <p>We already know your OpenConext login.</p>
         </div>
-        <p class="text">You now will be forwarded to the ORCID to login or register so we can store your ORCID in our attribute authority.</p>
+        <p class="text">You now will be forwarded to the ORCID site to either login or register so we can store your ORCID in our attribute authority.</p>
         <div class="buttons">
-            <a id="connect-link" href="/api/aa/client/connect">Login / Register ORICD</a>
+            <a id="cancel-link" class="cancel" href="#">Cancel</a>
+            <a id="connect-link" class="confirm" href="/aa/api/client/connect">Login / Register ORCID</a>
         </div>
     </section>
 
@@ -111,6 +135,8 @@
         if (redirectUrl) {
             connectLink.setAttribute("href", href + "?redirectUrl=" + redirectUrl)
         }
+        var cancelLink = document.getElementById("cancel-link");
+        cancelLink.setAttribute("href", redirectUrl);
 
     });
 </script>
