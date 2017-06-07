@@ -61,7 +61,7 @@ export default class Header extends React.PureComponent {
                 <div className="header">
                     <Link to="/" className="logo"><img src={logo}/></Link>
                     <ul className="links">
-                        <li className="title"><span>Teams</span></li>
+                        <li className="title"><span>{I18n.t("header.title")}</span></li>
                         <li className="profile"
                             tabIndex="1" onBlur={() => this.setState({dropDownActive: false})}>
                             {this.renderProfileLink(currentUser)}

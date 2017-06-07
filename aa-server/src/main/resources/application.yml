@@ -15,7 +15,7 @@ server:
 
 scim_server_environment: test.surfconext
 attribute_authorities_config_path: classpath:/attributeAuthorities.yml
-authorization_access_token_url: http://localhost:8889/oauth/token
+authorization_access_token_url: https://authz.test2.surfconext.nl/oauth/token
 aggregate_cache_duration_milliseconds: 300000
 
 orcid:

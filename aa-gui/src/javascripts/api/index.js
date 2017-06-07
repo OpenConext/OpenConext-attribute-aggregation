@@ -91,6 +91,10 @@ export function reportError(error) {
     return postPutJson("error", error);
 }
 
+export function attributeAggregation(arpAggregationRequest) {
+    return postPutJson("attribute/aggregation", arpAggregationRequest, "POST");
+}
+
 export function logOut() {
     return fetchDelete("users/logout");
 }

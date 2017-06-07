@@ -2,7 +2,7 @@ authorities:
   - {
       id: "orcid",
       description: "ORCID provides a persistent digital identifier that distinguishes you from every other researcher and, through integration in key research workflows such as manuscript and grant submission, supports automated linkages between you and your professional activities ensuring that your work is recognized",
-      endpoint: "https://orcidaa.test.surfconext.nl/idp/profile/admin/resolvertest",
+      endpoint: "",
       user: "",
       password: "",
       timeOut: 1000,
@@ -16,7 +16,7 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
+        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
         }
       ]
     }
@@ -44,9 +44,9 @@ authorities:
   - {
       id: "voot",
       description: "An extensible protocol for dynamic exchange of group and authorization data",
-      endpoint: "https://voot.test.surfconext.nl",
+      endpoint: "https://voot.test2.surfconext.nl",
       user: "https@//aa.test.surfconext.nl",
-      password: "200063f4-fcd5-49fb-a504-eae30ed5e97e",
+      password: "secret",
       timeOut: 1000,
       attributes: [
         {
@@ -59,57 +59,6 @@ authorities:
       requiredInputAttributes: [
         {
         name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-        }
-      ]
-    }
-  - {
-      id: "idin",
-      description: "With iDIN, you can identify yourself online to companies and organisations using your banks log-in procedure - simple, secure and safe",
-      endpoint: "https://attribute-mappper.test.surfconext.nl",
-      user: "am_aa_client",
-      password: "secret",
-      timeOut: 1000,
-      attributes: [
-        {
-          name: "urn:mace:dir:attribute-def:isMemberOf",
-          description: "Lists the collaborative organisations / groups the user is a member of",
-          type: "string",
-          example: "surf.nl"
-        },
-        {
-          name: "urn:mace:dir:attribute-def:eduPersonAffiliation",
-          description: "Indicates a set of roles of the person.",
-          type: "string",
-          example: "researcher"
-        },
-        {
-          name: "urn:mace:dir:attribute-def:mail",
-          description: "The email address of the person.",
-          type: "string",
-          example: "jdoe@example.org"
-        }
-      ],
-      requiredInputAttributes: [
-        {
-        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-        }
-      ]
-    }
-  - {
-      id: "test:mock",
-      description: "Test authority",
-      timeOut: 1000,
-      attributes: [
-        {
-          name: "urn:mace:dir:attribute-def:isMemberOf",
-          description: "Test memberOf membership",
-          type: "string",
-          example: "urn:x-surfnet:test:value"
-        }
-      ],
-      requiredInputAttributes: [
-        {
-        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
         }
       ]
     }

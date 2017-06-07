@@ -20,9 +20,9 @@ I18n.translations.en = {
     },
 
     header: {
-        title: "Account linking",
+        title: "Attribute Aggregation",
         links: {
-            help_html: "<a href=\"https://openconext.org/teams\" target=\"_blank\">Help</a>",
+            help_html: "<a href=\"https://openconext.org/\" target=\"_blank\">Help</a>",
             logout: "Logout",
             exit: "Exit"
         },
@@ -70,10 +70,14 @@ I18n.translations.en = {
 
     playground: {
         arp: "Attribute Release Policy",
-        attribute_name: "Name",
+        user_attributes: "User Attributes",
+        attribute_name: "Attribute name",
         enabled: "Enabled",
         matching_rule: "Matching Rule",
+        source: "Source",
         result_status_ok: "Ok",
+        do_attribute_aggregation: "Attribute Aggregation",
+        clear: "Clear"
     },
 
     not_found: {

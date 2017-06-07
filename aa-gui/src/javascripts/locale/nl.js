@@ -67,6 +67,18 @@ I18n.translations.nl = {
         example: "Voorbeeld"
     },
 
+    playground: {
+        arp: "Attribute Release Policy",
+        user_attributes: "User Attributes",
+        attribute_name: "Attribute name",
+        enabled: "Enabled",
+        matching_rule: "Matching Rule",
+        source: "Source",
+        result_status_ok: "Ok",
+        do_attribute_aggregation: "Attribute Aggregation",
+        clear: "Clear"
+    },
+
     not_found: {
         title: "Deze pagina kan niet worden gevonden.",
         description_html: "Probeer het later opnieuw of neem contact op met <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."

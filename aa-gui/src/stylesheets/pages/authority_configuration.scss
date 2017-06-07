@@ -68,8 +68,8 @@
             border-radius: $br;
             width: 50%;
             min-width: 400px;
-            border: 1px solid $light-grey;
-            background: lighten($light-grey, 5);
+            border: 1px solid $lighter-grey;
+            background: $light-grey;
         }
         ul {
             @extend p;
