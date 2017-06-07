@@ -7,3 +7,5 @@ build
 TODO.txt
 target
 aa-gui-old
+aa-gui/dist
+aa-gui/coverage
