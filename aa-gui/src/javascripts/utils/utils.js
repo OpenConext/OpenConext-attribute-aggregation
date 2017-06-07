@@ -1,5 +1,3 @@
-import {backPage, clearBackPage} from "../lib/store";
-
 export function stop(e) {
     if (e !== undefined && e !== null) {
         e.preventDefault();
@@ -25,20 +23,20 @@ export function isEmpty(obj) {
 
 export function prettyPrintJson(obj) {
     const replacer = (match, pIndent, pKey, pVal, pEnd) => {
-        let key = '<span style=color:#051CB3;>';
-        let val = '<span style=color:#8BC34A;>';
-        let str = '<span style=color:#005600;>';
-        let r = pIndent || '';
+        const key = "<span style=color:#051CB3;>";
+        const val = "<span style=color:#8BC34A;>";
+        const str = "<span style=color:#005600;>";
+        let r = pIndent || "";
         if (pKey)
-            r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
+            r = r + key + pKey.replace(/[": ]/g, "") + "</span>: ";
         if (pVal)
-            r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
-        return r + (pEnd || '');
+            r = r + (pVal[0] === "" ? str : val) + pVal + "</span>";
+        return r + (pEnd || "");
     };
 
-    let jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
+    const jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
     return JSON.stringify(obj, null, 3)
-        .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
-        .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-        .replace(jsonLine, this.replacer);
+        .replace(/&/g, "&amp;").replace(/\\"/g, "&quot;")
+        .replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(jsonLine, replacer);
 }

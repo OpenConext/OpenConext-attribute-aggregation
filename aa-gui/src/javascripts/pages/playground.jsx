@@ -1,5 +1,5 @@
 import React from "react";
-import Select from "react-select";
+// import Select from "react-select";
 import I18n from "i18n-js";
 import {prettyPrintJson} from "../utils/utils";
 import PlayGroundInfo from "../components/playground_info";
@@ -20,44 +20,46 @@ export default class Playground extends React.Component {
     }
 
     componentWillMount = () => authorityConfiguration().then(configuration => {
-       const requiredAttributes = new Set([].concat(
-           ...configuration.authorities.map(authority => authority.requiredInputAttributes.map(attribute => attribute.name)))
-       );
-       const requiredAttributesAndAuthorityIds = Array.from(requiredAttributes).reduce((acc, attribute) => {
-           acc[attribute] = configuration.authorities
-               .filter(authority => authority.requiredInputAttributes.map(attr => attr.name).includes(attribute))
-               .map(authority => authority.id);
-           return acc;
-       }, {});
+        const requiredAttributes = new Set([].concat(
+            ...configuration.authorities.map(authority => authority.requiredInputAttributes.map(attribute => attribute.name)))
+        );
+        const requiredAttributesAndAuthorityIds = Array.from(requiredAttributes).reduce((acc, attribute) => {
+            acc[attribute] = configuration.authorities
+                .filter(authority => authority.requiredInputAttributes.map(attr => attr.name).includes(attribute))
+                .map(authority => authority.id);
+            return acc;
+        }, {});
         const arp = Array.from(requiredAttributes).reduce((acc, attribute) => {
             acc[attribute] = [{id: 0, value: "", source: ""}];
             return acc;
         }, {});
         this.setState({
             requiredAttributesAndAuthorityIds: requiredAttributesAndAuthorityIds,
-            arp: arp});
+            arp: arp
+        });
     });
 
-    renderRight = (result, duration) => result ? this.renderResult(result, duration) : <PlayGroundInfo locale={I18n.locale}/>;
+    renderRight = (result, duration) => result ? this.renderResult(result, duration) :
+        <PlayGroundInfo locale={I18n.locale}/>;
 
     removeArpItem = (name, id) => {
         const arp = this.state.arp;
         const items = arp[name];
         const filterItems = items.filter(item => item.id !== id);
         arp[name] = filterItems;
-        this.setState({arp: arp})
+        this.setState({arp: arp});
     };
 
-    addArpItem = (name, sources) => value => {
+    addArpItem = (name, sources) => () => {
         const arp = this.state.arp;
         const items = arp[name] || [];
-        items.push({id: items.length + 1, value: "", source: sources[0]})
+        items.push({id: items.length + 1, value: "", source: sources[0]});
         arp[name] = items;
         this.setState({arp: arp});
     };
 
     renderCheckBox = (name, item, index) => <div key={`${name}_${index}`}>
-        <CheckBox  name={`${name}_${index}`} value={true} onChange={this.addArpItem(name)} />
+        <CheckBox name={`${name}_${index}`} value={true} onChange={this.addArpItem(name)}/>
     </div>;
 
     renderArpAttribute = (name, authorities, arp) => <tr key={name}>
@@ -90,19 +92,19 @@ export default class Playground extends React.Component {
     };
 
     renderResult = (result, duration) =>
-            <div className="playground_result">
-                <section>
-                    <i className="fa fa-check"></i>
-                    <article>
-                        <h1>{I18n.t("playground.result_status_ok")}</h1>
-                        <em></em>
-                    </article>
-                    <p><i className="fa fa-file-o"></i>result.json - {duration} ms</p>
-                </section>
-                <pre>
-          <code dangerouslySetInnerHTML={{__html: prettyPrintJson(result) }}></code>
+        <div className="playground_result">
+            <section>
+                <i className="fa fa-check"></i>
+                <article>
+                    <h1>{I18n.t("playground.result_status_ok")}</h1>
+                    <em></em>
+                </article>
+                <p><i className="fa fa-file-o"></i>result.json - {duration} ms</p>
+            </section>
+            <pre>
+          <code dangerouslySetInnerHTML={{__html: prettyPrintJson(result)}}></code>
         </pre>
-            </div>;
+        </div>;
 
     render() {
         const {requiredAttributesAndAuthorityIds, arp, result, duration} = this.state;
