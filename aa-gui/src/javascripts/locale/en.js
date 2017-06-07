@@ -68,6 +68,14 @@ I18n.translations.en = {
         example: "Example"
     },
 
+    playground: {
+        arp: "Attribute Release Policy",
+        attribute_name: "Name",
+        enabled: "Enabled",
+        matching_rule: "Matching Rule",
+        result_status_ok: "Ok",
+    },
+
     not_found: {
         title: "The requested page could not be found.",
         description_html: "Please try again later or contact <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
