@@ -23,8 +23,6 @@ public class Attribute implements Cloneable {
 
     private String name;
 
-    private boolean skipConsent;
-
     private String description;
 
     private String type;

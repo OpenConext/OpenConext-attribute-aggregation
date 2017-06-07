@@ -16,7 +16,6 @@ public class UserAttribute {
     private String name;
     private List<String> values;
     private String source;
-    private boolean skipConsent;
 
     public UserAttribute() {
     }

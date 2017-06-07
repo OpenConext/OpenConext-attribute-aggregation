@@ -86,7 +86,7 @@ public class AttributeAggregatorService {
 
     private boolean valueAllowed(String value, List<String> arpValues) {
         return arpValues.stream().anyMatch(arpValue -> arpValue.equals("*") || arpValue.equalsIgnoreCase(value) ||
-            (arpValue.endsWith("*") && arpValue.startsWith(arpValue.substring(0, arpValue.length() - 1))));
+            (arpValue.endsWith("*") && value.startsWith(arpValue.substring(0, arpValue.length() - 1))));
     }
 
     private List<UserAttribute> getUserAttributes(List<UserAttribute> input, Collection<AttributeAuthorityConfiguration> authorityConfigurations) {

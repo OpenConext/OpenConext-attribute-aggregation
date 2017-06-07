@@ -1,6 +1,5 @@
 {
   "name": "urn:mace:dir:attribute-def:eduPersonOrcid",
-  "skipConsent": true,
   "description": "The ORCID is a persistent digital identifier that distinguishes the account holder from every other researcher.",
   "type": "string",
   "example": "none"

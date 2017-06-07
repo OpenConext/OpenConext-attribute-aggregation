@@ -20,7 +20,6 @@ import Footer from "./components/footer";
 import Header from "./components/header";
 import Flash from "./components/flash";
 import Navigation from "./components/navigation";
-import Accounts from "./pages/accounts";
 import Playground from "./pages/playground";
 import AuthorityConfiguration from "./pages/authority_configuration";
 import ErrorDialog from "./components/error_dialog";
@@ -111,9 +110,7 @@ class App extends React.PureComponent {
                                      close={errorDialogAction}/>
                     </div>
                     <Switch>
-                        <Route exact path="/" render={() => <Redirect to="/accounts"/>}/>
-                        <Route path="/accounts"
-                               render={props => <Accounts currentUser={currentUser} {...props}/>}/>
+                        <Route exact path="/" render={() => <Redirect to="/authorities"/>}/>
                         <Route path="/authorities"
                                render={props => <AuthorityConfiguration {...props}/>}/>
                         <Route path="/playground"
