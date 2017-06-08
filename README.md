@@ -12,8 +12,7 @@ OpenConext Attribute Aggregation
 - Java 8
 - Maven 3
 - MySQL 5.5
-- Redis
-- node.js
+- yarn
 
 ### [Create database](#create-database)
 
@@ -22,7 +21,7 @@ Connect to your local mysql database: `mysql -uroot`
 Execute the following:
 
 ```sql
-CREATE DATABASE aaserver DEFAULT CHARACTER SET latin1;
+CREATE DATABASE aaserve;
 grant all on aaserver.* to 'root'@'localhost';
 ```
 
@@ -45,17 +44,17 @@ The client is build with react.js and to get initially started:
 
 `cd aa-gui`
 
-`brew install npm;`
+`brew install yarn;`
 
 To run locally:
 
-`npm start`
+`yarn local`
 
 Browse to the [application homepage](http://localhost:8000/).
 
 When new npm dependencies are added:
 
-`npm install`
+`yarn install`
 
 ## [Miscellaneous](#miscellaneous)
 
@@ -65,12 +64,11 @@ When manually testing the aggregations in the Playground you have to provide inp
 
 * The attribute `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` with the value `urn:collab:person:example.com:admin` returns groups / isMemberOfs from VOOT
 * The attribute `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` with the value `urn:collab:person:surfnet.nl:henny` returns SAB roles
-* The attribute `urn:mace:dir:attribute-def:eduPersonPrincipalName` with value `oharsta@surfguest.nl` returns a valid ORCID.
-
-Note that you can register your own ORCID at [orcid.test.surfconext.nl](https://orcid.test.surfconext.nl)
+* The attribute `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` with value `` returns a valid ORCID.
 
 ### [cUrl](#curl)
 
+TODO
 The unsecured ServiceProviderConfig endpoint can be accessed at:
 
 ```bash
@@ -138,24 +136,12 @@ To actually use the new authority in the test/acc/prod environment it also needs
 
 Do not to forget to write Integration tests. For an example see [OrcidAttributeAggregatorTest](aa-server/src/test/java/aa/aggregators/orcid/OrcidAttributeAggregatorTest.java)
 
-### [Service Registry](#service-registry)
-
-The aa-server needs to access the metadata of Service providers from the Service Registry. In all other modus then `dev` the metadata is read (and periodically refreshed) from:
-  
-* https://multidata.${env}.surfconext.nl/service-providers.json
-
-In dev modus the content is read from the file system:
-
-* [service-providers.json](aa-server/src/main/resources/service-registry/service-providers.json)
-
-To sync the data of the file system with the actual test data run the [refreshEntityMetadata](aa-server/scripts/refreshEntityMetadata.sh) script.
-
 ### [Configuration and deployment](#configuration-and-deployment)
 
-On its classpath, the application has an [application.properties](aa-server/src/main/resources/application.properties) file that
+On its classpath, the application has an [application.yml](aa-server/src/main/resources/application.yml) file that
 contains configuration defaults that are convenient when developing.
 
-When the application actually gets deployed to a meaningful platform, it is pre-provisioned with ansible and the application.properties depends on
+When the application actually gets deployed to a meaningful platform, it is pre-provisioned with ansible and the application.yml depends on
 environment specific properties in the group_vars. See the project OpenConext-deploy and the role aa for more information.
 
 For details, see the [Spring Boot manual](http://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/).
