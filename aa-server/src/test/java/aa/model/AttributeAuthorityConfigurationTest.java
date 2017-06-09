@@ -20,6 +20,6 @@ public class AttributeAuthorityConfigurationTest {
         assertFalse(authority.equals(new Object()));
         assertEquals(authority, other);
 
-        assertEquals(1, new HashSet(Arrays.asList(authority, other)).size());
+        assertEquals(1, new HashSet<>(Arrays.asList(authority, other)).size());
     }
 }

@@ -19,11 +19,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,7 +71,8 @@ public class AccountController {
     }
 
     @GetMapping("/redirect")
-    public void redirect(HttpServletRequest request,HttpServletResponse response, FederatedUser federatedUser, @RequestParam("code") String code) throws IOException {
+    public void redirect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
+                         @RequestParam("code") String code) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {}", federatedUser.uid, code);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -99,7 +98,7 @@ public class AccountController {
         accountRepository.save(account);
 
         Object redirectUrl = request.getSession().getAttribute("client_redirect_url");
-        response.sendRedirect(String.class.cast(redirectUrl));
+        response.sendRedirect(String.class.cast(redirectUrl == null ? "http://surfconext.org" : redirectUrl));
     }
 
     @GetMapping("/internal/accounts/{urn}")

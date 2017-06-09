@@ -3,24 +3,47 @@ package aa.control;
 import aa.AbstractIntegrationTest;
 import aa.shibboleth.mock.MockShibbolethFilter;
 import org.junit.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 
-import java.net.URI;
-import java.util.Map;
+import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
-    public void testUser() throws Exception {
-        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, new URI("http://localhost:" + port + "/aa/api/client/users/me"));
-        ResponseEntity<Map> response = restTemplate.exchange(requestEntity, Map.class);
+    public void currentUser() throws Exception {
+        given()
+            .when()
+            .get("aa/api/client/users/me")
+            .then()
+            .statusCode(SC_OK)
+            .body("username", equalTo(MockShibbolethFilter.SAML2_USER))
+            .body("displayName", equalTo("John Doe"));
+    }
 
-        Map body = response.getBody();
-        assertEquals(body.get("username"), MockShibbolethFilter.SAML2_USER);
-        assertEquals(body.get("displayName"), "John Doe");
+    @Test
+    public void logout() throws Exception {
+        given()
+            .when()
+            .delete("aa/api/client/users/logout")
+            .then()
+            .body(isEmptyString())
+            .statusCode(SC_OK);
+    }
+
+    @Test
+    public void error() throws Exception {
+        given()
+            .header(CONTENT_TYPE, "application/json")
+            .when()
+            .body(Collections.singletonMap("error", "message"))
+            .post("aa/api/client/error")
+            .then()
+            .statusCode(SC_OK);
     }
 }

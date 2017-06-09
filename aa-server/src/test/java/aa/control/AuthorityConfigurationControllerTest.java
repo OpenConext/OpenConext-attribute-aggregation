@@ -12,6 +12,7 @@ import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("unchecked")
 public class AuthorityConfigurationControllerTest extends AbstractIntegrationTest {
 
     @Override

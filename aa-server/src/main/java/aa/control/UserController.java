@@ -25,7 +25,7 @@ import java.util.Map;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
-@RequestMapping(headers = {"Content-Type=application/json"}, produces = {"application/json"})
+@RequestMapping(produces = {"application/json"})
 public class UserController {
 
     private final static Logger LOG = LoggerFactory.getLogger(UserController.class);

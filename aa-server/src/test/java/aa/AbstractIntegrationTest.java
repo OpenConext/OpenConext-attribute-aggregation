@@ -2,9 +2,11 @@ package aa;
 
 
 import aa.aggregators.PrePopulatedJsonHttpHeaders;
+import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpHeaders;
@@ -34,9 +36,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
     config = @SqlConfig(errorMode = FAIL_ON_ERROR, transactionMode = ISOLATED))
 public abstract class AbstractIntegrationTest {
 
-    protected static final String spEntityID = "http://mock-sp";
-
-    @Value("${local.server.port}")
+    @LocalServerPort
     protected int port;
 
     protected TestRestTemplate restTemplate;
@@ -46,6 +46,7 @@ public abstract class AbstractIntegrationTest {
     @Before
     public void before() throws Exception {
         restTemplate = isBasicAuthenticated() ? new TestRestTemplate("eb", "secret") : new TestRestTemplate();
+        RestAssured.port = port;
     }
 
     protected boolean isBasicAuthenticated() {
