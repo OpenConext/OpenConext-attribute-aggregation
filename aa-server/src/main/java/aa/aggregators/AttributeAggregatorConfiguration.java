@@ -45,7 +45,7 @@ public class AttributeAggregatorConfiguration {
     @Bean
     @Profile({"aa-test"})
     public AttributeAggregatorService testingAttributeAggregatorService() {
-        return getAttributeAggregatorService(config -> new TestingAttributeAggregator(config, false));
+        return getAttributeAggregatorService(config -> new TestingAttributeAggregator(config));
     }
 
     @Bean
@@ -74,7 +74,7 @@ public class AttributeAggregatorConfiguration {
                 return new IdinAttributeAggregator(configuration);
             default:
                 if (id.startsWith("test:")) {
-                    return new TestingAttributeAggregator(configuration, false);
+                    return new TestingAttributeAggregator(configuration);
                 } else {
                     throw new IllegalArgumentException(format("Authority with id %s is unknown", id));
                 }

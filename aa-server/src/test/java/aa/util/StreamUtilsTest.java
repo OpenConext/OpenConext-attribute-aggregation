@@ -3,10 +3,8 @@ package aa.util;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static aa.util.StreamUtils.iteratorToList;
-import static aa.util.StreamUtils.singletonCollector;
 import static aa.util.StreamUtils.singletonOptionalCollector;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -18,21 +16,6 @@ public class StreamUtilsTest {
     public void testSingletonOptionalCollector() throws Exception {
         assertEquals("1", asList("1").stream().collect(singletonOptionalCollector()).get());
         assertFalse(new ArrayList<String>().stream().collect(singletonOptionalCollector()).isPresent());
-    }
-
-    @Test
-    public void testSingletonCollector() throws Exception {
-        assertEquals("1", asList("1").stream().collect(singletonCollector()));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSingletonCollectorEmpty() throws Exception {
-        new ArrayList<String>().stream().collect(singletonCollector());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSingletonCollectorWithMultipleElement() throws Exception {
-        Arrays.asList("1", "2").stream().collect(singletonCollector());
     }
 
     @Test

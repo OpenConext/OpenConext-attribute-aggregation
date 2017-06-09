@@ -1,0 +1,18 @@
+{
+  "id": 50,
+  "unspecifiedId": "urn:collab:person:idin.nl:confirmed",
+  "username": "J. Doe",
+  "centralIdp": "https://idin.surfconext.nl/saml2/idp/metadata.php",
+  "mapped": true,
+  "confirmed": true,
+  "institution": "example.com",
+  "inviteHash": "http://localhost:8080/confirmation?inviteHash=hash",
+  "created": 1462631917000,
+  "grantedAuthorities": null,
+  "authorities": [],
+  "accountNonExpired": false,
+  "accountNonLocked": false,
+  "credentialsNonExpired": false,
+  "password": "N/A",
+  "enabled": true
+}

@@ -63,13 +63,6 @@ public class AccountController {
         this.httpHeaders.add(HttpHeaders.ACCEPT, "application/json");
     }
 
-    @GetMapping("/client/accounts")
-    public List<Account> accounts(FederatedUser federatedUser) {
-        List<Account> accounts = accountRepository.findByUrnIgnoreCase(federatedUser.uid);
-        LOG.debug("Accounts {} for {}", accounts, federatedUser.uid);
-        return accounts;
-    }
-
     @GetMapping("/client/connect")
     public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser, @RequestParam("redirectUrl") String redirectUrl) throws IOException {
         LOG.debug("Starting ORCID connection linking for {}", federatedUser.uid);

@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
@@ -23,7 +24,7 @@ public class AttributeAggregatorConfigurationTest {
         this.doBefore("classpath:/attributeAuthoritiesProductionTemplate.yml");
     }
 
-    private void doBefore(String configFileLocation) {
+    private void doBefore(String configFileLocation) throws IOException {
         subject = new AttributeAggregatorConfiguration();
         setField(subject, "authorityResolver", new AuthorityResolver(new DefaultResourceLoader(), configFileLocation));
         setField(subject, "environment", "test.surfconext");

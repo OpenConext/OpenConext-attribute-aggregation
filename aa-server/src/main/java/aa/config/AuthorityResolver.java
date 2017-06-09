@@ -24,14 +24,10 @@ public class AuthorityResolver {
 
     @Autowired
     public AuthorityResolver(ResourceLoader resourceLoader,
-                             @Value("${attribute_authorities_config_path}") String configFileLocation) {
-        try {
-            this.parse(resourceLoader, configFileLocation);
-            this.references();
-            LOG.info("Parsed {} with configuration {}", configFileLocation, this.configuration);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+                             @Value("${attribute_authorities_config_path}") String configFileLocation) throws IOException {
+        this.parse(resourceLoader, configFileLocation);
+        this.references();
+        LOG.info("Parsed {} with configuration {}", configFileLocation, this.configuration);
     }
 
     private void parse(ResourceLoader resourceLoader, String configFileLocation) throws IOException {

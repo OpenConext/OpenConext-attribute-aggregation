@@ -20,13 +20,13 @@ import static aa.aggregators.AttributeAggregator.EDU_PERSON_AFFILIATION;
 import static aa.aggregators.AttributeAggregator.EMAIL;
 import static aa.aggregators.AttributeAggregator.IS_MEMBER_OF;
 import static aa.aggregators.AttributeAggregator.NAME_ID;
-import static aa.util.StreamUtils.singletonCollector;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -62,11 +62,25 @@ public class IdinAttributeAggregatorTest {
     public void testAggregateUser() throws Exception {
         List<UserAttribute> idenResponse = getIdinResponse("iden/response_succes.json");
 
-        List<String> email = userAttributeValues(idenResponse, EMAIL);
-        assertEquals(email, singletonList("jdoe@example.com"));
+        List<String> emails = userAttributeValues(idenResponse, EMAIL);
+        assertEquals(emails, singletonList("jdoe@example.com"));
 
         List<String> affiliations = userAttributeValues(idenResponse, EDU_PERSON_AFFILIATION);
         assertEquals(affiliations, asList("researcher", "student"));
+
+        List<String> memberOf = userAttributeValues(idenResponse, IS_MEMBER_OF);
+        assertEquals(memberOf, singletonList("surf.nl"));
+    }
+
+    @Test
+    public void testAggregateUserLimitedAttributes() throws Exception {
+        List<UserAttribute> idenResponse = getIdinResponse("iden/response_limited_succes.json");
+
+        List<String> emails = userAttributeValues(idenResponse, EMAIL);
+        assertEquals(0, emails.size());
+
+        List<String> affiliations = userAttributeValues(idenResponse, EDU_PERSON_AFFILIATION);
+        assertEquals(0, affiliations.size());
 
         List<String> memberOf = userAttributeValues(idenResponse, IS_MEMBER_OF);
         assertEquals(memberOf, singletonList("surf.nl"));
@@ -88,7 +102,10 @@ public class IdinAttributeAggregatorTest {
     }
 
     private List<String> userAttributeValues(List<UserAttribute> userAttributes, String name) {
-        return userAttributes.stream().filter(attr -> attr.getName().equals(name)).collect(singletonCollector()).getValues();
+        return userAttributes.stream().filter(attr -> attr.getName().equals(name))
+            .map(UserAttribute::getValues)
+            .flatMap(l -> l.stream())
+            .collect(toList());
     }
 
 }

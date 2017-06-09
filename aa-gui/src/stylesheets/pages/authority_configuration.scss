@@ -32,17 +32,19 @@
         border-top-right-radius: $br;
     }
     .authority_link {
-        border-bottom: 1px solid $light-grey;
-        background: lighten($light-grey, 5);
+        border-bottom: 1px solid $lighter-grey;
+        background: $light-grey;
         padding: 10px;
         margin: 0;
         display: block;
         position: relative;
+        color: $blue;
     }
 
     .authority_selected {
         @extend .authority_link;
         background: white;
+        color: $dark-grey;
 
         &:before {
             position: absolute;
