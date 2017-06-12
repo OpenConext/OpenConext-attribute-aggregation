@@ -4,12 +4,12 @@
 
     <parent>
         <groupId>org.openconext</groupId>
-        <artifactId>aa</artifactId>
+        <artifactId>attribute-aggregation</artifactId>
         <version>1.0.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>aa-gui</artifactId>
+    <artifactId>attribute-aggregation-gui</artifactId>
     <packaging>pom</packaging>
 
     <name>aa-gui</name>

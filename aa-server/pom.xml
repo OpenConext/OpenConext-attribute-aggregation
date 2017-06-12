@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>org.openconext</groupId>
-        <artifactId>aa</artifactId>
+        <artifactId>attribute-aggregation</artifactId>
         <version>1.0.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>aa-server</artifactId>
+    <artifactId>attribute-aggregation-server</artifactId>
     <packaging>jar</packaging>
 
     <name>aa-server</name>
