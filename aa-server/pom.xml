@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openconext</groupId>
         <artifactId>attribute-aggregation</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>2.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -104,8 +104,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
             <version>1.5.6</version>
         </dependency>
         <dependency>
@@ -157,9 +157,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <executable>true</executable>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>pl.project13.maven</groupId>
@@ -224,8 +221,8 @@
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav</artifactId>
-                <version>1.0-beta-2</version>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>2.12</version>
             </extension>
         </extensions>
     </build>
@@ -239,7 +236,7 @@
             </releases>
             <id>openconext-snapshots</id>
             <name>OpenConext public snapshot repository</name>
-            <url>https://build.surfconext.nl/repository/public/snapshots</url>
+            <url>https://build.openconext.org/repository/public/snapshots</url>
         </repository>
         <repository>
             <snapshots>
@@ -251,12 +248,12 @@
             </releases>
             <id>openconext-releases</id>
             <name>OpenConext public releases repository</name>
-            <url>https://build.surfconext.nl/repository/public/releases</url>
+            <url>https://build.openconext.org/repository/public/releases</url>
         </repository>
         <repository>
             <id>openconext-third-party-releases</id>
             <name>OpenConext third-party repository</name>
-            <url>https://build.surfconext.nl/repository/public/third-party</url>
+            <url>https://build.openconext.org/repository/public/third-party</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

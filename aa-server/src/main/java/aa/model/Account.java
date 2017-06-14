@@ -3,6 +3,7 @@ package aa.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Account {
 
     @Id
@@ -36,6 +38,9 @@ public class Account {
     private String email;
 
     @Column
+    private String schacHome;
+
+    @Column
     @Enumerated(EnumType.STRING)
     @NotNull
     private AccountType accountType;
@@ -47,9 +52,10 @@ public class Account {
     @Column
     private Instant created;
 
-    public Account(String urn, String name, AccountType accountType) {
+    public Account(String urn, String name, String schacHome, AccountType accountType) {
         this.urn = urn;
         this.name = name;
+        this.schacHome = schacHome;
         this.accountType = accountType;
     }
 

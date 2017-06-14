@@ -1,0 +1,2 @@
+ALTER TABLE accounts
+  ADD COLUMN schac_home VARCHAR(255) NOT NULL;

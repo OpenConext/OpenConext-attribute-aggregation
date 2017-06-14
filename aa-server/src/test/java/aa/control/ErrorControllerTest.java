@@ -67,15 +67,6 @@ public class ErrorControllerTest {
         assertEquals(httpStatus, response.getStatusCode());
 
         Map<String, Object> body = response.getBody();
-        //there were details, so we don't expect the 'exception' and 'message' still in here
-        if (details) {
-            assertFalse(body.containsKey("exception"));
-            assertFalse(body.containsKey("message"));
-            assertEquals(expectedBodyResponse, body.get("details").toString());
-        } else {
-            assertEquals(expectedBodyResponse, body.get("message"));
-        }
-
         assertEquals("dev, aa-test", body.get("profiles"));
 
 

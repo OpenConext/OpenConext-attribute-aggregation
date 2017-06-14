@@ -16,9 +16,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +34,8 @@ import java.util.Optional;
 @RestController
 public class AccountController {
 
-    private final static Logger LOG = LoggerFactory.getLogger(UserController.class);
+    private final static Logger LOG = LoggerFactory.getLogger(AccountController.class);
+    private static final String CLIENT_REDIRECT_URL = "client_redirect_url";
 
     @Autowired
     private AccountRepository accountRepository;
@@ -63,17 +65,20 @@ public class AccountController {
 
     @GetMapping("/client/connect")
     public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser, @RequestParam("redirectUrl") String redirectUrl) throws IOException {
-        LOG.debug("Starting ORCID connection linking for {}", federatedUser.uid);
-        request.getSession().setAttribute("client_redirect_url", redirectUrl);
-        String uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s",
-            orcidAuthorizationUri, orcidClientId, orcidRedirectUri);
+        LOG.debug("Starting ORCID connection linking for {} with redirect {}", federatedUser.uid, redirectUrl);
+        request.getSession().setAttribute(CLIENT_REDIRECT_URL, redirectUrl);
+        federatedUser.setRedirectURI(redirectUrl);
+        String state = URLEncoder.encode(redirectUrl, "UTF-8");
+        String uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s&state=%s",
+            orcidAuthorizationUri, orcidClientId, orcidRedirectUri, state);
         response.sendRedirect(uri);
     }
 
     @GetMapping("/redirect")
     public void redirect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
-                         @RequestParam("code") String code) throws IOException {
-        LOG.debug("Redirect from ORCID for {} with code {}", federatedUser.uid, code);
+                         @RequestParam("code") String code,
+                         @RequestParam(value = "state", required = false) String state) throws IOException {
+        LOG.debug("Redirect from ORCID for {} with code {} and state {}", federatedUser.uid, code, state);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("client_id", orcidClientId);
@@ -90,15 +95,26 @@ public class AccountController {
         String orcid = String.class.cast(responseEntity.getBody().get("orcid"));
 
         Optional<Account> accountOptional = accountRepository.findByUrnIgnoreCaseAndAccountType(federatedUser.uid, AccountType.ORCID);
-        Account account = accountOptional.orElseGet(() -> new Account(federatedUser.uid, federatedUser.displayName, AccountType.ORCID));
+        Account account = accountOptional.orElseGet(() -> new Account(federatedUser.uid, federatedUser.displayName, federatedUser.schacHomeOrganization, AccountType.ORCID));
         account.setLinkedId(orcid);
 
         LOG.debug("Saving ORCID linked account {}", account);
 
         accountRepository.save(account);
 
-        Object redirectUrl = request.getSession().getAttribute("client_redirect_url");
-        response.sendRedirect(String.class.cast(redirectUrl == null ? "http://surfconext.org" : redirectUrl));
+        Object redirectUrl = request.getSession().getAttribute(CLIENT_REDIRECT_URL);
+        String redirectURI = federatedUser.getRedirectURI();
+        String redirect;
+        if (redirectUrl != null) {
+            redirect = String.class.cast(redirectUrl);
+        } else if (redirectURI != null) {
+            redirect = redirectURI;
+        } else if (state != null) {
+            redirect = state;
+        } else {
+            redirect = "http://openconext.org";
+        }
+        response.sendRedirect(redirect);
     }
 
     @GetMapping("/internal/accounts/{urn}")
@@ -108,7 +124,7 @@ public class AccountController {
         return accounts;
     }
 
-    @PutMapping("/internal/disconnect/{id}")
+    @DeleteMapping("/internal/disconnect/{id}")
     public void disconnect(@PathVariable("id") Long id) {
         Account account = accountRepository.findOne(id);
         if (account == null) {

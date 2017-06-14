@@ -53,7 +53,7 @@ public class OrcidAttributeAggregatorTest {
 
     @Test
     public void testGetOrcidHappyFlow() throws Exception {
-        Account account = new Account("urn", "name", AccountType.ORCID);
+        Account account = new Account("urn", "name", "schacHome", AccountType.ORCID);
         account.setLinkedId("0000-0002-9588-5133");
         when(accountRepository.findByUrnIgnoreCaseAndAccountType("urn", AccountType.ORCID))
             .thenReturn(Optional.of(account));

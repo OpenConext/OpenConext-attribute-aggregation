@@ -47,18 +47,6 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
         Map<String, Object> result = this.errorAttributes.getErrorAttributes(requestAttributes, false);
 
         Throwable error = this.errorAttributes.getError(requestAttributes);
-        if (error instanceof MethodArgumentNotValidException) {
-            BindingResult bindingResult = ((MethodArgumentNotValidException) error).getBindingResult();
-            if (bindingResult.hasErrors()) {
-                Map<String, String> details = bindingResult.getAllErrors().stream().filter(e -> e instanceof FieldError)
-                    .map(e -> (FieldError) e).collect(toMap(FieldError::getField, FieldError::getDefaultMessage));
-                result.put("details", details);
-            }
-        }
-        if (result.containsKey("details")) {
-            result.remove("exception");
-            result.remove("message");
-        }
         result.put("profiles", String.join(", ", environment.getActiveProfiles()));
         HttpStatus statusCode = INTERNAL_SERVER_ERROR;
         if (error != null) {
