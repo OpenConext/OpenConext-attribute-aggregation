@@ -68,11 +68,12 @@ public class AccountControllerTest extends AbstractIntegrationTest {
         given()
             .config(newConfig().redirect(redirectConfig().followRedirects(false)))
             .param("code", "123456")
+            .param("state", "http://example.org")
             .when()
             .get("aa/api/redirect")
             .then()
             .statusCode(SC_MOVED_TEMPORARILY)
-            .header("Location", "http://openconext.org");
+            .header("Location", "http://example.org");
     }
 
     @Test

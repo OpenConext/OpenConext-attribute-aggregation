@@ -66,7 +66,6 @@ public class AccountController {
     @GetMapping("/client/connect")
     public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser, @RequestParam("redirectUrl") String redirectUrl) throws IOException {
         LOG.debug("Starting ORCID connection linking for {} with redirect {}", federatedUser.uid, redirectUrl);
-        federatedUser.setRedirectURI(redirectUrl);
         String state = URLEncoder.encode(redirectUrl, "UTF-8");
         String uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s&state=%s",
             orcidAuthorizationUri, orcidClientId, orcidRedirectUri, state);
@@ -76,7 +75,7 @@ public class AccountController {
     @GetMapping("/redirect")
     public void redirect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
                          @RequestParam("code") String code,
-                         @RequestParam(value = "state") String state) throws IOException {
+                         @RequestParam("state") String state) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {} and state {}", federatedUser.uid, code, state);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();

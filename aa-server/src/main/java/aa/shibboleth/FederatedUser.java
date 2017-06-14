@@ -10,7 +10,6 @@ public class FederatedUser extends User {
     public final String uid;
     public final String displayName;
     public final String schacHomeOrganization;
-    private String redirectURI;
 
     public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority> authorities) {
         super(uid, "N/A", authorities);
@@ -19,11 +18,4 @@ public class FederatedUser extends User {
         this.schacHomeOrganization = schacHomeOrganization;
     }
 
-    public String getRedirectURI() {
-        return redirectURI;
-    }
-
-    public void setRedirectURI(String redirectURI) {
-        this.redirectURI = redirectURI;
-    }
 }
