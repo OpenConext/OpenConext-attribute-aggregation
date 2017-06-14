@@ -66,7 +66,6 @@ public class AccountController {
     @GetMapping("/client/connect")
     public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser, @RequestParam("redirectUrl") String redirectUrl) throws IOException {
         LOG.debug("Starting ORCID connection linking for {} with redirect {}", federatedUser.uid, redirectUrl);
-        request.getSession().setAttribute(CLIENT_REDIRECT_URL, redirectUrl);
         federatedUser.setRedirectURI(redirectUrl);
         String state = URLEncoder.encode(redirectUrl, "UTF-8");
         String uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s&state=%s",
@@ -77,7 +76,7 @@ public class AccountController {
     @GetMapping("/redirect")
     public void redirect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
                          @RequestParam("code") String code,
-                         @RequestParam(value = "state", required = false) String state) throws IOException {
+                         @RequestParam(value = "state") String state) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {} and state {}", federatedUser.uid, code, state);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -98,23 +97,11 @@ public class AccountController {
         Account account = accountOptional.orElseGet(() -> new Account(federatedUser.uid, federatedUser.displayName, federatedUser.schacHomeOrganization, AccountType.ORCID));
         account.setLinkedId(orcid);
 
-        LOG.debug("Saving ORCID linked account {}", account);
-
         accountRepository.save(account);
 
-        Object redirectUrl = request.getSession().getAttribute(CLIENT_REDIRECT_URL);
-        String redirectURI = federatedUser.getRedirectURI();
-        String redirect;
-        if (redirectUrl != null) {
-            redirect = String.class.cast(redirectUrl);
-        } else if (redirectURI != null) {
-            redirect = redirectURI;
-        } else if (state != null) {
-            redirect = state;
-        } else {
-            redirect = "http://openconext.org";
-        }
-        response.sendRedirect(redirect);
+        LOG.debug("Saved ORCID linked account {}", account);
+
+        response.sendRedirect(state);
     }
 
     @GetMapping("/internal/accounts/{urn}")
