@@ -68,33 +68,13 @@ When manually testing the aggregations in the Playground you have to provide inp
 
 ### [cUrl](#curl)
 
-TODO
-The unsecured ServiceProviderConfig endpoint can be accessed at:
-
-```bash
-curl -ik https://aa.test.surfconext.nl/aa/api/v2/ServiceProviderConfig -H "Content-Type: application/json"
-```
-
-For the SCIM endpoint for the SP where we need client credentials we can obtain an access_token from the authz server:
-
-```bash
-curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -u https@//aa.test.surfconext.nl:secret -d "grant_type=client_credentials&scope=attribute-aggregation" https://authz.test.surfconext.nl/oauth/token
-```
-
-Use the access token to call the ResourceType and Schema endpoint (do not forget to replace ``${access_token}`` with the actual obtained access_token
-
-```bash
-curl -ik -H "Authorization: Bearer ${access_token}" -H "Content-Type: application/json" https://aa.test.surfconext.nl/aa/api/v2/ResourceType
-curl -ik -H "Authorization: Bearer ${access_token}" -H "Content-Type: application/json" https://aa.test.surfconext.nl/aa/api/v2/Schema
-```
-
 To mimic the behaviour of attribute aggregation for an internal client - e.g. EngineBlock - we need to post form data:
 
 ```bash
 curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/request.json -u eb:secret https://aa.test.surfconext.nl/aa/api/attribute/aggregate
 ```
 
-It is also possible to call the `/attribute/aggregateNoServiceCheck` endpoint. This endpoint queries all configured authorities and does not require a ServiceProviderEntityId. This use case if for
+It is also possible to call the `/aa/api/internal/aggregateNoServiceCheck` endpoint. This endpoint queries all configured authorities and does not require a ServiceProviderEntityId. This use case if for
 environments where every Service will always receive all possible extra attributes from all attribute authorities.
 
 ```bash
