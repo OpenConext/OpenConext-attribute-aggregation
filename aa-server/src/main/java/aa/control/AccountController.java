@@ -103,7 +103,7 @@ public class AccountController {
         response.sendRedirect(state);
     }
 
-    @GetMapping("/internal/accounts/{urn}")
+    @GetMapping("/internal/accounts/{urn:.+}")
     public List<Account> accounts(@PathVariable("urn") String urn) {
         List<Account> accounts = accountRepository.findByUrnIgnoreCase(urn);
         LOG.debug("Accounts {} for {}", accounts, urn);

@@ -81,7 +81,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
         given()
             .auth().preemptive().basic(attributeAggregationUserName, attributeAggregationPassword)
             .when()
-            .get("aa/api/internal/accounts/{urn}", "saml2_user")
+            .get("aa/api/internal/accounts/{urn}", "saml2_user.com")
             .then()
             .statusCode(SC_OK)
             .body("id", hasItems(1))
@@ -97,7 +97,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
             .delete("aa/api/internal/disconnect/{id}", 1L)
             .then()
             .statusCode(SC_OK);
-        List<Account> accounts = accountRepository.findByUrnIgnoreCase("saml2_user");
+        List<Account> accounts = accountRepository.findByUrnIgnoreCase("saml2_user.com");
         assertEquals(0, accounts.size());
 
     }

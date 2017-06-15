@@ -67,7 +67,7 @@
         "required": false
       }
     ],
-    "userIdentifier": "saml2_user",
+    "userIdentifier": "saml2_user.com",
     "userDisplayName": "John Doe",
     "created": 1451810464000
   },
@@ -114,7 +114,7 @@
         "required": false
       }
     ],
-    "userIdentifier": "saml2_user",
+    "userIdentifier": "saml2_user.com",
     "userDisplayName": "John Doe",
     "created": 1451810464000
   }

@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class MockShibbolethFilter extends GenericFilterBean {
 
-    public static final String SAML2_USER = "saml2_user";
+    public static final String SAML2_USER = "saml2_user.com";
 
     private static class SetHeader extends HttpServletRequestWrapper {
 
