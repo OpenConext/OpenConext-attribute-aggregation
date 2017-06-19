@@ -64,14 +64,14 @@ When manually testing the aggregations in the Playground you have to provide inp
 
 * The attribute `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` with the value `urn:collab:person:example.com:admin` returns groups / isMemberOfs from VOOT
 * The attribute `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` with the value `urn:collab:person:surfnet.nl:henny` returns SAB roles
-* The attribute `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` with value `` returns a valid ORCID.
+* The attribute `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` with value `urn:collab:person:example.com:admin` returns a valid ORCID.
 
 ### [cUrl](#curl)
 
 To mimic the behaviour of attribute aggregation for an internal client - e.g. EngineBlock - we need to post form data:
 
 ```bash
-curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/request.json -u eb:secret https://aa.test2.surfconext.nl/aa/api/client/attribute/aggregation
+curl -X POST -H "Content-Type: application/json" --data-binary @./aa-server/src/test/resources/json/eb/request.json -u eb:secret https://aa.test2.surfconext.nl/aa/api/internal/attribute/aggregation
 ```
 
 if you want to test all of the above curl commands against your locally running AttributeAggregation application then replace `https://aa.test2.surfconext.nl` with `http://localhost:8080`.
@@ -80,6 +80,12 @@ There is also an API for trusted clients to obtain account information based on 
 
 ```bash
 curl -u eb:secret https://aa.test2.surfconext.nl/aa/api/internal/accounts/urn:collab:person:example.com:admin
+```
+
+And the API offers a end-point to delete accounts:
+
+```bash
+curl -u eb:secret -X "DELETE" "https://aa.test2.surfconext.nl/aa/api/internal/disconnect/${account_id}
 ```
 
 ### [New Attribute Authority](#new-attribute-authority)
