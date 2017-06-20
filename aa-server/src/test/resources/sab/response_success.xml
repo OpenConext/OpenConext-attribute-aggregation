@@ -43,10 +43,6 @@
                         <saml:AttributeValue xsi:type="xs:string">AAIverantwoordelijke</saml:AttributeValue>
                         <saml:AttributeValue xsi:type="xs:string">Beveiligingsverantwoordelijke</saml:AttributeValue>
                     </saml:Attribute>
-                    <saml:Attribute Name="urn:oid:1.3.6.1.4.1.1076.20.100.10.50.1"
-                                    NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
-                        <saml:AttributeValue xsi:type="xs:string">SURFNET</saml:AttributeValue>
-                    </saml:Attribute>
                 </saml:AttributeStatement>
             </saml:Assertion>
         </samlp:Response>

@@ -51,7 +51,7 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
             throw new RuntimeException(e);
         }
         LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
-        List<String> scopedRoles = roles.stream().map("urn:x-surfnet:surfnet.nl:sab:role:"::concat).collect(toList());
+        List<String> scopedRoles = roles.stream().map("urn:mace:surfnet.nl:surfnet.nl:sab:role:"::concat).collect(toList());
         return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, scopedRoles);
     }
 

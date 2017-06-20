@@ -2,6 +2,7 @@ package aa.control;
 
 import aa.AbstractIntegrationTest;
 import aa.model.Account;
+import aa.model.AccountType;
 import aa.repository.AccountRepository;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Rule;
@@ -74,6 +75,13 @@ public class AccountControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_MOVED_TEMPORARILY)
             .header("Location", "http://example.org");
+
+        List<Account> accounts = accountRepository.findByUrnIgnoreCase("saml2_user.com");
+        assertEquals(1, accounts.size());
+
+        Account account = accounts.get(0);
+        assertEquals("http://orcid.org/orcid", account.getLinkedId());
+        assertEquals(AccountType.ORCID, account.getAccountType());
     }
 
     @Test

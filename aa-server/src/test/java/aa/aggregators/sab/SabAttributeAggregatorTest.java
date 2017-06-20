@@ -61,7 +61,7 @@ public class SabAttributeAggregatorTest {
             "OperationeelBeheerder", "Mailverantwoordelijke", "Domeinnamenverantwoordelijke", "DNS-Beheerder",
             "AAIverantwoordelijke", "Beveiligingsverantwoordelijke");
 
-        assertEquals(expected.stream().map(role -> "urn:x-surfnet:surfnet.nl:sab:role:".concat(role)).collect(toList()),
+        assertEquals(expected.stream().map(role -> "urn:mace:surfnet.nl:surfnet.nl:sab:role:".concat(role)).collect(toList()),
             userAttribute.getValues());
     }
 

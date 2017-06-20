@@ -94,7 +94,7 @@ public class AccountController {
 
         Optional<Account> accountOptional = accountRepository.findByUrnIgnoreCaseAndAccountType(federatedUser.uid, AccountType.ORCID);
         Account account = accountOptional.orElseGet(() -> new Account(federatedUser.uid, federatedUser.displayName, federatedUser.schacHomeOrganization, AccountType.ORCID));
-        account.setLinkedId(orcid);
+        account.setLinkedId(orcid.startsWith("http") ? orcid : "http://orcid.org/".concat(orcid));
 
         accountRepository.save(account);
 
