@@ -21,7 +21,7 @@ Connect to your local mysql database: `mysql -uroot`
 Execute the following:
 
 ```sql
-CREATE DATABASE aaserve;
+CREATE DATABASE aaserver;
 grant all on aaserver.* to 'root'@'localhost';
 ```
 
@@ -92,9 +92,7 @@ curl -u eb:secret -X "DELETE" "https://aa.test2.surfconext.nl/aa/api/internal/di
 
 New Attribute Authorities first must be added and configured in `attributeAuthoritiesProductionTemplate.yml`. Then add the new authority implementation to `AttributeAggregatorConfiguration#attributeAggregatorById`.
 
-To actually use the new authority in the test/acc/prod environment it also needs to be configured in OpenConext-deploy [attributeAuthorities.yml.j2](https://github.com/OpenConext/OpenConext-deploy/blob/master/roles/aa/templates/attributeAuthorities.yml.j2).
-
-Do not to forget to write Integration tests. For an example see [OrcidAttributeAggregatorTest](aa-server/src/test/java/aa/aggregators/orcid/OrcidAttributeAggregatorTest.java)
+To actually use the new authority in the test/acc/prod environment it also needs to be configured in OpenConext-deploy [attributeAuthorities.yml.j2](https://github.com/OpenConext/OpenConext-deploy/blob/master/roles/attribute-aggregation-server/templates/attributeAuthorities.yml.j2).
 
 ### [Configuration and deployment](#configuration-and-deployment)
 
