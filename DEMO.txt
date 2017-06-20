@@ -1,4 +1,5 @@
 https://aa.test2.surfconext.nl/aa/api/client/information.html?redirectUrl=https://www.google.com
+https://localhost:8080/aa/api/client/information.html?redirectUrl=https://www.google.com
 https://aa.test2.surfconext.nl/
 urn:collab:person:surfnet.nl:henny
 urn:collab:person:example.com:admin-new
