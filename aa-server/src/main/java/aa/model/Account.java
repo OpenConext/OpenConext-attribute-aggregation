@@ -30,13 +30,6 @@ public class Account {
     @Column
     private String urn;
 
-    @NotNull
-    @Column
-    private String name;
-
-    @Column
-    private String email;
-
     @Column
     private String schacHome;
 
@@ -52,9 +45,8 @@ public class Account {
     @Column
     private Instant created;
 
-    public Account(String urn, String name, String schacHome, AccountType accountType) {
+    public Account(String urn, String schacHome, AccountType accountType) {
         this.urn = urn;
-        this.name = name;
         this.schacHome = schacHome;
         this.accountType = accountType;
     }

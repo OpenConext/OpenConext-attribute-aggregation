@@ -93,7 +93,6 @@ public class AccountControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .body("id", hasItems(1))
-            .body("name", hasItems("John Doe"))
             .body("linkedId", hasItems("http://orcid.org/0000-0002-4926-2859"));
     }
 
