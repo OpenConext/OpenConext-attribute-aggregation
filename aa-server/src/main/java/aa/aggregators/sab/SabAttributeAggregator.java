@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toList;
 public class SabAttributeAggregator extends AbstractAttributeAggregator {
 
     private static final DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC);
+    public static final String SAB_PREFIX = "urn:mace:surfnet.nl:surfnet.nl:sab:role:";
 
     private final String template;
 
@@ -51,7 +52,8 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
             throw new RuntimeException(e);
         }
         LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
-        List<String> scopedRoles = roles.stream().map("urn:mace:surfnet.nl:surfnet.nl:sab:role:"::concat).collect(toList());
+        List<String> scopedRoles = roles.stream()
+            .map(role -> role.startsWith(SAB_PREFIX) ? role : SAB_PREFIX.concat(role)).collect(toList());
         return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, scopedRoles);
     }
 
