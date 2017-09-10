@@ -36,9 +36,11 @@ public class PseudoEmailAggregator extends AbstractAttributeAggregator {
                 email,
                 String.format("%s@%s", UUID.randomUUID().toString(), this.emailPostfix)));
 
-        LOG.debug("Retrieved Pseudo email for email: {} and result {}", email, emailOptional);
+        boolean newPseudoEmail = pseudoEmail.getId() == null;
 
-        if (pseudoEmail.getId() == null) {
+        LOG.debug("{} Pseudo email {}", newPseudoEmail? "New" : "Retrieved existing", pseudoEmail);
+
+        if (newPseudoEmail) {
             pseudoEmailRepository.save(pseudoEmail);
         }
 
