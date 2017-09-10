@@ -62,7 +62,7 @@ public class PseudoEmailAggregatorTest {
     }
 
     private UserAttribute doGetPseudoEmail(PseudoEmail pseudoEmail) {
-        when(pseudoEmailRepository.findByEmailIgnoreCase(this.pseudoEmail.getEmail()))
+        when(pseudoEmailRepository.findByEmail(this.pseudoEmail.getEmail()))
             .thenReturn(Optional.ofNullable(pseudoEmail));
 
         List<UserAttribute> userAttributes = subject.aggregate(inputUserAttributes(NAME_ID));

@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface PseudoEmailRepository extends CrudRepository<PseudoEmail, Long> {
 
-    Optional<PseudoEmail> findByEmailIgnoreCase(String pseudoEmail);
+    Optional<PseudoEmail> findByEmail(String email);
 
 }

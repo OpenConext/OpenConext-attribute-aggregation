@@ -29,7 +29,7 @@ public class PseudoEmailAggregator extends AbstractAttributeAggregator {
     public List<UserAttribute> aggregate(List<UserAttribute> input) {
         String email = getUserAttributeSingleValue(input, EMAIL);
 
-        Optional<PseudoEmail> emailOptional = pseudoEmailRepository.findByEmailIgnoreCase(email);
+        Optional<PseudoEmail> emailOptional = pseudoEmailRepository.findByEmail(email);
 
         PseudoEmail pseudoEmail = emailOptional.orElseGet(() ->
             new PseudoEmail(

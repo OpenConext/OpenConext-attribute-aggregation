@@ -16,7 +16,7 @@ public class PseudoEmailRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     public void findByEmailIgnoreCase() throws Exception {
-        Optional<PseudoEmail> pseudoEmail = subject.findByEmailIgnoreCase("JOHN.DOE@EXAMPLE.COM");
+        Optional<PseudoEmail> pseudoEmail = subject.findByEmail("john.doe@example.com");
         assertTrue(pseudoEmail.isPresent());
     }
 
