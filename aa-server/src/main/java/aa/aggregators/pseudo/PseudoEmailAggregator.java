@@ -5,8 +5,6 @@ import aa.model.AttributeAuthorityConfiguration;
 import aa.model.PseudoEmail;
 import aa.model.UserAttribute;
 import aa.repository.PseudoEmailRepository;
-import aa.util.StreamUtils;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
