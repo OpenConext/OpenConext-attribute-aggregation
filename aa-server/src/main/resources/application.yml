@@ -20,6 +20,9 @@ security:
   internal_user_name: eb
   internal_password: secret
 
+pseudo:
+  mail_postfix: surfconext.nl
+
 spring:
   jpa:
     properties:

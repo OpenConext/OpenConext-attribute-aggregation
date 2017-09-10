@@ -20,7 +20,7 @@ public class AuthorityResolverTest {
     @Test
     public void testGetConfiguration() throws Exception {
         AuthorityResolver subject = new AuthorityResolver(new DefaultResourceLoader(), "classpath:/attributeAuthorities.yml");
-        testConfiguration(subject, 3);
+        testConfiguration(subject, 4);
     }
 
     private void testConfiguration(AuthorityResolver subject, int expectedAuthorities) {

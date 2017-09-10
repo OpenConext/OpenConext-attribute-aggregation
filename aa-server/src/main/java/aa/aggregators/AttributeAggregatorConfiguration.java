@@ -2,6 +2,7 @@ package aa.aggregators;
 
 import aa.aggregators.idin.IdinAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
+import aa.aggregators.pseudo.PseudoEmailAggregator;
 import aa.aggregators.sab.SabAttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
 import aa.aggregators.voot.VootAttributeAggregator;
@@ -10,6 +11,7 @@ import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.repository.AccountRepository;
+import aa.repository.PseudoEmailRepository;
 import aa.service.AttributeAggregatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,9 @@ public class AttributeAggregatorConfiguration {
     @Value("${scim_server_environment}")
     private String environment;
 
+    @Value("${pseudo.mail_postfix}")
+    private String pseudoMailPostfix;
+
     @Autowired
     private AuthorityResolver authorityResolver;
 
@@ -41,6 +46,8 @@ public class AttributeAggregatorConfiguration {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private PseudoEmailRepository pseudoEmailRepository;
 
     @Bean
     @Profile({"aa-test"})
@@ -72,6 +79,8 @@ public class AttributeAggregatorConfiguration {
                 return new OrcidAttributeAggregator(configuration, accountRepository);
             case "idin":
                 return new IdinAttributeAggregator(configuration);
+            case "pseudo_email":
+                return new PseudoEmailAggregator(configuration, pseudoEmailRepository, pseudoMailPostfix);
             default:
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);

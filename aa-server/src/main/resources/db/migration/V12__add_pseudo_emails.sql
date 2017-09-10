@@ -1,0 +1,8 @@
+CREATE TABLE pseudo_emails (
+  id           MEDIUMINT    NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  email        VARCHAR(255) NOT NULL,
+  pseudo_email VARCHAR(255) NOT NULL UNIQUE,
+  created      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+)
+  ENGINE = InnoDB;
+
