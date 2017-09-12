@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,21 +20,31 @@ public class SabResponseParserTest {
 
     @Test
     public void testParse() throws IOException, XMLStreamException {
-        dpParse("sab/response_success.xml");
+        doParse("sab/response_success.xml");
     }
 
     @Test
     public void testParseExtraAttribute() throws IOException, XMLStreamException {
-        dpParse("sab/response_success_extra_attribute.xml");
+        doParse("sab/response_success_extra_attribute.xml");
     }
 
-    private void dpParse(String jsonResponse) throws IOException, XMLStreamException {
+    @Test
+    public void testParseFull() throws IOException, XMLStreamException {
+        Map<SabInfoType, List<String>> result = doParse("sab/response_success_full.xml");
+        assertEquals(Arrays.asList("SURFNET"), result.get(SabInfoType.ORGANIZATION));
+        assertEquals(Arrays.asList("ad93daef-0911-e511-80d0-005056956c1a"), result.get(SabInfoType.GUID));
+    }
+
+    private Map<SabInfoType, List<String>> doParse(String jsonResponse) throws IOException, XMLStreamException {
         String soap = IOUtils.toString(new ClassPathResource(jsonResponse).getInputStream(), Charset.defaultCharset());
-        List<String> roles = subject.parse(new StringReader(soap));
+        Map<SabInfoType, List<String>> result = subject.parse(new StringReader(soap));
+
         assertEquals(Arrays.asList(
             "Superuser", "Instellingsbevoegde", "Infraverantwoordelijke", "OperationeelBeheerder", "Mailverantwoordelijke",
             "Domeinnamenverantwoordelijke", "DNS-Beheerder", "AAIverantwoordelijke", "Beveiligingsverantwoordelijke"),
-            roles);
+            result.get(SabInfoType.ROLE));
+
+        return result;
     }
 
 }

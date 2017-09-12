@@ -17,16 +17,18 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
 public class SabAttributeAggregator extends AbstractAttributeAggregator {
 
     private static final DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC);
-    public static final String SAB_PREFIX = "urn:mace:surfnet.nl:surfnet.nl:sab:role:";
-
     private final String template;
 
     private final SabResponseParser parser = new SabResponseParser();
@@ -45,16 +47,25 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
         String userId = getUserAttributeSingleValue(input, NAME_ID);
         String request = request(userId);
         ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request), String.class);
-        List<String> roles;
+        Map<SabInfoType, List<String>> result;
         try {
-            roles = parser.parse(new StringReader(response.getBody()));
+            String body = response.getBody();
+            result = parser.parse(new StringReader(body));
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
         LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
-        List<String> scopedRoles = roles.stream()
-            .map(role -> role.startsWith(SAB_PREFIX) ? role : SAB_PREFIX.concat(role)).collect(toList());
-        return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, scopedRoles);
+        List<String> scopedValues = result.entrySet().stream()
+            .map(this::sabInfoTypeList).flatMap(Collection::stream)
+            .collect(toList());
+
+        return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, scopedValues);
+    }
+
+    private List<String> sabInfoTypeList(Map.Entry<SabInfoType, List<String>> entry) {
+        SabInfoType sabInfoType = entry.getKey();
+        List<String> values = entry.getValue();
+        return values.stream().map(value -> value.startsWith(sabInfoType.getPrefix()) ? value : sabInfoType.getPrefix().concat(value)).collect(toList());
     }
 
     private String request(String userId) {

@@ -21,22 +21,25 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.IntStream.range;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+@SuppressWarnings("unchecked")
 public class SabResponseParser {
 
-    public List<String> parse(Reader soap) throws XMLStreamException {
+    public Map<SabInfoType, List<String>> parse(Reader soap) throws XMLStreamException {
         //despite it's name, the XMLInputFactoryImpl is not thread safe
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
         XMLStreamReader reader = factory.createXMLStreamReader(soap);
 
-        List<String> roles = new ArrayList<>();
-        boolean processRoles = false;
+        Map<SabInfoType, List<String>> result = new HashMap<>();
+        SabInfoType sabInfoType = null;
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -44,24 +47,26 @@ public class SabResponseParser {
                     switch (reader.getLocalName()) {
                         case "Attribute":
                             if (hasAttributeValue(reader, "urn:oid:1.3.6.1.4.1.5923.1.1.1.7")) {
-                                processRoles = true;
+                                sabInfoType = SabInfoType.ROLE;
+                            } else if (hasAttributeValue(reader, "urn:oid:1.3.6.1.4.1.1076.20.100.10.50.1")) {
+                                sabInfoType = SabInfoType.ORGANIZATION;
+                            } else if (hasAttributeValue(reader, "urn:oid:1.3.6.1.4.1.1076.20.100.10.50.2")) {
+                                sabInfoType = SabInfoType.GUID;
+                            } else {
+                                sabInfoType = null;
                             }
                             break;
                         case "AttributeValue":
-                            if (processRoles) {
-                                roles.add(reader.getElementText());
+                            if (sabInfoType != null) {
+                                List<String> subResult = result.computeIfAbsent(sabInfoType, type -> new ArrayList());
+                                subResult.add(reader.getElementText().trim());
                             }
                             break;
                     }
                     break;
-                case END_ELEMENT:
-                    if (processRoles && reader.getLocalName().equals("Attribute")) {
-                        //we got what we wanted
-                        return roles;
-                    }
             }
         }
-        return roles;
+        return result;
     }
 
     private boolean hasAttributeValue(XMLStreamReader reader, String attributeValue) {

@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -52,7 +53,7 @@ public class AttributeAggregatorService {
 
         Set<String> sources = arpAggregationRequest.getArpAttributes().values().stream()
             .map(arpValues -> arpValues.stream().map(ArpValue::getSource))
-            .flatMap(stringStream -> stringStream)
+            .flatMap(Function.identity())
             .collect(Collectors.toSet());
 
         List<AttributeAuthorityConfiguration> authorities = configuration.getAuthorities().stream()
