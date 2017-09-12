@@ -65,7 +65,8 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
     private List<String> sabInfoTypeList(Map.Entry<SabInfoType, List<String>> entry) {
         SabInfoType sabInfoType = entry.getKey();
         List<String> values = entry.getValue();
-        return values.stream().map(value -> value.startsWith(sabInfoType.getPrefix()) ? value : sabInfoType.getPrefix().concat(value)).collect(toList());
+        return values.stream().map(value ->
+            value.startsWith(sabInfoType.getPrefix()) ? value : sabInfoType.getPrefix().concat(value)).collect(toList());
     }
 
     private String request(String userId) {
