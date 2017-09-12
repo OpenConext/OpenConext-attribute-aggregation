@@ -21,10 +21,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import static aa.aggregators.sab.SabInfoType.GUID;
+import static aa.aggregators.sab.SabInfoType.ORGANIZATION;
+import static aa.aggregators.sab.SabInfoType.ROLE;
 import static java.util.stream.IntStream.range;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -40,21 +45,16 @@ public class SabResponseParser {
 
         Map<SabInfoType, List<String>> result = new HashMap<>();
         SabInfoType sabInfoType = null;
+        List<SabInfoType> sabInfoTypes = Arrays.asList(SabInfoType.values());
 
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "Attribute":
-                            if (hasAttributeValue(reader, "urn:oid:1.3.6.1.4.1.5923.1.1.1.7")) {
-                                sabInfoType = SabInfoType.ROLE;
-                            } else if (hasAttributeValue(reader, "urn:oid:1.3.6.1.4.1.1076.20.100.10.50.1")) {
-                                sabInfoType = SabInfoType.ORGANIZATION;
-                            } else if (hasAttributeValue(reader, "urn:oid:1.3.6.1.4.1.1076.20.100.10.50.2")) {
-                                sabInfoType = SabInfoType.GUID;
-                            } else {
-                                sabInfoType = null;
-                            }
+                            Optional<SabInfoType> sabInfoTypeOptional =
+                                sabInfoTypes.stream().filter(type -> hasAttributeValue(reader, type.getUrn())).findFirst();
+                            sabInfoType = sabInfoTypeOptional.orElse(null);
                             break;
                         case "AttributeValue":
                             if (sabInfoType != null) {
@@ -69,7 +69,8 @@ public class SabResponseParser {
         return result;
     }
 
-    private boolean hasAttributeValue(XMLStreamReader reader, String attributeValue) {
-        return range(0, reader.getAttributeCount()).mapToObj(i -> reader.getAttributeValue(i)).anyMatch(v -> v != null && v.equals(attributeValue));
+    private boolean hasAttributeValue(XMLStreamReader reader, String value) {
+        return range(0, reader.getAttributeCount())
+            .mapToObj(i -> reader.getAttributeValue(i)).anyMatch(v -> v != null && v.equals(value));
     }
 }
