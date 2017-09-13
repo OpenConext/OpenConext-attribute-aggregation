@@ -28,26 +28,27 @@ import static java.util.stream.Collectors.toList;
 @Configuration
 public class AttributeAggregatorConfiguration {
 
-    @Value("${authorization_access_token_url}")
     private String authorizationAccessTokenUrl;
-
-    @Value("${scim_server_environment}")
-    private String environment;
-
-    @Value("${pseudo.mail_postfix}")
     private String pseudoMailPostfix;
-
-    @Autowired
     private AuthorityResolver authorityResolver;
-
-    @Autowired
     private UserAttributeCache userAttributeCache;
-
-    @Autowired
     private AccountRepository accountRepository;
+    private PseudoEmailRepository pseudoEmailRepository;
 
     @Autowired
-    private PseudoEmailRepository pseudoEmailRepository;
+    public AttributeAggregatorConfiguration(@Value("${authorization_access_token_url}") String authorizationAccessTokenUrl,
+                                            @Value("${pseudo.mail_postfix}") String pseudoMailPostfix,
+                                            AuthorityResolver authorityResolver,
+                                            UserAttributeCache userAttributeCache,
+                                            AccountRepository accountRepository,
+                                            PseudoEmailRepository pseudoEmailRepository) {
+        this.authorizationAccessTokenUrl = authorizationAccessTokenUrl;
+        this.pseudoMailPostfix = pseudoMailPostfix;
+        this.authorityResolver = authorityResolver;
+        this.userAttributeCache = userAttributeCache;
+        this.accountRepository = accountRepository;
+        this.pseudoEmailRepository = pseudoEmailRepository;
+    }
 
     @Bean
     @Profile({"aa-test"})

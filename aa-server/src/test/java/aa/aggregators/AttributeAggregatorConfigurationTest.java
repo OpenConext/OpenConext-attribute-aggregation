@@ -2,9 +2,12 @@ package aa.aggregators;
 
 import aa.cache.NoopUserAttributeCache;
 import aa.config.AuthorityResolver;
+import aa.repository.AccountRepository;
+import aa.repository.PseudoEmailRepository;
 import aa.service.AttributeAggregatorService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.core.io.DefaultResourceLoader;
 
 import java.io.IOException;
@@ -13,7 +16,6 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class AttributeAggregatorConfigurationTest {
 
@@ -25,11 +27,14 @@ public class AttributeAggregatorConfigurationTest {
     }
 
     private void doBefore(String configFileLocation) throws IOException {
-        subject = new AttributeAggregatorConfiguration();
-        setField(subject, "authorityResolver", new AuthorityResolver(new DefaultResourceLoader(), configFileLocation));
-        setField(subject, "environment", "test.surfconext");
-        setField(subject, "userAttributeCache", new NoopUserAttributeCache());
-        setField(subject, "authorizationAccessTokenUrl", "http://localhost:8889/oauth/token");
+        subject = new AttributeAggregatorConfiguration(
+            "http://localhost:8889/oauth/token",
+            "surfconext.nl",
+            new AuthorityResolver(new DefaultResourceLoader(), configFileLocation),
+            new NoopUserAttributeCache(),
+            Mockito.mock(AccountRepository.class),
+            Mockito.mock(PseudoEmailRepository.class)
+        );
     }
 
     @Test
@@ -38,8 +43,8 @@ public class AttributeAggregatorConfigurationTest {
         AttributeAggregatorService attributeAggregatorService = subject.attributeAggregatorService();
         Map<String, AttributeAggregator> aggregators = (Map<String, AttributeAggregator>) getField(attributeAggregatorService, "aggregators");
 
-        assertEquals(5, aggregators.size());
-        asList("orcid", "sab", "voot", "idin", "test:mock").forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
+        assertEquals(6, aggregators.size());
+        asList("pseudo_email", "orcid", "sab", "voot", "idin", "test:mock").forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
     }
 
     @Test(expected = IllegalArgumentException.class)
