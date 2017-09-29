@@ -46,6 +46,9 @@
         }
         section.left {
             margin-right: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         section.right {
             padding: 0 0 40px 35px;
@@ -95,17 +98,18 @@
 <body>
 <div class="container">
     <section class="left">
-        <img src="/aa/api/client/oidc_logo.png" style="height:75px;">
+        <img src="/aa/api/client/oidc_logo.png" style="height:65px;">
+        <img src="/aa/api/client/Network_Link_Outline_Black_L.png" style="height:35px;width:35px;margin: 25px 0">
+        <img src="/aa/api/client/surf-conext-logo.png" style="height:75px;">
     </section>
     <section class="right">
-        <h2>Add ORCID to OpenConext</h2>
+        <h2>Add ORCID to SURFConext</h2>
         <div class="info">
-            <svg enable-background="new 0 0 24 24" height="24px" id="Layer_1" version="1.1" viewBox="0 0 24 24" width="24px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" >
-            <path clip-rule="evenodd" stroke="#33CD2E" fill="#33CD2E" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/>
-            </svg>
-            <p>We already know your OpenConext login.</p>
-        </div>
-        <p class="text">You now will be forwarded to the ORCID site to either login or register so we can store your ORCID in our attribute authority.</p>
+            You are logged in with your institutional account. You will now be redirected to the ORCID website to log in
+            with an existing ORCID account or to create a new account. This account will be linked with your institutional
+            account.</div>
+        <p class="text">At <a href="https://profile.surfconext.nl" target="_blank">https://profile.surfconext.nl</a> you can see or
+            revoke this link.</p>
         <div class="buttons">
             <a id="cancel-link" class="cancel" href="#">Cancel</a>
             <a id="connect-link" class="confirm" href="/aa/api/client/connect">Login / Register ORCID</a>
