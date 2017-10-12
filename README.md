@@ -12,7 +12,8 @@ OpenConext Attribute Aggregation
 - Java 8
 - Maven 3
 - MySQL 5.5
-- yarn
+- npm
+- node 7.10.0 (use for example nvm to manage it - latest version of node does not work)
 
 ### [Create database](#create-database)
 
@@ -44,17 +45,15 @@ The client is build with react.js and to get initially started:
 
 `cd aa-gui`
 
-`brew install yarn;`
-
 To run locally:
 
-`yarn local`
+`npm local`
 
 Browse to the [application homepage](http://localhost:8000/).
 
 When new npm dependencies are added:
 
-`yarn install`
+`npm install`
 
 ## [Miscellaneous](#miscellaneous)
 
