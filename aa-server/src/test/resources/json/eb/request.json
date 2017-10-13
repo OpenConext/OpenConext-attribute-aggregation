@@ -5,6 +5,12 @@
       "values": [
         "urn:collab:person:surfnet.nl:henny"
       ]
+    },
+    {
+      "name": "SPentityID",
+      "values": [
+        "http://localhost/metadata"
+      ]
     }
   ],
   "arpAttributes": {

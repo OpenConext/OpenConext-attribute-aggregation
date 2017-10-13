@@ -34,11 +34,19 @@ public class PseudoEmail {
     @NotNull
     private String pseudoEmail;
 
+    @NotNull
+    @Column
+    private String spEntityId;
+
     @Column
     private Instant created;
 
-    public PseudoEmail(String email, String pseudoEmail) {
+    @Column
+    private Instant updated;
+
+    public PseudoEmail(String email, String pseudoEmail, String spEntityId) {
         this.email = email;
         this.pseudoEmail = pseudoEmail;
+        this.spEntityId = spEntityId;
     }
 }

@@ -34,7 +34,8 @@ public class AuthorityResolverTest {
 
     private void assertAuthority(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         attributeAuthorityConfiguration.getAttributes().forEach(attribute -> this.assertAttribute(attributeAuthorityConfiguration, attribute));
-        assertEquals(1, attributeAuthorityConfiguration.getRequiredInputAttributes().size());
+        int size = attributeAuthorityConfiguration.getId().equals("pseudo_email") ? 2 : 1;
+        assertEquals(size, attributeAuthorityConfiguration.getRequiredInputAttributes().size());
     }
 
     private void assertAttribute(AttributeAuthorityConfiguration attributeAuthorityConfiguration, Attribute attribute) {
