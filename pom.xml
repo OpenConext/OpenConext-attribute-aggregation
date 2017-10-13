@@ -5,7 +5,7 @@
 
     <groupId>org.openconext</groupId>
     <artifactId>attribute-aggregation</artifactId>
-    <version>2.0.4</version>
+    <version>2.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>aa</name>
