@@ -9,6 +9,7 @@ import aa.aggregators.voot.VootAttributeAggregator;
 import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
+import aa.entitlements.EntitlementsAggregator;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.repository.AccountRepository;
 import aa.repository.PseudoEmailRepository;
@@ -82,6 +83,8 @@ public class AttributeAggregatorConfiguration {
                 return new IdinAttributeAggregator(configuration);
             case "pseudo_email":
                 return new PseudoEmailAggregator(configuration, pseudoEmailRepository, pseudoMailPostfix);
+            case "surfmarket_entitlements":
+                return new EntitlementsAggregator(configuration);
             default:
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);

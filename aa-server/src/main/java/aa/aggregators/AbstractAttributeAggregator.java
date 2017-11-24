@@ -46,11 +46,15 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         this.attributeAuthorityConfiguration = attributeAuthorityConfiguration;
         this.attributeKeysRequired = attributeAuthorityConfiguration.getRequiredInputAttributes().stream().map(RequiredInputAttribute::getName).collect(toList());
         if (StringUtils.hasText(attributeAuthorityConfiguration.getEndpoint())) {
-            try {
-                this.restTemplate = new RestTemplate(getRequestFactory());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
+            this.restTemplate = initializeRestTemplate(attributeAuthorityConfiguration);
+        }
+    }
+
+    protected RestTemplate initializeRestTemplate(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
+        try {
+            return new RestTemplate(getRequestFactory(attributeAuthorityConfiguration));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -83,7 +87,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         return attributeAuthorityConfiguration;
     }
 
-    protected RestTemplate getRestTemplate() {
+    public RestTemplate getRestTemplate() {
         return restTemplate;
     }
 
@@ -110,7 +114,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         return singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
     }
 
-    protected ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {
+    private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration attributeAuthorityConfiguration) throws MalformedURLException {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections().evictIdleConnections(10l, TimeUnit.SECONDS);
         if (StringUtils.hasText(attributeAuthorityConfiguration.getUser())) {
             BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
