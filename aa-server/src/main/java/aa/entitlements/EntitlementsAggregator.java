@@ -68,6 +68,7 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
             return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, values);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED) && retryBadToken) {
+                this.token = null;
                 return doAggregate(input, false);
             }
             throw e;

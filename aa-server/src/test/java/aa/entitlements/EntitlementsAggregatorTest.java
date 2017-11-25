@@ -10,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,16 +45,52 @@ public class EntitlementsAggregatorTest {
 
     @Test
     public void testGetEntitlementsHappyFlow() throws Exception {
-        String token = IOUtils.toString(new ClassPathResource("entitlements/token.json").getInputStream(),
-            defaultCharset());
-        stubFor(post(urlEqualTo("/Token")).willReturn(aResponse().withStatus(200).withHeader("Content-Type",
-            "application/json").withBody(token)));
+        stubToken();
 
+        stubEntitlements();
+
+        doAggregate();
+
+        stubFor(post(urlEqualTo("/Token")).willReturn(aResponse().withStatus(401)));
+        //test the token cache
+        doAggregate();
+    }
+
+    private void stubEntitlements() throws IOException {
         String entitlements = IOUtils.toString(new ClassPathResource("entitlements/entitlements.json").getInputStream
             (), defaultCharset());
         stubFor(get(urlEqualTo("/api/Entitlement/principal")).willReturn(aResponse().withStatus(200).withHeader
             ("Content-Type", "application/json").withBody(entitlements)));
+    }
 
+    private void stubToken() throws IOException {
+        String token = IOUtils.toString(new ClassPathResource("entitlements/token.json").getInputStream(),
+            defaultCharset());
+        stubFor(post(urlEqualTo("/Token")).willReturn(aResponse().withStatus(200).withHeader("Content-Type",
+            "application/json").withBody(token)));
+    }
+
+    @Test
+    public void testGetEntitlementsInvalidToken() throws Exception {
+        stubToken();
+        stubFor(get(urlEqualTo("/api/Entitlement/principal"))
+            .inScenario("INITIAL")
+            .willReturn(aResponse().withStatus(401))
+            .willSetStateTo("SECOND_ATTEMPT"));
+
+        String entitlements = IOUtils.toString(new ClassPathResource("entitlements/entitlements.json").getInputStream
+            (), defaultCharset());
+        stubFor(get(urlEqualTo("/api/Entitlement/principal"))
+            .inScenario("INITIAL")
+            .whenScenarioStateIs("SECOND_ATTEMPT")
+            .willReturn(aResponse().withStatus(200)
+                .withHeader("Content-Type", "application/json").withBody(entitlements)));
+
+        doAggregate();
+    }
+
+
+    private void doAggregate() {
         List<UserAttribute> userAttributes = subject.aggregate(input);
         assertEquals(1, userAttributes.size());
 
