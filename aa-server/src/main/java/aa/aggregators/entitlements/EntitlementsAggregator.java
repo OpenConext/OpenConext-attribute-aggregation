@@ -1,4 +1,4 @@
-package aa.entitlements;
+package aa.aggregators.entitlements;
 
 import aa.aggregators.AbstractAttributeAggregator;
 import aa.model.AttributeAuthorityConfiguration;
@@ -56,7 +56,7 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer".concat(" ").concat(this.token));
 
         HttpEntity<Map<String, String>> request = new HttpEntity<>(headers);
-        String endPoint = configuration.getEndpoint().concat("/api/Entitlement/{name}");
+        String endPoint = configuration.getEndpoint().concat("/api/Entitlement/{name}/");
         try {
             ResponseEntity<List> response = getRestTemplate().exchange(endPoint, HttpMethod.GET, request, List.class,
                 eduPersonPrincipalName);

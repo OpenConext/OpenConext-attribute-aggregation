@@ -1,5 +1,6 @@
-package aa.entitlements;
+package aa.aggregatorsentitlements;
 
+import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
@@ -59,7 +60,7 @@ public class EntitlementsAggregatorTest {
     private void stubEntitlements() throws IOException {
         String entitlements = IOUtils.toString(new ClassPathResource("entitlements/entitlements.json").getInputStream
             (), defaultCharset());
-        stubFor(get(urlEqualTo("/api/Entitlement/principal")).willReturn(aResponse().withStatus(200).withHeader
+        stubFor(get(urlEqualTo("/api/Entitlement/principal/")).willReturn(aResponse().withStatus(200).withHeader
             ("Content-Type", "application/json").withBody(entitlements)));
     }
 
@@ -73,14 +74,14 @@ public class EntitlementsAggregatorTest {
     @Test
     public void testGetEntitlementsInvalidToken() throws Exception {
         stubToken();
-        stubFor(get(urlEqualTo("/api/Entitlement/principal"))
+        stubFor(get(urlEqualTo("/api/Entitlement/principal/"))
             .inScenario("INITIAL")
             .willReturn(aResponse().withStatus(401))
             .willSetStateTo("SECOND_ATTEMPT"));
 
         String entitlements = IOUtils.toString(new ClassPathResource("entitlements/entitlements.json").getInputStream
             (), defaultCharset());
-        stubFor(get(urlEqualTo("/api/Entitlement/principal"))
+        stubFor(get(urlEqualTo("/api/Entitlement/principal/"))
             .inScenario("INITIAL")
             .whenScenarioStateIs("SECOND_ATTEMPT")
             .willReturn(aResponse().withStatus(200)

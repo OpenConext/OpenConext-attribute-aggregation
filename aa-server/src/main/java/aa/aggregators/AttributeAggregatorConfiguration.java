@@ -9,7 +9,7 @@ import aa.aggregators.voot.VootAttributeAggregator;
 import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
-import aa.entitlements.EntitlementsAggregator;
+import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.repository.AccountRepository;
 import aa.repository.PseudoEmailRepository;
