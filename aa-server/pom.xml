@@ -12,8 +12,8 @@
 
     <artifactId>attribute-aggregation-server</artifactId>
     <packaging>jar</packaging>
-
     <name>aa-server</name>
+    <version>2.0.5</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
