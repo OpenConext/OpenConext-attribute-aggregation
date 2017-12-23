@@ -89,7 +89,7 @@ authorities:
   - {
       id: "surfmarket_entitlements",
       description: "SURFmarket entitlements",
-      endpoint: "http://attributeproviderapp.azurewebsites.net",
+      endpoint: "http://surfattributeprovider.azurewebsites.net",
       user: "aggregation@openconext.org",
       password: "Secret999#",
       timeOut: 15000,

@@ -52,7 +52,7 @@ To run locally:
 
 `npm run local`
 
-Browse to the [application homepage](http://localhost:8000/).
+Browse to the [application homepage](http://localhost:8001/).
 
 When new npm dependencies are added:
 
