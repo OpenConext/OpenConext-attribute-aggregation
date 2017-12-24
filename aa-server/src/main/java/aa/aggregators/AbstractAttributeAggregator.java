@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
-import static aa.util.StreamUtils.singletonOptionalCollector;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -100,7 +98,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
 
     protected String getUserAttributeSingleValue(List<UserAttribute> input, String nameId) {
-        Optional<UserAttribute> userAttribute = input.stream().filter(attr -> attr.getName().equals(nameId)).collect(singletonOptionalCollector());
+        Optional<UserAttribute> userAttribute = input.stream().filter(attr -> attr.getName().equals(nameId)).findFirst();
         if (!userAttribute.isPresent() || userAttribute.get().getValues().isEmpty()) {
             throw new IllegalArgumentException(format("%s requires %s attribute with value", getClass(), nameId));
         }
