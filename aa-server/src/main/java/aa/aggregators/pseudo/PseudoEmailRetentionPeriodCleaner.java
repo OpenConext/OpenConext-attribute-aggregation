@@ -30,9 +30,9 @@ public class PseudoEmailRetentionPeriodCleaner {
     }
 
     protected int clean() {
-        LOG.info("Start deleting inactive pseudo emailsolder then {} days.", this.retentionPeriodDays);
+        LOG.info("Start deleting inactive pseudo emails older than {} days.", this.retentionPeriodDays);
         int deleted = pseudoEmailRepository.deleteOlderThenRetentionDays(retentionPeriodDays);
-        LOG.info("Finished deleting pseudo emails older then {} days. Deleted {} pseudo emails",
+        LOG.info("Finished deleting pseudo emails older than {} days. Deleted {} pseudo emails",
             retentionPeriodDays, deleted);
         return deleted;
     }
