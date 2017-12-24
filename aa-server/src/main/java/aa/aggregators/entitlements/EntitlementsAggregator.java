@@ -45,6 +45,7 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
         return doAggregate(input, true);
     }
 
+    @SuppressWarnings("unchecked")
     private List<UserAttribute> doAggregate(List<UserAttribute> input, boolean retryBadToken) {
         String eduPersonPrincipalName = getUserAttributeSingleValue(input, EDU_PERSON_PRINCIPAL_NAME);
         AttributeAuthorityConfiguration configuration = super.getAttributeAuthorityConfiguration();
