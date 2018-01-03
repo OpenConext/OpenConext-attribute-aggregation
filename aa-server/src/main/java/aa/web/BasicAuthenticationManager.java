@@ -8,6 +8,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
+import java.security.MessageDigest;
+
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
 /**
@@ -30,15 +32,19 @@ public class BasicAuthenticationManager implements AuthenticationManager {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         //the exceptions are for logging and are not propagated to the end user / application
-        if (!userName.equals(authentication.getPrincipal())) {
+        if (!equals(userName, String.class.cast(authentication.getPrincipal()))) {
             throw new UsernameNotFoundException("Unknown user: " + authentication.getPrincipal());
         }
-        if (!password.equals(authentication.getCredentials())) {
+        if (!equals(password, String.class.cast(authentication.getCredentials()))) {
             throw new BadCredentialsException("Bad credentials");
         }
         return new UsernamePasswordAuthenticationToken(
             authentication.getPrincipal(),
             authentication.getCredentials(),
             createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
+    }
+
+    private boolean equals(String s1, String s2) {
+        return MessageDigest.isEqual(s1.getBytes(), s2.getBytes());
     }
 }
