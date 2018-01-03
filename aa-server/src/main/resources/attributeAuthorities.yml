@@ -48,8 +48,8 @@ authorities:
       id: "sab",
       description: "SURFnet Autorisatie Beheer",
       endpoint: "https://sab-ng.surfnet.nl/simplesaml/module.php/attributes/server.php",
-      user: "coin-test",
-      password: "QEPYQaa6bPmrksG",
+      user: "",
+      password: "",
       timeOut: 1000,
       attributes: [
         {
@@ -69,8 +69,8 @@ authorities:
       id: "voot",
       description: "An extensible protocol for dynamic exchange of group and authorization data",
       endpoint: "https://voot.test2.surfconext.nl",
-      user: "https@//aa.test.surfconext.nl",
-      password: "secret",
+      user: "",
+      password: "",
       timeOut: 1000,
       attributes: [
         {
@@ -90,7 +90,7 @@ authorities:
       id: "surfmarket_entitlements",
       description: "SURFmarket entitlements",
       endpoint: "http://surfattributeprovider.azurewebsites.net",
-      user: "aggregation@openconext.org",
+      user: "",
       password: "",
       timeOut: 15000,
       attributes: [

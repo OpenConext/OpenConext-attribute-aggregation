@@ -10,3 +10,4 @@ aa-gui-old
 aa-gui/dist
 aa-gui/coverage
 local.attributeAuthorities.yml
+application.local.yml

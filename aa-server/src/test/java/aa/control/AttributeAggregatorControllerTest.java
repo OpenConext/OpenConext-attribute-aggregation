@@ -20,7 +20,8 @@ import java.util.Map;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, value = {"spring.profiles.active=no-csrf,aa-test", "attribute_authorities_config_path=classpath:testAttributeAuthorities.yml"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, value =
+    {"spring.profiles.active=no-csrf,aa-test, dev", "attribute_authorities_config_path=classpath:testAttributeAuthorities.yml"})
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     private static final String PRINCIPAL_NAME = "urn:mace:dir:attribute-def:eduPersonPrincipalName";
@@ -39,7 +40,9 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest( singletonList(input), arp);
 
         RequestEntity<ArpAggregationRequest> requestEntity = new RequestEntity<>(arpAggregationRequest, headers, HttpMethod.POST,
-            new URI("http://localhost:" + port + "/aa/api/internal/attribute/aggregation"));
+            new URI("http://localhost:" + port + "/aa/api/client/attribute/aggregation"));
+
+        ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
 
         ResponseEntity<List<UserAttribute>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<UserAttribute>>() {
         });

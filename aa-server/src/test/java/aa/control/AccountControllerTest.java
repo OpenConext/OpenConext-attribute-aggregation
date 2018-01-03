@@ -56,7 +56,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_MOVED_TEMPORARILY)
             .header("Location", "https://sandbox.orcid.org/oauth/authorize?" +
-                "client_id=APP-IP57TTCD5F8BAIGS&response_type=code&scope=/authenticate&" +
+                "client_id=&response_type=code&scope=/authenticate&" +
                 "redirect_uri=http://localhost:8080/aa/api/redirect&state=https%3A%2F%2Fredirect.url");
     }
 
