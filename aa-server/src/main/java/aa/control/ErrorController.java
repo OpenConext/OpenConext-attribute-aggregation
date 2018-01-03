@@ -25,9 +25,6 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RestController
 public class ErrorController implements org.springframework.boot.autoconfigure.web.ErrorController {
 
-    @Autowired
-    private Environment environment;
-
     private final ErrorAttributes errorAttributes;
 
     @Autowired
@@ -47,13 +44,14 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
         Map<String, Object> result = this.errorAttributes.getErrorAttributes(requestAttributes, false);
 
         Throwable error = this.errorAttributes.getError(requestAttributes);
-        result.put("profiles", String.join(", ", environment.getActiveProfiles()));
         HttpStatus statusCode = INTERNAL_SERVER_ERROR;
         if (error != null) {
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             //https://github.com/spring-projects/spring-boot/issues/3057
             statusCode = annotation != null ? annotation.value() : statusCode;
         }
+        result.remove("exception");
+        result.remove("message");
         return new ResponseEntity<>(result, statusCode);
     }
 

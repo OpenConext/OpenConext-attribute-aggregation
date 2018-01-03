@@ -43,10 +43,6 @@ public class ErrorControllerTest {
         when(errorAttributes.getErrorAttributes(any(), anyBoolean())).thenReturn(result);
 
         this.subject = new ErrorController(errorAttributes);
-
-        MockEnvironment environment = new MockEnvironment();
-        environment.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "dev, aa-test");
-        ReflectionTestUtils.setField(this.subject, "environment", environment);
     }
 
     @Test
@@ -65,11 +61,6 @@ public class ErrorControllerTest {
         ResponseEntity<Map<String, Object>> response = subject.error(request);
 
         assertEquals(httpStatus, response.getStatusCode());
-
-        Map<String, Object> body = response.getBody();
-        assertEquals("dev, aa-test", body.get("profiles"));
-
-
     }
 
 }
