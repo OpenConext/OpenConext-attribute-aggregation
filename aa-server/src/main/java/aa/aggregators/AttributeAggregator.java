@@ -28,4 +28,6 @@ public interface AttributeAggregator {
 
     List<String> attributeKeysRequired();
 
+    List<UserAttribute> filterInvalidResponses(List<UserAttribute> input);
+
 }

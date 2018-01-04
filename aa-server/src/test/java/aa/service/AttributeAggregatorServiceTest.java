@@ -66,7 +66,7 @@ public class AttributeAggregatorServiceTest {
         Attribute attribute = new Attribute();
         attribute.setName("name");
         AttributeAuthorityConfiguration attributeAuthorityConfiguration =
-            new AttributeAuthorityConfiguration("test", singletonList(attribute));
+            new AttributeAuthorityConfiguration("test", singletonList(attribute), ".*");
         attributeAuthorityConfiguration.setRequiredInputAttributes(Collections.singletonList(new RequiredInputAttribute(NAME_ID)));
 
         List<AttributeAuthorityConfiguration> authorities = singletonList(attributeAuthorityConfiguration);

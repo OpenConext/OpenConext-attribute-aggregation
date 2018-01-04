@@ -22,6 +22,7 @@ public class AttributeAuthorityConfiguration {
     private List<Attribute> attributes;
     private List<RequiredInputAttribute> requiredInputAttributes = new ArrayList<>();
     private int timeOut;
+    private String validationRegExp;
 
     public AttributeAuthorityConfiguration() {
     }
@@ -30,9 +31,10 @@ public class AttributeAuthorityConfiguration {
         this.id = id;
     }
 
-    public AttributeAuthorityConfiguration(String id, List<Attribute> attributes) {
+    public AttributeAuthorityConfiguration(String id, List<Attribute> attributes, String validationRegExp) {
         this.id = id;
         this.attributes = attributes;
+        this.validationRegExp = validationRegExp;
     }
 
 

@@ -119,8 +119,9 @@ public class AttributeAggregatorService {
                 return userAttributesFromCache.get();
             }
             List<UserAttribute> userAttributes = aggregator.aggregate(input);
-            cache.put(cacheKey, userAttributes);
-            return userAttributes;
+            List<UserAttribute> filteredAttributes = aggregator.filterInvalidResponses(userAttributes);
+            cache.put(cacheKey, filteredAttributes);
+            return filteredAttributes;
         } catch (IOException | RuntimeException e) {
             LOG.warn("AttributeAggregator {} threw exception: {} ", aggregator, e);
             return Collections.emptyList();

@@ -12,6 +12,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
@@ -42,7 +44,8 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
     public AbstractAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         this.attributeAuthorityConfiguration = attributeAuthorityConfiguration;
-        this.attributeKeysRequired = attributeAuthorityConfiguration.getRequiredInputAttributes().stream().map(RequiredInputAttribute::getName).collect(toList());
+        this.attributeKeysRequired = attributeAuthorityConfiguration.getRequiredInputAttributes().stream().map
+            (RequiredInputAttribute::getName).collect(toList());
         if (StringUtils.hasText(attributeAuthorityConfiguration.getEndpoint())) {
             this.restTemplate = initializeRestTemplate(attributeAuthorityConfiguration);
         }
@@ -98,7 +101,8 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
 
     protected String getUserAttributeSingleValue(List<UserAttribute> input, String nameId) {
-        Optional<UserAttribute> userAttribute = input.stream().filter(attr -> attr.getName().equals(nameId)).findFirst();
+        Optional<UserAttribute> userAttribute = input.stream().filter(attr -> attr.getName().equals(nameId))
+            .findFirst();
         if (!userAttribute.isPresent() || userAttribute.get().getValues().isEmpty()) {
             throw new IllegalArgumentException(format("%s requires %s attribute with value", getClass(), nameId));
         }
@@ -112,18 +116,24 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         return singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
     }
 
-    private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration attributeAuthorityConfiguration) throws MalformedURLException {
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections().evictIdleConnections(10l, TimeUnit.SECONDS);
+    private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration
+                                                           attributeAuthorityConfiguration) throws
+        MalformedURLException {
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
+            .evictIdleConnections(10l, TimeUnit.SECONDS);
         if (StringUtils.hasText(attributeAuthorityConfiguration.getUser())) {
             BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-            basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword()));
+            basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials
+                (attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword()));
             httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
         }
         int timeOut = attributeAuthorityConfiguration.getTimeOut();
-        httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeOut).setConnectTimeout(timeOut).setSocketTimeout(timeOut).build());
+        httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeOut)
+            .setConnectTimeout(timeOut).setSocketTimeout(timeOut).build());
 
         CloseableHttpClient httpClient = httpClientBuilder.build();
-        return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, attributeAuthorityConfiguration.getEndpoint());
+        return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient,
+            attributeAuthorityConfiguration.getEndpoint());
     }
 
     @Override
@@ -131,4 +141,15 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         return String.format("AttributeAggregator with configuration: %s", this.attributeAuthorityConfiguration);
     }
 
+    @Override
+    public List<UserAttribute> filterInvalidResponses(List<UserAttribute> input) {
+        String validationRegExp = attributeAuthorityConfiguration.getValidationRegExp();
+        final Pattern pattern = Pattern.compile(validationRegExp, Pattern.CASE_INSENSITIVE);
+        return input.stream().map(userAttribute -> new UserAttribute(
+            userAttribute.getName(),
+            userAttribute.getValues().stream().filter(value -> pattern.matcher(value).matches()).collect(toList()),
+            userAttribute.getSource()))
+            .filter(userAttribute -> !CollectionUtils.isEmpty(userAttribute.getValues()))
+            .collect(toList());
+    }
 }
