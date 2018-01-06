@@ -147,9 +147,19 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         final Pattern pattern = Pattern.compile(validationRegExp, Pattern.CASE_INSENSITIVE);
         return input.stream().map(userAttribute -> new UserAttribute(
             userAttribute.getName(),
-            userAttribute.getValues().stream().filter(value -> pattern.matcher(value).matches()).collect(toList()),
+            userAttribute.getValues().stream().filter(value -> filterAttributeValue(userAttribute, value, pattern))
+                .collect(toList()),
             userAttribute.getSource()))
             .filter(userAttribute -> !CollectionUtils.isEmpty(userAttribute.getValues()))
             .collect(toList());
+    }
+
+    private boolean filterAttributeValue(UserAttribute userAttribute, String value, Pattern pattern) {
+        boolean result = pattern.matcher(value).matches();
+        if (!result) {
+            LOG.warn("Filtered out invalid value {} for userAttribute {} based on pattern {}", value, userAttribute,
+                pattern);
+        }
+        return result;
     }
 }
