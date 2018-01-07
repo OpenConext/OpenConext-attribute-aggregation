@@ -58,6 +58,7 @@ I18n.translations.nl = {
         authorities: "Attribuut Autoriteiten",
         endpoint: "Service URL",
         timeOut: "Timeout (ms)",
+        validationRegExp: "Formaat restrictie (e.g. reguliere expressie)",
         userName: "Naam",
         requiredInputAttributes: "Verplichte input attributen",
         attribute: "Output attribuut",
