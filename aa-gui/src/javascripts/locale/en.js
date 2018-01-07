@@ -59,6 +59,7 @@ I18n.translations.en = {
         authorities: "Attribute Authorities",
         endpoint: "Endpoint",
         timeOut: "Timeout (ms)",
+        validationRegExp: "Format restriction (e.g. regular expression)",
         userName: "Username",
         requiredInputAttributes: "Required input attributes",
         attribute: "Output attribute",

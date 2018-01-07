@@ -50,6 +50,8 @@ export default class AuthorityConfiguration extends React.PureComponent {
                 <p>{authority.endpoint}</p>
                 <span>{I18n.t("authority.timeOut")}</span>
                 <p>{authority.timeOut}</p>
+                <span>{I18n.t("authority.validationRegExp")}</span>
+                <p>{authority.validationRegExp}</p>
                 <span>{I18n.t("authority.requiredInputAttributes")}</span>
                 <ul>{authority.requiredInputAttributes.map(attr =>
                     <li key={authority.id + "-" + attr.name}>{attr.name}</li>
