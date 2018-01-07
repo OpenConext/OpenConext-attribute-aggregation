@@ -11,8 +11,8 @@
 
     <artifactId>attribute-aggregation-gui</artifactId>
     <packaging>pom</packaging>
-
     <name>aa-gui</name>
+    <version>2.0.7</version>
 
     <build>
         <plugins>
