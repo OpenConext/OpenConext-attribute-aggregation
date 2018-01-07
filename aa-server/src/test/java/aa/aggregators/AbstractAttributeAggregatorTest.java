@@ -39,8 +39,8 @@ public class AbstractAttributeAggregatorTest {
     public void filterOrcidInvalidResponses() {
         AttributeAggregator orcid = attributeAggregator("orcid");
         List<UserAttribute> filtered = orcid.filterInvalidResponses(
-            userAttributes("http://orcid.org/1234-0000-4321-0000", "invalid"));
-        assertEquals(1, filtered.get(0).getValues().size());
+            userAttributes("http://orcid.org/1234-0000-4321-0000","1234-0000-4321-0000", "invalid"));
+        assertEquals(2, filtered.get(0).getValues().size());
     }
 
     @Test

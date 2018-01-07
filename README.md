@@ -15,7 +15,7 @@ OpenConext Attribute Aggregation
 - npm
 - node 7.10.0 (use for example nvm to manage it - latest version of node does not work)
 
-If you have yarn installed, it will be used in the build by 3rd party libs. Ensure you are on versin 1.1.0, otherwise
+If you have yarn installed, it will be used in the build by 3rd party libs. Ensure you are on version 1.1.0, otherwise
 the sass node will break.
 
 ### [Create database](#create-database)

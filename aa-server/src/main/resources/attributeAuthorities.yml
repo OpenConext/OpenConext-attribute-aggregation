@@ -44,7 +44,7 @@ authorities:
         name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
         }
       ],
-      validationRegExp: "^http://orcid\\.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$"
+      validationRegExp: "^(http://orcid\\.org/|)[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$"
     }
   - {
       id: "sab",
