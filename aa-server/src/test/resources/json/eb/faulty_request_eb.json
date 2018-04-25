@@ -1,0 +1,91 @@
+{
+  "userAttributes": [
+    {
+      "name": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+      "values": [
+        "urn:collab:person:surfguest.nl:oharsta"
+      ]
+    },
+    {
+      "name": "SPentityID",
+      "values": [
+        "https:\/\/authz-playground.test.surfconext.nl"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:mail",
+      "values": [
+        "oharsta@zilverline.com"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:uid",
+      "values": [
+        "oharsta"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:displayName",
+      "values": [
+        "Okke Harsta"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:givenName",
+      "values": [
+        "Okke"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:sn",
+      "values": [
+        "Harsta"
+      ]
+    },
+    {
+      "name": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+      "values": [
+        "surfguest.nl"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:cn",
+      "values": [
+        "Okke Harsta"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+      "values": [
+        "oharsta@surfguest.nl"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:eduPersonTargetedID",
+      "values": [
+        {
+          "Format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+          "SPProvidedID": null,
+          "value": "urn:collab:person:surfguest.nl:oharsta",
+          "NameQualifier": null,
+          "SPNameQualifier": null,
+          "element": {}
+        }
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:isMemberOf",
+      "values": [
+        "urn:collab:org:surf.nl"
+      ]
+    }
+  ],
+  "arpAttributes": {
+    "urn:mace:dir:attribute-def:isMemberOf": [
+      {
+        "value": "*",
+        "source": "voot"
+      }
+    ]
+  }
+}

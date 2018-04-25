@@ -4,14 +4,17 @@ import aa.AbstractIntegrationTest;
 import aa.model.ArpAggregationRequest;
 import aa.model.ArpValue;
 import aa.model.UserAttribute;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +57,17 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         assertEquals("urn:mace:dir:attribute-def:eduPersonOrcid", userAttribute.getName());
         assertEquals(singletonList("urn:x-surfnet:aa1:test"), userAttribute.getValues());
         assertEquals("aa1", userAttribute.getSource());
+
+    }
+
+    @Test
+    public void testAggregatedWithFaultyJson() throws Exception {
+        String json = IOUtils.toString(new ClassPathResource("json/eb/faulty_request_eb.json").getURL(), Charset.defaultCharset());
+        RequestEntity<String> requestEntity = new RequestEntity<>(json, headers, HttpMethod.POST,
+            new URI("http://localhost:" + port + "/aa/api/client/attribute/aggregation"));
+
+        ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
+        assertEquals(500, re.getStatusCode().value());
 
     }
 

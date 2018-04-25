@@ -3,6 +3,7 @@ package aa.control;
 import aa.model.ArpAggregationRequest;
 import aa.model.UserAttribute;
 import aa.service.AttributeAggregatorService;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
