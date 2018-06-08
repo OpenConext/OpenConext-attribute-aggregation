@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,18 +65,25 @@ public class AccountController {
     }
 
     @GetMapping("/client/connect")
-    public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser, @RequestParam("redirectUrl") String redirectUrl) throws IOException {
+    public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
+                        @RequestParam(value = "redirectUrl", required = false) String redirectUrl) throws IOException {
         LOG.debug("Starting ORCID connection linking for {} with redirect {}", federatedUser.uid, redirectUrl);
-        String state = URLEncoder.encode(redirectUrl, "UTF-8");
-        String uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s&state=%s",
-            orcidAuthorizationUri, orcidClientId, orcidRedirectUri, state);
+        String uri;
+        if (StringUtils.hasText(redirectUrl)) {
+            String state = URLEncoder.encode(redirectUrl, "UTF-8");
+            uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s&state=%s",
+                orcidAuthorizationUri, orcidClientId, orcidRedirectUri, state);
+        } else {
+            uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s",
+                orcidAuthorizationUri, orcidClientId, orcidRedirectUri);
+        }
         response.sendRedirect(uri);
     }
 
     @GetMapping("/redirect")
     public void redirect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
                          @RequestParam("code") String code,
-                         @RequestParam("state") String state) throws IOException {
+                         @RequestParam(value = "state", required = false) String state) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {} and state {}", federatedUser.uid, code, state);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -99,8 +107,12 @@ public class AccountController {
         accountRepository.save(account);
 
         LOG.debug("Saved ORCID linked account {}", account);
+        if (StringUtils.hasText(state)) {
+            response.sendRedirect(state);
+        } else {
+            response.sendRedirect("/aa/api/client/connected.html");
+        }
 
-        response.sendRedirect(state);
     }
 
     @GetMapping("/internal/accounts/{urn:.+}")

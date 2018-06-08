@@ -31,6 +31,7 @@ import static java.util.stream.Collectors.toMap;
 public class AttributeAggregatorService {
 
     private final static Logger LOG = LoggerFactory.getLogger(AttributeAggregatorService.class);
+    private static final Logger ANALYTICS_LOG = LoggerFactory.getLogger("analytics");
 
     private final Map<String, AttributeAggregator> aggregators;
     private final ForkJoinPool forkJoinPool;
@@ -49,7 +50,7 @@ public class AttributeAggregatorService {
 
     public List<UserAttribute> aggregateBasedOnArp(ArpAggregationRequest arpAggregationRequest) {
         long start = System.currentTimeMillis();
-        LOG.debug("Started to aggregate attributes based on ARP for input {}", arpAggregationRequest);
+        ANALYTICS_LOG.info("Started to aggregate attributes based on ARP for input {}", arpAggregationRequest);
 
         Set<String> sources = arpAggregationRequest.getArpAttributes().values().stream()
             .map(arpValues -> arpValues.stream().map(ArpValue::getSource))
@@ -62,7 +63,7 @@ public class AttributeAggregatorService {
         //get attributes from the authorities that were configured as Sources in the ARP
         List<UserAttribute> aggregatedAttributes = getUserAttributes(arpAggregationRequest.getUserAttributes(), authorities);
 
-        LOG.debug("All aggregating attributes based on ARP input {} with result {}", arpAggregationRequest, aggregatedAttributes);
+        ANALYTICS_LOG.info("All aggregating attributes based on ARP input {} with result {}", arpAggregationRequest, aggregatedAttributes);
 
         //Now filter all the attributes based on the values and source of the ARP
         List<UserAttribute> filteredUserAttributes = aggregatedAttributes.stream().map(userAttribute -> {
@@ -79,7 +80,7 @@ public class AttributeAggregatorService {
             .map(Optional::get)
             .collect(toList());
 
-        LOG.debug("Finished aggregating and filtering attributes based on ARP in {} millis for input {} with result {}",
+        ANALYTICS_LOG.info("Finished aggregating and filtering attributes based on ARP in {} millis for input {} with result {}",
             System.currentTimeMillis() - start, arpAggregationRequest, filteredUserAttributes);
 
         return filteredUserAttributes;

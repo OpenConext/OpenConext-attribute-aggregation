@@ -27,7 +27,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String displayName = getHeader(DISPLAY_NAME_HEADER_NAME, request);
         String schacHomeOrganization = getHeader(SCHAC_HOME_HEADER, request);
 
-        if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(displayName)) {
+        if (StringUtils.isEmpty(uid)) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
             return null;
         }

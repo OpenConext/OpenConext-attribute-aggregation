@@ -89,6 +89,18 @@ And the API offers a end-point to delete accounts:
 ```bash
 curl -u eb:secret -X "DELETE" "https://aa.test2.surfconext.nl/aa/api/internal/disconnect/${account_id}
 ```
+### [Orcid](#orcid)
+
+You can locally test the account linking with ORCID. You will need a valid orcid client id and secret. Copy & paste
+the application.yml to application.local.yml and fill in the properties `orcid.client_id` and `orcid.secret`. Then use
+this condiguration to start the server application:
+
+`mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=dev" -Dspring.config.name=application.dev`
+
+If you go to the [connected page](http://localhost:8001/aa/api/client/information.html?redirectUrl=https://www.google.com) you
+can link the dummy institutional user provided by the `MockShibbolethFilter` with an ORCID account.
+
+If you don't specify a redirectUrl, then you will be redirected to the [information page](http://localhost:8080/aa/api/client/connected.html).
 
 ### [New Attribute Authority](#new-attribute-authority)
 
@@ -107,3 +119,14 @@ environment specific properties in the group_vars. See the project OpenConext-de
 For details, see the [Spring Boot manual](http://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/).
 
 When you want to run Attribute-Aggregator in a non-OpenConext environment you can use the [aa](aa-server/scripts/aa) script to stop / restart and start the application.
+
+## LifeCycle Deprovisioning
+
+There is a LifeCycle API to deprovision users. The preview endpoint:
+```
+curl -u life:secret http://localhost:8080/aa/api/deprovision/saml2_user.com | jq
+```
+And the actual `Deprovisioning` of the user:
+```
+curl -X DELETE -u life:secret http://localhost:8080/deprovision/aa/api/saml2_user.com | jq
+```

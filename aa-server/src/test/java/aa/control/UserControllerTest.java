@@ -22,8 +22,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
             .get("aa/api/client/users/me")
             .then()
             .statusCode(SC_OK)
-            .body("username", equalTo(MockShibbolethFilter.SAML2_USER))
-            .body("displayName", equalTo("John Doe"));
+            .body("username", equalTo(MockShibbolethFilter.SAML2_USER));
     }
 
     @Test

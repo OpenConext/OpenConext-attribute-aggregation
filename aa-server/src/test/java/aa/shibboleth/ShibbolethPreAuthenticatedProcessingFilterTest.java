@@ -34,7 +34,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest {
 
     @Test
     public void testGetPreAuthenticatedPrincipalEmpty() throws Exception {
-        request.addHeader(NAME_ID_HEADER_NAME, "urn:collab:person:example.com:admin");
+        request.addHeader(NAME_ID_HEADER_NAME, "");
         assertNull(subject.getPreAuthenticatedPrincipal(request));
     }
 

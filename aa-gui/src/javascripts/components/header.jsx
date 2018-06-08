@@ -21,7 +21,7 @@ export default class Header extends React.PureComponent {
         return (
             <a className="welcome-link" onClick={this.handleToggle.bind(this)}>
                 <i className="fa fa-user-circle-o"></i>
-                {currentUser.displayName}
+                {currentUser.displayName || currentUser.uid}
                 {this.renderDropDownIndicator()}
             </a>
         );
