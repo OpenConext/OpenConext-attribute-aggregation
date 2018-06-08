@@ -120,7 +120,7 @@ For details, see the [Spring Boot manual](http://docs.spring.io/spring-boot/docs
 
 When you want to run Attribute-Aggregator in a non-OpenConext environment you can use the [aa](aa-server/scripts/aa) script to stop / restart and start the application.
 
-## LifeCycle Deprovisioning
+### [LifeCycle Deprovisioning](#life-cycle-deprovisioning)
 
 There is a LifeCycle API to deprovision users. The preview endpoint:
 ```
