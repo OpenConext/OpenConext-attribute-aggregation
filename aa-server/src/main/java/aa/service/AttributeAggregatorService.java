@@ -124,7 +124,7 @@ public class AttributeAggregatorService {
             cache.put(cacheKey, filteredAttributes);
             return filteredAttributes;
         } catch (IOException | RuntimeException e) {
-            LOG.warn("AttributeAggregator {} threw exception: {} ", aggregator, e);
+            LOG.warn("AttributeAggregator {} threw exception: {} ", aggregator.getAttributeAuthorityId(), e);
             return Collections.emptyList();
         }
     }
