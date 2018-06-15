@@ -18,10 +18,11 @@ export default class Header extends React.PureComponent {
     }
 
     renderProfileLink(currentUser) {
+        const name = (currentUser.displayName && currentUser.displayName.trim().length > 0) ? currentUser.displayName : currentUser.uid;
         return (
             <a className="welcome-link" onClick={this.handleToggle.bind(this)}>
                 <i className="fa fa-user-circle-o"></i>
-                {currentUser.displayName || currentUser.uid}
+                {name}
                 {this.renderDropDownIndicator()}
             </a>
         );
