@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openconext</groupId>
         <artifactId>attribute-aggregation</artifactId>
-        <version>2.0.8</version>
+        <version>2.0.9-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <httpclient.version>4.5.4</httpclient.version>
-        <flyway.version>5.0.3</flyway.version>
+        <flyway.version>4.0.3</flyway.version>
         <spring-security-oauth2.version>2.2.1.RELEASE</spring-security-oauth2.version>
         <jackson.version>2.9.3</jackson.version>
         <!--https://github.com/eclipse/jetty.project/pull/2047-->
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
