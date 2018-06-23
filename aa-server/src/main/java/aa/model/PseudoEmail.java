@@ -39,7 +39,7 @@ public class PseudoEmail {
     private String spEntityId;
 
     @Column
-    private Instant created;
+    private Instant created = Instant.now();
 
     @Column
     private Instant updated;
