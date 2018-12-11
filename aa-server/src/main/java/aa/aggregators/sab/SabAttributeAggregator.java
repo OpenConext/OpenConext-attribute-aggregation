@@ -54,7 +54,9 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
+
         LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
+
         List<String> scopedValues = result.entrySet().stream()
             .map(this::sabInfoTypeList).flatMap(Collection::stream)
             .collect(toList());

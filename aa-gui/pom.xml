@@ -5,13 +5,14 @@
     <parent>
         <groupId>org.openconext</groupId>
         <artifactId>attribute-aggregation</artifactId>
-        <version>2.0.9</version>
+        <version>10.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>attribute-aggregation-gui</artifactId>
     <packaging>pom</packaging>
     <name>aa-gui</name>
+    <version>2.0.10-SNAPSHOT</version>
 
     <build>
         <plugins>
