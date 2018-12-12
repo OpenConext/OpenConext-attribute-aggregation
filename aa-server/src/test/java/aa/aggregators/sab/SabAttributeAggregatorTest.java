@@ -44,6 +44,7 @@ public class SabAttributeAggregatorTest {
         configuration.setPassword("password");
         configuration.setEndpoint("http://localhost:8889/sab");
         configuration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute(NAME_ID)));
+        configuration.setValidationRegExp("^urn:mace:surfnet.nl:(surfnet\\.nl|surfmarket\\.nl|surfsara\\.nl|surf\\.nl):sab:(role|organizationCode|organizationGUID):[A-Z0-9-]+$");
         subject = new SabAttributeAggregator(configuration);
     }
 
@@ -57,6 +58,22 @@ public class SabAttributeAggregatorTest {
     public void testGetRolesHappyFlowWithPrefix() throws Exception {
         String response = IOUtils.toString(new ClassPathResource("sab/response_success_with_prefix.xml").getInputStream(), Charset.defaultCharset());
         doGetRolesHappyFlow(response);
+    }
+
+    @Test
+    public void testGetRolesHappyFlowWithNewPrefixes() throws Exception {
+        String response = IOUtils.toString(new ClassPathResource("sab/response_success_new_prefix.xml").getInputStream(), Charset.defaultCharset());
+        stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
+                .willReturn(aResponse().withStatus(200).withBody(response)));
+        List<UserAttribute> userAttributes = subject.aggregate(input);
+        UserAttribute userAttribute = userAttributes.get(0);
+        assertEquals(EDU_PERSON_ENTITLEMENT, userAttribute.getName());
+
+        List<String> values = userAttribute.getValues();
+        assertEquals(15, values.size());
+        assertTrue(values.stream().allMatch(s -> s.startsWith("urn:mace:surfnet.nl:")));
+        assertEquals(3, values.stream().filter(s -> s.equals("urn:mace:surfnet.nl:surfsara.nl:sab:3")).count());
+
     }
 
     private void doGetRolesHappyFlow(String response) {
