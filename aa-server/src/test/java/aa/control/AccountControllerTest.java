@@ -24,8 +24,7 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_MOVED_TEMPORARILY;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -55,9 +54,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
             .get("aa/api/client/connect")
             .then()
             .statusCode(SC_MOVED_TEMPORARILY)
-            .header("Location", "https://sandbox.orcid.org/oauth/authorize?" +
-                "client_id=&response_type=code&scope=/authenticate&" +
-                "redirect_uri=http://localhost:8080/aa/api/redirect&state=https%3A%2F%2Fredirect.url");
+            .header("Location", startsWith("https://sandbox.orcid.org/oauth/authorize?"));
     }
 
     @Test
