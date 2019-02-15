@@ -4,6 +4,7 @@ import aa.aggregators.idin.IdinAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.pseudo.PseudoEmailAggregator;
 import aa.aggregators.sab.SabAttributeAggregator;
+import aa.aggregators.sbs.SBSAttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
 import aa.aggregators.voot.VootAttributeAggregator;
 import aa.cache.UserAttributeCache;
@@ -85,6 +86,8 @@ public class AttributeAggregatorConfiguration {
                 return new PseudoEmailAggregator(configuration, pseudoEmailRepository, pseudoMailPostfix);
             case "surfmarket_entitlements":
                 return new EntitlementsAggregator(configuration);
+            case "sbs":
+                return new SBSAttributeAggregator(configuration);
             default:
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);

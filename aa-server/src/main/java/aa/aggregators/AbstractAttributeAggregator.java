@@ -16,9 +16,11 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,7 +47,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     public AbstractAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         this.attributeAuthorityConfiguration = attributeAuthorityConfiguration;
         this.attributeKeysRequired = attributeAuthorityConfiguration.getRequiredInputAttributes().stream().map
-            (RequiredInputAttribute::getName).collect(toList());
+                (RequiredInputAttribute::getName).collect(toList());
         if (StringUtils.hasText(attributeAuthorityConfiguration.getEndpoint())) {
             this.restTemplate = initializeRestTemplate(attributeAuthorityConfiguration);
         }
@@ -68,14 +70,14 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     public Optional<String> cacheKey(List<UserAttribute> input) {
         List<String> requiredKeys = attributeKeysRequired();
         Set<String> values = input.stream()
-            .filter(userAttribute -> requiredKeys.contains(userAttribute.getName()))
-            .map(UserAttribute::getValues)
-            .flatMap(List::stream)
-            .collect(toSet());
+                .filter(userAttribute -> requiredKeys.contains(userAttribute.getName()))
+                .map(UserAttribute::getValues)
+                .flatMap(List::stream)
+                .collect(toSet());
         //ensure we don't hit the cache accidentally
         return values.isEmpty() ?
-            Optional.empty() :
-            Optional.of(getAttributeAuthorityId() + "-" + String.join(",", values));
+                Optional.empty() :
+                Optional.of(getAttributeAuthorityId() + "-" + String.join(",", values));
 
     }
 
@@ -102,7 +104,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
     protected String getUserAttributeSingleValue(List<UserAttribute> input, String nameId) {
         Optional<UserAttribute> userAttribute = input.stream().filter(attr -> attr.getName().equals(nameId))
-            .findFirst();
+                .findFirst();
         if (!userAttribute.isPresent() || userAttribute.get().getValues().isEmpty()) {
             throw new IllegalArgumentException(format("%s requires %s attribute with value", getClass(), nameId));
         }
@@ -117,23 +119,23 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
 
     private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration
-                                                           attributeAuthorityConfiguration) throws
-        MalformedURLException {
+                                                               attributeAuthorityConfiguration) throws
+            MalformedURLException {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
-            .evictIdleConnections(10l, TimeUnit.SECONDS);
+                .evictIdleConnections(10l, TimeUnit.SECONDS);
         if (StringUtils.hasText(attributeAuthorityConfiguration.getUser())) {
             BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
             basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials
-                (attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword()));
+                    (attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword()));
             httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
         }
         int timeOut = attributeAuthorityConfiguration.getTimeOut();
         httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeOut)
-            .setConnectTimeout(timeOut).setSocketTimeout(timeOut).build());
+                .setConnectTimeout(timeOut).setSocketTimeout(timeOut).build());
 
         CloseableHttpClient httpClient = httpClientBuilder.build();
         return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient,
-            attributeAuthorityConfiguration.getEndpoint());
+                attributeAuthorityConfiguration.getEndpoint());
     }
 
     @Override
@@ -146,19 +148,27 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         String validationRegExp = attributeAuthorityConfiguration.getValidationRegExp();
         final Pattern pattern = Pattern.compile(validationRegExp, Pattern.CASE_INSENSITIVE);
         return input.stream().map(userAttribute -> new UserAttribute(
-            userAttribute.getName(),
-            userAttribute.getValues().stream().filter(value -> filterAttributeValue(userAttribute, value, pattern))
-                .collect(toList()),
-            userAttribute.getSource()))
-            .filter(userAttribute -> !CollectionUtils.isEmpty(userAttribute.getValues()))
-            .collect(toList());
+                userAttribute.getName(),
+                userAttribute.getValues().stream().filter(value -> filterAttributeValue(userAttribute, value, pattern))
+                        .collect(toList()),
+                userAttribute.getSource()))
+                .filter(userAttribute -> !CollectionUtils.isEmpty(userAttribute.getValues()))
+                .collect(toList());
+    }
+
+    protected String encode(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private boolean filterAttributeValue(UserAttribute userAttribute, String value, Pattern pattern) {
         boolean result = pattern.matcher(value).matches();
         if (!result) {
             LOG.warn("Filtered out invalid value {} for userAttribute {} based on pattern {}", value, userAttribute,
-                pattern);
+                    pattern);
         }
         return result;
     }
