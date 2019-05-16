@@ -86,7 +86,7 @@ public class SabAttributeAggregatorTest {
 
         List<String> expected = Arrays.asList("Superuser", "Instellingsbevoegde", "Infraverantwoordelijke",
             "OperationeelBeheerder", "Mailverantwoordelijke", "Domeinnamenverantwoordelijke", "DNS-Beheerder",
-            "AAIverantwoordelijke", "Beveiligingsverantwoordelijke");
+            "AAIverantwoordelijke", "Beveiligingsverantwoordelijke").stream().sorted().collect(toList());
 
         assertEquals(expected.stream().map(role -> "urn:mace:surfnet.nl:surfnet.nl:sab:role:".concat(role)).collect(toList()),
             userAttribute.getValues());

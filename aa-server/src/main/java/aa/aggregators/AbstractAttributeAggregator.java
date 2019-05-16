@@ -115,7 +115,10 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         if (isEmpty(values)) {
             return emptyList();
         }
-        return singletonList(new UserAttribute(attributeName, values, getAttributeAuthorityId()));
+        //we need to sort the list to have a consistent consent
+        return singletonList(new UserAttribute(attributeName,
+                values.stream().sorted().collect(toList()),
+                getAttributeAuthorityId()));
     }
 
     private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration
