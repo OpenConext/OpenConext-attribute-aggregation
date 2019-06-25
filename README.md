@@ -97,7 +97,7 @@ this condiguration to start the server application:
 
 `mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=dev" -Dspring.config.name=application.dev`
 
-If you go to the [connected page](http://localhost:8001/aa/api/client/information.html?redirectUrl=https://www.google.com) you
+If you go to the [connected page](http://localhost:8080/aa/api/client/information.html?redirectUrl=https://www.google.com) you
 can link the dummy institutional user provided by the `MockShibbolethFilter` with an ORCID account.
 
 If you don't specify a redirectUrl, then you will be redirected to the [information page](http://localhost:8080/aa/api/client/connected.html).

@@ -11,6 +11,7 @@
             min-height: 100% !important;
             height: 100%;
         }
+
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #e8e8e7;
@@ -26,6 +27,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .container {
             display: flex;
             box-shadow: 2px 2px 4px 1px rgba(94, 94, 94, 0.55);
@@ -34,61 +36,89 @@
             padding: 30px;
             background-color: white;
         }
+
         @media (min-width: 1200px) {
             .container {
                 max-width: 50%;
             }
         }
+
         @media (max-width: 800px) {
             .container {
                 flex-direction: column;
             }
         }
+
         section.left {
             margin-right: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         section.right {
             padding: 0 0 40px 35px;
             border-left: 1px solid #B9B9B8;
             margin-right: 10px;
         }
+
         div.info {
             display: flex;
         }
+
         div.info p {
             margin: 0 auto 0 5px;
         }
+
         div.buttons {
             margin-top: 45px;
             display: flex;
         }
+
         @media (max-width: 800px) {
             div.buttons {
                 flex-direction: column;
             }
         }
+
         div.buttons a {
-            padding: 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            background-color: #4DB2CF;
-            color: white;
+            padding: 12px;
+            border: 1px solid #D3D3D3;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 1px 1px 3px #999;
+            cursor: pointer;
+            color: #999;
+            font-weight: bold;
+            font-size: .8em;
+            line-height: 24px;
+            display: flex;
+            align-items: center;
         }
+
+        div.buttons a:hover {
+            border: 1px solid #338caf;
+            color: #338caf;
+        }
+
         div.buttons a.cancel {
-            padding: 15px;
-            border-radius: 5px;
+            padding: 12px 20px;
             text-decoration: none;
             background-color: #c7c7c7;
             margin: 0 20px 0 0;
         }
+
+        #orcid-id-icon {
+            display: inline-block;
+            margin: 0 .5em 0 0;
+        }
+
         @media (max-width: 800px) {
             div.buttons a.cancel {
                 margin: 0 0 10px 0;
             }
         }
+
         div.buttons a:visited, div.buttons a:hover {
             text-decoration: none;
 
@@ -106,47 +136,53 @@
         <h2>Add ORCID to SURFconext</h2>
         <div class="info">
             You are logged in with your institutional account. You will now be redirected to the ORCID website to log in
-            with an existing ORCID account or to create a new account. This account will be linked with your institutional
-            account.</div>
-        <p class="text">At <a href="https://profile.surfconext.nl" target="_blank">https://profile.surfconext.nl</a> you can see or
+            with an existing ORCID account or to create a new account. This account will be linked with your
+            institutional
+            account.
+        </div>
+        <p class="text">At <a href="https://profile.surfconext.nl" target="_blank">https://profile.surfconext.nl</a> you
+            can see or
             revoke this link.</p>
         <div class="buttons">
+            </button>
             <a id="cancel-link" class="cancel" href="#">Cancel</a>
-            <a id="connect-link" class="confirm" href="/aa/api/client/connect">Login / Register ORCID</a>
+            <a id="connect-link" class="confirm" href="/aa/api/client/connect">
+                <img id="orcid-id-icon" src="/aa/api/client/orcid_24x24.png" width="24" height="24" alt="ORCID iD icon"/>
+                <span>Register or Connect your ORCID iD</span></a>
         </div>
     </section>
 
 </div>
 </body>
 <script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function() {
-        var parseQueryString = function() {
-            var str = window.location.search;
-            var objURL = {};
-            str.replace(
-                new RegExp( "([^?=&]+)(=([^&]*))?", "g" ),
-                function( $0, $1, $2, $3 ){
-                    objURL[ $1 ] = $3;
-                }
-            );
-            return objURL;
-        };
-
-        var connectLink = document.getElementById("connect-link");
-        var href = connectLink.getAttribute("href");
-        var params = parseQueryString();
-        var redirectUrl = params["redirectUrl"];
-        if (redirectUrl) {
-            connectLink.setAttribute("href", href + "?redirectUrl=" + redirectUrl)
+  document.addEventListener("DOMContentLoaded", function () {
+    var parseQueryString = function () {
+      var str = window.location.search;
+      var objURL = {};
+      str.replace(
+        new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+        function ($0, $1, $2, $3) {
+          objURL[$1] = $3;
         }
-        var cancelLink = document.getElementById("cancel-link");
-        if (redirectUrl) {
-            cancelLink.setAttribute("href", redirectUrl);
-        } else {
-            cancelLink.remove();
-        }
+      );
+      return objURL;
+    };
+
+    var connectLink = document.getElementById("connect-link");
+    var href = connectLink.getAttribute("href");
+    var params = parseQueryString();
+    var redirectUrl = params["redirectUrl"];
+    if (redirectUrl) {
+      connectLink.setAttribute("href", href + "?redirectUrl=" + redirectUrl)
+    }
+    var cancelLink = document.getElementById("cancel-link");
+    if (redirectUrl) {
+      cancelLink.setAttribute("href", redirectUrl);
+    } else {
+      cancelLink.remove();
+    }
 
 
-    });
+  });
 </script>
 </html>
