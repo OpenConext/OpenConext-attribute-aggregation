@@ -10,6 +10,7 @@ public interface AttributeAggregator {
     //input attribute names
     String NAME_ID = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
     String EDU_PERSON_PRINCIPAL_NAME = "urn:mace:dir:attribute-def:eduPersonPrincipalName";
+    String SCHAC_HOME_ORGANIZATION = "urn:mace:terena.org:attribute-def:schacHomeOrganization";
     String EMAIL = "urn:mace:dir:attribute-def:mail";
     String SP_ENTITY_ID = "SPentityID";
 

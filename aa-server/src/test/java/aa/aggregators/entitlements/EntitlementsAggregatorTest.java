@@ -1,6 +1,5 @@
-package aa.aggregatorsentitlements;
+package aa.aggregators.entitlements;
 
-import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
@@ -17,6 +16,8 @@ import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
+import static aa.aggregators.AttributeAggregator.NAME_ID;
+import static aa.aggregators.AttributeAggregator.SCHAC_HOME_ORGANIZATION;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -31,8 +32,11 @@ public class EntitlementsAggregatorTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8889);
     private EntitlementsAggregator subject;
-    private List<UserAttribute> input = singletonList(new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList
-        ("principal")));
+    private List<UserAttribute> input = Arrays.asList(
+            new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList("eppn")),
+            new UserAttribute(SCHAC_HOME_ORGANIZATION, singletonList("schac")),
+            new UserAttribute(NAME_ID, singletonList("uid"))
+    );
 
     @Before
     public void before() {
@@ -60,7 +64,7 @@ public class EntitlementsAggregatorTest {
     private void stubEntitlements() throws IOException {
         String entitlements = IOUtils.toString(new ClassPathResource("entitlements/entitlements.json").getInputStream
             (), defaultCharset());
-        stubFor(get(urlEqualTo("/api/Entitlement/principal/")).willReturn(aResponse().withStatus(200).withHeader
+        stubFor(get(urlEqualTo("/api/Entitlement/eppn/schac/uid")).willReturn(aResponse().withStatus(200).withHeader
             ("Content-Type", "application/json").withBody(entitlements)));
     }
 
@@ -74,14 +78,14 @@ public class EntitlementsAggregatorTest {
     @Test
     public void testGetEntitlementsInvalidToken() throws Exception {
         stubToken();
-        stubFor(get(urlEqualTo("/api/Entitlement/principal/"))
+        stubFor(get(urlEqualTo("/api/Entitlement/eppn/schac/uid"))
             .inScenario("INITIAL")
             .willReturn(aResponse().withStatus(401))
             .willSetStateTo("SECOND_ATTEMPT"));
 
         String entitlements = IOUtils.toString(new ClassPathResource("entitlements/entitlements.json").getInputStream
             (), defaultCharset());
-        stubFor(get(urlEqualTo("/api/Entitlement/principal/"))
+        stubFor(get(urlEqualTo("/api/Entitlement/eppn/schac/uid"))
             .inScenario("INITIAL")
             .whenScenarioStateIs("SECOND_ATTEMPT")
             .willReturn(aResponse().withStatus(200)

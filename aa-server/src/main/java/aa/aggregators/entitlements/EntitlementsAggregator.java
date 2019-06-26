@@ -48,6 +48,8 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
     @SuppressWarnings("unchecked")
     private List<UserAttribute> doAggregate(List<UserAttribute> input, boolean retryBadToken) {
         String eduPersonPrincipalName = getUserAttributeSingleValue(input, EDU_PERSON_PRINCIPAL_NAME);
+        String schacHomeOrganization = getUserAttributeSingleValue(input, SCHAC_HOME_ORGANIZATION);
+        String uid = getUserAttributeSingleValue(input, NAME_ID);
         AttributeAuthorityConfiguration configuration = super.getAttributeAuthorityConfiguration();
 
         if (StringUtils.isEmpty(this.token)) {
@@ -57,10 +59,10 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer".concat(" ").concat(this.token));
 
         HttpEntity<Map<String, String>> request = new HttpEntity<>(headers);
-        String endPoint = configuration.getEndpoint().concat("/api/Entitlement/{name}/");
+        String endPoint = configuration.getEndpoint().concat("/api/Entitlement/{eduPersonPrincipalName}/{schacHomeOrganization}/{uid}");
         try {
             ResponseEntity<List> response = getRestTemplate().exchange(endPoint, HttpMethod.GET, request, List.class,
-                eduPersonPrincipalName);
+                eduPersonPrincipalName, schacHomeOrganization, uid);
             List<Map<String, String>> body = response.getBody();
             List<String> values = body.stream().map(m -> m.entrySet().stream().findFirst().map(entry ->
                 entry.getKey().concat(":").concat(entry.getValue()))).filter(Optional::isPresent)
@@ -92,6 +94,6 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
         ResponseEntity<Map> response = getRestTemplate().postForEntity(configuration.getEndpoint().concat
             ("/Token"), request, Map.class);
         Object accessToken = response.getBody().get("access_token");
-        return String.class.cast(accessToken);
+        return (String) accessToken;
     }
 }
