@@ -49,7 +49,7 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
     private List<UserAttribute> doAggregate(List<UserAttribute> input, boolean retryBadToken) {
         String eduPersonPrincipalName = getUserAttributeSingleValue(input, EDU_PERSON_PRINCIPAL_NAME);
         String schacHomeOrganization = getUserAttributeSingleValue(input, SCHAC_HOME_ORGANIZATION);
-        String uid = getUserAttributeSingleValue(input, NAME_ID);
+        String uid = getUserAttributeSingleValue(input, UID);
         AttributeAuthorityConfiguration configuration = super.getAttributeAuthorityConfiguration();
 
         if (StringUtils.isEmpty(this.token)) {

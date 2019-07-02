@@ -21,6 +21,7 @@ import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
 import static aa.aggregators.AttributeAggregator.NAME_ID;
 import static aa.aggregators.AttributeAggregator.SCHAC_HOME_ORGANIZATION;
+import static aa.aggregators.AttributeAggregator.UID;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
@@ -35,7 +36,7 @@ public class EntitlementsAggregatorIntegrationTest extends AbstractIntegrationTe
     public void aggregateWithArpMultipleInputParameters() throws Exception {
         ResponseEntity<List<UserAttribute>> response = doAggregate(Arrays.asList(
                 new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList("eppn")),
-                new UserAttribute(NAME_ID, singletonList("name_id")),
+                new UserAttribute(UID, singletonList("uid")),
                 new UserAttribute(SCHAC_HOME_ORGANIZATION, singletonList("surfnet"))
         ));
 
@@ -51,7 +52,7 @@ public class EntitlementsAggregatorIntegrationTest extends AbstractIntegrationTe
     @Test
     public void aggregateWithArpMissingInputParameters() throws Exception {
         ResponseEntity<List<UserAttribute>> response = doAggregate(Arrays.asList(
-                new UserAttribute(NAME_ID, singletonList("name_id")),
+                new UserAttribute(NAME_ID, singletonList("uid")),
                 new UserAttribute(SCHAC_HOME_ORGANIZATION, singletonList("surfnet"))
         ));
 

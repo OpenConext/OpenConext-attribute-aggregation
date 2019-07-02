@@ -18,6 +18,7 @@ import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
 import static aa.aggregators.AttributeAggregator.NAME_ID;
 import static aa.aggregators.AttributeAggregator.SCHAC_HOME_ORGANIZATION;
+import static aa.aggregators.AttributeAggregator.UID;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -35,12 +36,12 @@ public class EntitlementsAggregatorTest {
     private List<UserAttribute> input = Arrays.asList(
             new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList("eppn")),
             new UserAttribute(SCHAC_HOME_ORGANIZATION, singletonList("schac")),
-            new UserAttribute(NAME_ID, singletonList("uid"))
+            new UserAttribute(UID, singletonList("uid"))
     );
 
     @Before
     public void before() {
-        AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("sab");
+        AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("surfmarket_entitlements");
         configuration.setUser("user");
         configuration.setPassword("password");
         configuration.setEndpoint("http://localhost:8889");
