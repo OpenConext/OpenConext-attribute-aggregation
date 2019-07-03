@@ -20,14 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
+import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
+import static aa.aggregators.AttributeAggregator.ORCID;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, value =
     {"spring.profiles.active=no-csrf,aa-test, dev", "attribute_authorities_config_path=classpath:testAttributeAuthorities.yml"})
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
-
-    private static final String PRINCIPAL_NAME = "urn:mace:dir:attribute-def:eduPersonPrincipalName";
 
     @Override
     protected boolean isBasicAuthenticated() {
@@ -36,10 +37,10 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void testAggregateWithArp() throws Exception {
-        UserAttribute input = new UserAttribute(PRINCIPAL_NAME, singletonList("urn:collab:person:example.com:admin"));
+        UserAttribute input = new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList("urn:collab:person:example.com:admin"));
         Map<String, List<ArpValue>> arp = new HashMap<>();
-        arp.put("urn:mace:dir:attribute-def:eduPersonOrcid", Arrays.asList(new ArpValue("*", "aa1")));
-        arp.put("urn:mace:dir:attribute-def:eduPersonEntitlement", Arrays.asList(new ArpValue("nope", "aa1")));
+        arp.put(ORCID, Arrays.asList(new ArpValue("*", "aa1")));
+        arp.put(EDU_PERSON_ENTITLEMENT, Arrays.asList(new ArpValue("nope", "aa1")));
         ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest( singletonList(input), arp);
 
         RequestEntity<ArpAggregationRequest> requestEntity = new RequestEntity<>(arpAggregationRequest, headers, HttpMethod.POST,
@@ -54,7 +55,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         assertEquals(1, userAttributes.size());
 
         UserAttribute userAttribute = userAttributes.get(0);
-        assertEquals("urn:mace:dir:attribute-def:eduPersonOrcid", userAttribute.getName());
+        assertEquals(ORCID, userAttribute.getName());
         assertEquals(singletonList("urn:x-surfnet:aa1:test"), userAttribute.getValues());
         assertEquals("aa1", userAttribute.getSource());
 

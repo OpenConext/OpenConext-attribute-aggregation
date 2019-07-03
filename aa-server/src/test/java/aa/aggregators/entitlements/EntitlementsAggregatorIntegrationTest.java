@@ -62,7 +62,7 @@ public class EntitlementsAggregatorIntegrationTest extends AbstractIntegrationTe
 
     private ResponseEntity<List<UserAttribute>> doAggregate(List<UserAttribute> userAttributes) throws URISyntaxException {
         Map<String, List<ArpValue>> arp = new HashMap<>();
-        arp.put("urn:mace:dir:attribute-def:eduPersonEntitlement", Arrays.asList(new ArpValue("*", "aa3")));
+        arp.put(EDU_PERSON_ENTITLEMENT, Arrays.asList(new ArpValue("*", "aa3")));
         ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(userAttributes, arp);
 
         RequestEntity<ArpAggregationRequest> requestEntity = new RequestEntity<>(arpAggregationRequest, headers, HttpMethod.POST,

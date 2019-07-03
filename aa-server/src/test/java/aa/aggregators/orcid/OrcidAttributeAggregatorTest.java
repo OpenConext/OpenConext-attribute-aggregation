@@ -62,7 +62,7 @@ public class OrcidAttributeAggregatorTest {
         assertEquals(1, userAttributes.size());
 
         UserAttribute userAttribute = userAttributes.get(0);
-        assertEquals("urn:mace:dir:attribute-def:eduPersonOrcid", userAttribute.getName());
+        assertEquals(ORCID, userAttribute.getName());
         assertEquals("orcid", userAttribute.getSource());
         assertEquals(Collections.singletonList(account.getLinkedId()), userAttribute.getValues());
     }
