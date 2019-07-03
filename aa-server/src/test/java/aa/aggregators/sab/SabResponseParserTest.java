@@ -35,15 +35,25 @@ public class SabResponseParserTest {
         assertEquals(Arrays.asList("ad93daef-0911-e511-80d0-005056956c1a"), result.get(SabInfoType.GUID));
     }
 
+    @Test(expected = XMLStreamException.class)
+    public void testParseProcessingInstruction() throws IOException, XMLStreamException {
+        doParseAndOptionalAssert("sab/response_XML_processing_instruction.xml", false);
+    }
+
+
     private Map<SabInfoType, List<String>> doParse(String jsonResponse) throws IOException, XMLStreamException {
+        return doParseAndOptionalAssert(jsonResponse, true);
+    }
+
+    private Map<SabInfoType, List<String>> doParseAndOptionalAssert(String jsonResponse, boolean assertRoles) throws IOException, XMLStreamException {
         String soap = IOUtils.toString(new ClassPathResource(jsonResponse).getInputStream(), Charset.defaultCharset());
         Map<SabInfoType, List<String>> result = subject.parse(new StringReader(soap));
-
-        assertEquals(Arrays.asList(
-            "Superuser", "Instellingsbevoegde", "Infraverantwoordelijke", "OperationeelBeheerder", "Mailverantwoordelijke",
-            "Domeinnamenverantwoordelijke", "DNS-Beheerder", "AAIverantwoordelijke", "Beveiligingsverantwoordelijke"),
-            result.get(SabInfoType.ROLE));
-
+        if (assertRoles) {
+            assertEquals(Arrays.asList(
+                    "Superuser", "Instellingsbevoegde", "Infraverantwoordelijke", "OperationeelBeheerder", "Mailverantwoordelijke",
+                    "Domeinnamenverantwoordelijke", "DNS-Beheerder", "AAIverantwoordelijke", "Beveiligingsverantwoordelijke"),
+                    result.get(SabInfoType.ROLE));
+        }
         return result;
     }
 

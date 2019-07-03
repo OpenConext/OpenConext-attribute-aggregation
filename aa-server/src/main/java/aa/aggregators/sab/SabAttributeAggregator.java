@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -48,18 +46,20 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
         String request = request(userId);
         ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request), String.class);
         Map<SabInfoType, List<String>> result;
+        String body = null;
         try {
-            String body = response.getBody();
+            body = response.getBody().trim().replaceAll("[\\r\\n]+", "");
             result = parser.parse(new StringReader(body));
         } catch (XMLStreamException e) {
+            LOG.warn("XMLStreamException while parsing. The XML '{}'", body);
             throw new RuntimeException(e);
         }
 
         LOG.debug("Retrieved SAB roles with request: {} and response: {}", request, response);
 
         List<String> scopedValues = result.entrySet().stream()
-            .map(this::sabInfoTypeList).flatMap(Collection::stream)
-            .collect(toList());
+                .map(this::sabInfoTypeList).flatMap(Collection::stream)
+                .collect(toList());
 
         return mapValuesToUserAttribute(EDU_PERSON_ENTITLEMENT, scopedValues);
     }
@@ -68,7 +68,7 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
         SabInfoType sabInfoType = entry.getKey();
         List<String> values = entry.getValue();
         return values.stream().map(value ->
-            value.startsWith("urn:mace:surfnet.nl:") ? value : sabInfoType.getPrefix().concat(value)).collect(toList());
+                value.startsWith("urn:mace:surfnet.nl:") ? value : sabInfoType.getPrefix().concat(value)).collect(toList());
     }
 
     private String request(String userId) {

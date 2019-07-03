@@ -55,6 +55,14 @@ public class SabAttributeAggregatorTest {
     }
 
     @Test
+    public void testGetRolesLineBreak() throws Exception {
+        String response = IOUtils.toString(new ClassPathResource("sab/response_XML_processing_instruction.xml").getInputStream(), Charset.defaultCharset());
+        stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
+                .willReturn(aResponse().withStatus(200).withBody(response)));
+        assertEquals(6, subject.aggregate(input).get(0).getValues().size());
+    }
+
+    @Test
     public void testGetRolesHappyFlowWithPrefix() throws Exception {
         String response = IOUtils.toString(new ClassPathResource("sab/response_success_with_prefix.xml").getInputStream(), Charset.defaultCharset());
         doGetRolesHappyFlow(response);
