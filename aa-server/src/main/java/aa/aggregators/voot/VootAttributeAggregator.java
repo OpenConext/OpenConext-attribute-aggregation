@@ -29,7 +29,9 @@ public class VootAttributeAggregator extends AbstractAttributeAggregator {
         String url = endpoint() + "/internal/groups/{userUrn}";
         List<Map<String, Object>> listOfGroupMaps = (List<Map<String, Object>>) vootService.getForObject(url, List.class, userId);
         List<String> groups = listOfGroupMaps.stream().map(entry -> (String) entry.get("id")).collect(toList());
+
         LOG.debug("Retrieved VOOT groups with request: {} and response: {}", url, groups);
+
         return mapValuesToUserAttribute(IS_MEMBER_OF, groups);
     }
 

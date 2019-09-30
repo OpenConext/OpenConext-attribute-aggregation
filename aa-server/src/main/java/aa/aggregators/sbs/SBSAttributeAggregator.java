@@ -41,10 +41,3 @@ public class SBSAttributeAggregator extends AbstractAttributeAggregator {
         return mapValuesToUserAttribute(IS_MEMBER_OF, memberShips);
     }
 }
-
-class NotFoundResponseErrorHandler extends DefaultResponseErrorHandler {
-    @Override
-    protected boolean hasError(HttpStatus statusCode) {
-        return super.hasError(statusCode) && statusCode.value() != 404;
-    }
-}
