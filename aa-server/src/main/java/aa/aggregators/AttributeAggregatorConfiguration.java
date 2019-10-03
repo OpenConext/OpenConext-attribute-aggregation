@@ -1,5 +1,6 @@
 package aa.aggregators;
 
+import aa.aggregators.eduid.EduIDAttributeAggregator;
 import aa.aggregators.idin.IdinAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.pseudo.PseudoEmailAggregator;
@@ -88,6 +89,8 @@ public class AttributeAggregatorConfiguration {
                 return new EntitlementsAggregator(configuration);
             case "sbs":
                 return new SBSAttributeAggregator(configuration);
+            case "eduid":
+                return new EduIDAttributeAggregator(configuration);
             default:
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);

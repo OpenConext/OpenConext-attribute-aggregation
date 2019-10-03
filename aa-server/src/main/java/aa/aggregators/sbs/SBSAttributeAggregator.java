@@ -1,12 +1,11 @@
 package aa.aggregators.sbs;
 
 import aa.aggregators.AbstractAttributeAggregator;
+import aa.aggregators.NotFoundResponseErrorHandler;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 
 import java.util.List;
 import java.util.Optional;

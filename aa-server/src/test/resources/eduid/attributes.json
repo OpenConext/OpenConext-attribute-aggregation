@@ -1,0 +1,17 @@
+[
+  {"name":"urn:mace:dir:attribute-def:displayName",
+    "values": ["John Doe"]
+  },
+  {"name":"urn:mace:dir:attribute-def:eduPersonAffiliation",
+    "values": ["teacher"]
+  },
+  {"name":"urn:mace:terena.org:attribute-def:schacHomeOrganization",
+    "values": ["comn.example"]
+  },
+  {"name":"urn:mace:dir:attribute-def:sn",
+    "values": ["John"]
+  },
+  {"name":"urn:mace:dir:attribute-def:cn",
+    "values": ["Doe"]
+  }
+]

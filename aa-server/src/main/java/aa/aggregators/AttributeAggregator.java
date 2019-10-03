@@ -21,7 +21,6 @@ public interface AttributeAggregator {
     String IS_MEMBER_OF = "urn:mace:dir:attribute-def:isMemberOf";
     String ORCID = "urn:mace:dir:attribute-def:eduPersonOrcid";
 
-
     String getAttributeAuthorityId();
 
     List<UserAttribute> aggregate(List<UserAttribute> input);
