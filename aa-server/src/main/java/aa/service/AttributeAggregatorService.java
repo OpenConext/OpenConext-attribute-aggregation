@@ -28,6 +28,7 @@ import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+
 public class AttributeAggregatorService {
 
     private final static Logger LOG = LoggerFactory.getLogger(AttributeAggregatorService.class);
@@ -61,7 +62,10 @@ public class AttributeAggregatorService {
             .filter(conf -> sources.contains(conf.getId())).collect(toList());
 
         //get attributes from the authorities that were configured as Sources in the ARP
-        List<UserAttribute> aggregatedAttributes = getUserAttributes(arpAggregationRequest.getUserAttributes(), authorities);
+        List<UserAttribute> aggregatedAttributes = getUserAttributes(
+                arpAggregationRequest.getUserAttributes(),
+                arpAggregationRequest.getArpAttributes(),
+                authorities);
 
         ANALYTICS_LOG.info("All aggregating attributes based on ARP input {} with result {}", arpAggregationRequest, aggregatedAttributes);
 
@@ -91,7 +95,9 @@ public class AttributeAggregatorService {
             (arpValue.endsWith("*") && value.startsWith(arpValue.substring(0, arpValue.length() - 1))));
     }
 
-    private List<UserAttribute> getUserAttributes(List<UserAttribute> input, Collection<AttributeAuthorityConfiguration> authorityConfigurations) {
+    private List<UserAttribute> getUserAttributes(List<UserAttribute> input,
+                                                  Map<String, List<ArpValue>> arpAttributes,
+                                                  Collection<AttributeAuthorityConfiguration> authorityConfigurations) {
         //all of the names of input UserAttributes that at least have one non-empty value
         List<String> inputNames = input.stream().filter(userAttribute -> userAttribute.getValues().stream()
             .anyMatch(StringUtils::hasText))
@@ -106,20 +112,22 @@ public class AttributeAggregatorService {
 
         try {
             return forkJoinPool.submit(() -> attributeAggregators.parallelStream().map(aggregator ->
-                doAggregate(input, aggregator)).flatMap(List::stream).collect(toList())).get();
+                doAggregate(input, aggregator, arpAttributes)).flatMap(List::stream).collect(toList())).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Unable to schedule querying of attribute aggregators.", e);
         }
     }
 
-    private List<UserAttribute> doAggregate(List<UserAttribute> input, AttributeAggregator aggregator) {
+    private List<UserAttribute> doAggregate(List<UserAttribute> input,
+                                            AttributeAggregator aggregator,
+                                            Map<String, List<ArpValue>> arpAttributes) {
         try {
             Optional<String> cacheKey = aggregator.cacheKey(input);
             Optional<List<UserAttribute>> userAttributesFromCache = cache.get(cacheKey);
             if (userAttributesFromCache.isPresent()) {
                 return userAttributesFromCache.get();
             }
-            List<UserAttribute> userAttributes = aggregator.aggregate(input);
+            List<UserAttribute> userAttributes = aggregator.aggregate(input, arpAttributes);
             List<UserAttribute> filteredAttributes = aggregator.filterInvalidResponses(userAttributes);
             cache.put(cacheKey, filteredAttributes);
             return filteredAttributes;

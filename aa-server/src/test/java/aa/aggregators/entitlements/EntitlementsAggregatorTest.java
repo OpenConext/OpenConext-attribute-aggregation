@@ -12,11 +12,11 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
-import static aa.aggregators.AttributeAggregator.NAME_ID;
 import static aa.aggregators.AttributeAggregator.SCHAC_HOME_ORGANIZATION;
 import static aa.aggregators.AttributeAggregator.UID;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -97,7 +97,7 @@ public class EntitlementsAggregatorTest {
 
 
     private void doAggregate() {
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
         assertEquals(1, userAttributes.size());
 
         UserAttribute userAttribute = userAttributes.get(0);

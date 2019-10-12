@@ -6,28 +6,16 @@ import aa.model.AttributeAuthorityConfiguration;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
 import aa.repository.AccountRepository;
-import aa.repository.AccountRepositoryTest;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
 import static aa.aggregators.AttributeAggregator.NAME_ID;
 import static aa.aggregators.AttributeAggregator.ORCID;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -57,7 +45,7 @@ public class OrcidAttributeAggregatorTest {
         account.setLinkedId("0000-0002-9588-5133");
         when(accountRepository.findByUrnIgnoreCaseAndAccountType("urn", AccountType.ORCID))
             .thenReturn(Optional.of(account));
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
 
         assertEquals(1, userAttributes.size());
 
@@ -71,7 +59,7 @@ public class OrcidAttributeAggregatorTest {
     public void testGetOrcidNotPresent() throws Exception {
         when(accountRepository.findByUrnIgnoreCaseAndAccountType("urn", AccountType.ORCID))
             .thenReturn(Optional.empty());
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
 
         assertEquals(0, userAttributes.size());
     }

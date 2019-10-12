@@ -2,6 +2,7 @@ package aa.aggregators.idin;
 
 import aa.aggregators.AbstractAttributeAggregator;
 import aa.aggregators.PrePopulatedJsonHttpHeaders;
+import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
 import org.springframework.http.HttpMethod;
@@ -27,7 +28,7 @@ public class IdinAttributeAggregator extends AbstractAttributeAggregator {
     }
 
     @Override
-    public List<UserAttribute> aggregate(List<UserAttribute> input) {
+    public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String unspecifiedId = getUserAttributeSingleValue(input, NAME_ID);
         URI uri = uri(unspecifiedId);
 

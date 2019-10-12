@@ -3,12 +3,14 @@ package aa.aggregators.orcid;
 import aa.aggregators.AbstractAttributeAggregator;
 import aa.model.Account;
 import aa.model.AccountType;
+import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
 import aa.repository.AccountRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;
@@ -25,7 +27,7 @@ public class OrcidAttributeAggregator extends AbstractAttributeAggregator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<UserAttribute> aggregate(List<UserAttribute> input) {
+    public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String urn = getUserAttributeSingleValue(input, NAME_ID);
         Optional<Account> accountOptional = accountRepository.findByUrnIgnoreCaseAndAccountType(urn, AccountType.ORCID);
 

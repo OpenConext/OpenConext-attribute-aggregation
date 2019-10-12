@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.IS_MEMBER_OF;
@@ -56,7 +57,7 @@ public class VootAttributeAggregatorTest {
     public void testGetGroupsHappyFlow() throws Exception {
         String response = read("voot/groups.json");
         stubForVoot(response);
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
         assertEquals(1, userAttributes.size());
         UserAttribute userAttribute = userAttributes.get(0);
         assertEquals(IS_MEMBER_OF, userAttribute.getName());
@@ -72,7 +73,7 @@ public class VootAttributeAggregatorTest {
         //if something goes wrong, we just don't get groups. We log all requests and responses
         String response = read("voot/empty_groups.json");
         stubForVoot(response);
-        assertTrue(subject.aggregate(input).isEmpty());
+        assertTrue(subject.aggregate(input, Collections.emptyMap()).isEmpty());
     }
 
     /*
@@ -90,7 +91,7 @@ public class VootAttributeAggregatorTest {
         String correctResponse = read("voot/groups.json");
         stubForVootInScenario(correctResponse, 200, "token_invalid_call_done", "exit");
 
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
         assertEquals(14, userAttributes.get(0).getValues().size());
     }
 

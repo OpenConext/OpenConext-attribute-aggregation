@@ -12,6 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
@@ -44,7 +45,7 @@ public class SBSAttributeAggregatorTest {
     public void testGetMembershipsHappyFlow() throws Exception {
         String response = read("sbs/memberships.json");
         stubForSBS(response);
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
         assertEquals(1, userAttributes.size());
         UserAttribute userAttribute = userAttributes.get(0);
         assertEquals(IS_MEMBER_OF, userAttribute.getName());
@@ -58,14 +59,14 @@ public class SBSAttributeAggregatorTest {
     public void testGetMembershipsEmpty() throws Exception {
         String response = read("sbs/empty_memberships.json");
         stubForSBS(response);
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
         assertEquals(0, userAttributes.size());
     }
 
     @Test
     public void testGetMemberships404() throws Exception {
         stubForSBSNotFound();
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
         assertEquals(0, userAttributes.size());
     }
 

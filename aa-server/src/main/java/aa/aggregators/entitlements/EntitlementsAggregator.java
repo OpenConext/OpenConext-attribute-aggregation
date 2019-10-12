@@ -1,6 +1,7 @@
 package aa.aggregators.entitlements;
 
 import aa.aggregators.AbstractAttributeAggregator;
+import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
 import org.springframework.http.HttpEntity;
@@ -41,7 +42,7 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
     }
 
     @Override
-    public List<UserAttribute> aggregate(List<UserAttribute> input) {
+    public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         return doAggregate(input, true);
     }
 

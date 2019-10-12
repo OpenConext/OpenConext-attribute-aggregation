@@ -1,6 +1,7 @@
 package aa.aggregators.sab;
 
 import aa.aggregators.AbstractAttributeAggregator;
+import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
 import org.apache.commons.io.IOUtils;
@@ -41,7 +42,7 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
     }
 
     @Override
-    public List<UserAttribute> aggregate(List<UserAttribute> input) {
+    public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String userId = getUserAttributeSingleValue(input, NAME_ID);
         String request = request(userId);
         ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request), String.class);

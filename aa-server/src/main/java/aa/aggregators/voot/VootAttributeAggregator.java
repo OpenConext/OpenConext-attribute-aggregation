@@ -1,6 +1,7 @@
 package aa.aggregators.voot;
 
 import aa.aggregators.AbstractAttributeAggregator;
+import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -24,7 +25,7 @@ public class VootAttributeAggregator extends AbstractAttributeAggregator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<UserAttribute> aggregate(List<UserAttribute> input) {
+    public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String userId = getUserAttributeSingleValue(input, NAME_ID);
         String url = endpoint() + "/internal/groups/{userUrn}";
         List<Map<String, Object>> listOfGroupMaps = (List<Map<String, Object>>) vootService.getForObject(url, List.class, userId);

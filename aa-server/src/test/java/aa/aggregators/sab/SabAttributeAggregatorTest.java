@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
@@ -59,7 +60,7 @@ public class SabAttributeAggregatorTest {
         String response = IOUtils.toString(new ClassPathResource("sab/response_XML_processing_instruction.xml").getInputStream(), Charset.defaultCharset());
         stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
                 .willReturn(aResponse().withStatus(200).withBody(response)));
-        assertEquals(6, subject.aggregate(input).get(0).getValues().size());
+        assertEquals(6, subject.aggregate(input, Collections.emptyMap()).get(0).getValues().size());
     }
 
     @Test
@@ -73,7 +74,7 @@ public class SabAttributeAggregatorTest {
         String response = IOUtils.toString(new ClassPathResource("sab/response_success_new_prefix.xml").getInputStream(), Charset.defaultCharset());
         stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
                 .willReturn(aResponse().withStatus(200).withBody(response)));
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
         UserAttribute userAttribute = userAttributes.get(0);
         assertEquals(EDU_PERSON_ENTITLEMENT, userAttribute.getName());
 
@@ -87,7 +88,7 @@ public class SabAttributeAggregatorTest {
     private void doGetRolesHappyFlow(String response) {
         stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
             .willReturn(aResponse().withStatus(200).withBody(response)));
-        List<UserAttribute> userAttributes = subject.aggregate(input);
+        List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
         assertEquals(1, userAttributes.size());
         UserAttribute userAttribute = userAttributes.get(0);
         assertEquals(EDU_PERSON_ENTITLEMENT, userAttribute.getName());
@@ -112,6 +113,6 @@ public class SabAttributeAggregatorTest {
         String response = IOUtils.toString(new ClassPathResource("sab/" + fileName).getInputStream(), Charset.defaultCharset());
         stubFor(post(urlEqualTo("/sab")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
             .willReturn(aResponse().withStatus(200).withBody(response)));
-        assertTrue(subject.aggregate(input).isEmpty());
+        assertTrue(subject.aggregate(input, Collections.emptyMap()).isEmpty());
     }
 }

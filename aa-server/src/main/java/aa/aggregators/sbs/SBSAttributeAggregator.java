@@ -2,12 +2,14 @@ package aa.aggregators.sbs;
 
 import aa.aggregators.AbstractAttributeAggregator;
 import aa.aggregators.NotFoundResponseErrorHandler;
+import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class SBSAttributeAggregator extends AbstractAttributeAggregator {
@@ -18,7 +20,8 @@ public class SBSAttributeAggregator extends AbstractAttributeAggregator {
     }
 
     @Override
-    public List<UserAttribute> aggregate(List<UserAttribute> input) {
+    @SuppressWarnings("unchecked")
+    public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String eduPersonPrincipalName = getUserAttributeSingleValue(input, EDU_PERSON_PRINCIPAL_NAME);
         Optional<UserAttribute> emailUserAttribute = input.stream().filter(attr -> attr.getName().equals(EMAIL))
                 .findFirst();

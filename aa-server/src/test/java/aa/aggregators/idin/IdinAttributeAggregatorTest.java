@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.EDU_PERSON_AFFILIATION;
@@ -98,7 +99,7 @@ public class IdinAttributeAggregatorTest {
         }
 
         stubFor(get(urlPathMatching("/api/user/.*")).willReturn(builder));
-        return subject.aggregate(input);
+        return subject.aggregate(input, Collections.emptyMap());
     }
 
     private List<String> userAttributeValues(List<UserAttribute> userAttributes, String name) {

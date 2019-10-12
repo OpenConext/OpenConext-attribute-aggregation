@@ -1,8 +1,10 @@
 package aa.aggregators;
 
+import aa.model.ArpValue;
 import aa.model.UserAttribute;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AttributeAggregator {
@@ -23,7 +25,7 @@ public interface AttributeAggregator {
 
     String getAttributeAuthorityId();
 
-    List<UserAttribute> aggregate(List<UserAttribute> input);
+    List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes);
 
     Optional<String> cacheKey(List<UserAttribute> input);
 

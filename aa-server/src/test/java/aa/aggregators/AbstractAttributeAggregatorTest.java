@@ -1,6 +1,7 @@
 package aa.aggregators;
 
 import aa.config.AuthorityResolver;
+import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -76,7 +78,7 @@ public class AbstractAttributeAggregatorTest {
             authorityResolver.getConfiguration().getAuthorityById(key);
         return new AbstractAttributeAggregator(attributeAuthorityConfiguration) {
             @Override
-            public List<UserAttribute> aggregate(List<UserAttribute> input) {
+            public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
                 throw new IllegalArgumentException();
             }
         };

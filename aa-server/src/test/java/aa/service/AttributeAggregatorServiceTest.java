@@ -1,6 +1,5 @@
 package aa.service;
 
-import aa.aggregators.AttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
 import aa.cache.SimpleInMemoryUserAttributeCache;
 import aa.config.AuthorityConfiguration;
@@ -14,6 +13,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static aa.aggregators.AttributeAggregator.NAME_ID;
 import static java.util.Collections.singletonList;
@@ -73,11 +73,11 @@ public class AttributeAggregatorServiceTest {
         AuthorityConfiguration authorityConfiguration = new AuthorityConfiguration(authorities);
         TestingAttributeAggregator attributeAggregator = new TestingAttributeAggregator(attributeAuthorityConfiguration) {
             @Override
-            public List<UserAttribute> aggregate(List<UserAttribute> input) {
+            public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
                 if (throwError) {
                     throw new RuntimeException("oeps");
                 }
-                return super.aggregate(input);
+                return super.aggregate(input, arpAttributes);
             }
         };
         AttributeAggregatorService subject = new AttributeAggregatorService(
