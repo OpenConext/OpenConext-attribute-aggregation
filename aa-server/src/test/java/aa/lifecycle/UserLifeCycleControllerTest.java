@@ -41,6 +41,18 @@ public class UserLifeCycleControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void unsupportedContentNegotion() {
+        LifeCycleResult result = given()
+                .auth()
+                .preemptive()
+                .basic("life", "secret")
+                .when()
+                .delete("aa/api/deprovision/nope.me")
+                .as(LifeCycleResult.class);
+        assertEquals(0, result.getData().size());
+    }
+
+    @Test
     public void dryRun() {
         LifeCycleResult result = doDeprovision(true);
         assertLifeCycleResult(result);

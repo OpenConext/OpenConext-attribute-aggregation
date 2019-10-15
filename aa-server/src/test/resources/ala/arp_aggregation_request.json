@@ -71,103 +71,103 @@
     "urn:mace:dir:attribute-def:cn": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:displayName": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:eduPersonEntitlement": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:eduPersonAffiliation": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:eduPersonOrcid": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:eduPersonPrincipalName": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:eduPersonScopedAffiliation": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:eduPersonTargetedID": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:givenName": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:isMemberOf": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:preferredLanguage": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:terena.org:attribute-def:schacHomeOrganization": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:terena.org:attribute-def:schacHomeOrganizationType": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:sn": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:uid": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:dir:attribute-def:mail": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ],
     "urn:mace:surf.nl:attribute-def:eckid": [
       {
         "value": "*",
-        "source": "eduid"
+        "source": "ala"
       }
     ]
   }

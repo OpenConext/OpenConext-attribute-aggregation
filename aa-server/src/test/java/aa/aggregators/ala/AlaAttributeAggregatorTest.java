@@ -1,4 +1,4 @@
-package aa.aggregators.eduid;
+package aa.aggregators.ala;
 
 import aa.model.ArpAggregationRequest;
 import aa.model.AttributeAuthorityConfiguration;
@@ -26,38 +26,39 @@ import static java.util.Collections.singletonList;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.junit.Assert.assertEquals;
 
-public class EduIDAttributeAggregatorTest {
+public class AlaAttributeAggregatorTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private ArpAggregationRequest arpAggregationRequest;
+    private ArpAggregationRequest arpAggregationRequest = objectMapper.readValue(new ClassPathResource("ala/arp_aggregation_request.json").getInputStream(),
+            ArpAggregationRequest.class);
 
-    private EduIDAttributeAggregator subject;
+    private AlaAttributeAggregator subject;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8889);
 
+    public AlaAttributeAggregatorTest() throws IOException {
+    }
+
     @Before
     public void before() throws IOException {
-        AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("eduid");
+        AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("ala");
         configuration.setUser("user");
         configuration.setPassword("password");
         configuration.setEndpoint("http://localhost:8889/attribute_aggregation");
         configuration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute(EDU_PERSON_PRINCIPAL_NAME)));
-        subject = new EduIDAttributeAggregator(configuration);
-
-        arpAggregationRequest = objectMapper.readValue(new ClassPathResource("eduid/arp_aggregation_request.json").getInputStream(),
-                ArpAggregationRequest.class);
+        subject = new AlaAttributeAggregator(configuration);
     }
 
     @Test
     public void aggregate() throws IOException {
-        stubForEduId(read("eduid/attributes.json"));
+        stubForAla(read("ala/attributes.json"));
         List<UserAttribute> userAttributes = subject.aggregate(
                 arpAggregationRequest.getUserAttributes(),
                 arpAggregationRequest.getArpAttributes());
         assertEquals(10, userAttributes.size());
-        userAttributes.forEach(userAttribute -> assertEquals("eduid", userAttribute.getSource()));
+        userAttributes.forEach(userAttribute -> assertEquals("ala", userAttribute.getSource()));
     }
 
     @Test
@@ -66,7 +67,7 @@ public class EduIDAttributeAggregatorTest {
         assertEquals(1, userAttributes.size());
     }
 
-    private void stubForEduId(String response) {
+    private void stubForAla(String response) {
         stubFor(get(urlPathEqualTo("/attribute_aggregation"))
                 .withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
                 .willReturn(aResponse().withStatus(200)

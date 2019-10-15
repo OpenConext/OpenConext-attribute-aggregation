@@ -1,4 +1,4 @@
-package aa.aggregators.eduid;
+package aa.aggregators.ala;
 
 import aa.aggregators.AbstractAttributeAggregator;
 import aa.model.ArpValue;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class EduIDAttributeAggregator extends AbstractAttributeAggregator {
+public class AlaAttributeAggregator extends AbstractAttributeAggregator {
 
     private HttpHeaders httpHeaders = new HttpHeaders();
 
-    public EduIDAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
+    public AlaAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         super(attributeAuthorityConfiguration);
         this.httpHeaders.add(HttpHeaders.ACCEPT, "application/json");
     }
@@ -35,10 +35,10 @@ public class EduIDAttributeAggregator extends AbstractAttributeAggregator {
                 }).getBody();
         List<String> userAttributesNames = userAttributes.stream().map(UserAttribute::getName).collect(Collectors.toList());
 
-        //For all not-present values in the userAttributes we fall back to the values provided - if present
+        //For all non-present values in the userAttributes we fall back to the values provided - if present and marked as 'ala' source
         List<String> arpKeys = arpAttributes.keySet().stream()
                 .filter(samlAttributeName -> !userAttributesNames.contains(samlAttributeName) &&
-                        arpAttributes.get(samlAttributeName).stream().anyMatch(arpValue -> "eduid".equals(arpValue.getSource())))
+                        arpAttributes.get(samlAttributeName).stream().anyMatch(arpValue -> "ala".equals(arpValue.getSource())))
                 .collect(Collectors.toList());
         List<UserAttribute> preserve = input.stream().filter(userAttribute -> arpKeys.contains(userAttribute.getName())).collect(Collectors.toList());
         userAttributes.addAll(preserve);

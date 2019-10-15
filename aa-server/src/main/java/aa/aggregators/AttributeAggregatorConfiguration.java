@@ -1,6 +1,7 @@
 package aa.aggregators;
 
-import aa.aggregators.eduid.EduIDAttributeAggregator;
+import aa.aggregators.ala.AlaAttributeAggregator;
+import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.aggregators.idin.IdinAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.pseudo.PseudoEmailAggregator;
@@ -11,7 +12,6 @@ import aa.aggregators.voot.VootAttributeAggregator;
 import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
-import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.repository.AccountRepository;
 import aa.repository.PseudoEmailRepository;
@@ -23,9 +23,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
-import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 @Configuration
@@ -68,7 +68,9 @@ public class AttributeAggregatorConfiguration {
     private AttributeAggregatorService getAttributeAggregatorService(Function<AttributeAuthorityConfiguration, AttributeAggregator> aggregatorFunction) {
         AuthorityConfiguration configuration = authorityResolver.getConfiguration();
         List<AttributeAggregator> attributeAggregators = configuration.getAuthorities().stream()
-            .map(aggregatorFunction).collect(toList());
+                .map(aggregatorFunction)
+                .filter(Objects::nonNull)
+                .collect(toList());
         return new AttributeAggregatorService(attributeAggregators, configuration, userAttributeCache);
     }
 
@@ -89,13 +91,14 @@ public class AttributeAggregatorConfiguration {
                 return new EntitlementsAggregator(configuration);
             case "sbs":
                 return new SBSAttributeAggregator(configuration);
-            case "eduid":
-                return new EduIDAttributeAggregator(configuration);
+            case "ala":
+                return new AlaAttributeAggregator(configuration);
             default:
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);
                 } else {
-                    throw new IllegalArgumentException(format("Authority with id %s is unknown", id));
+                    //We don't want to fail here as it might be that new AA's are already defined but not yet implemented
+                    return null;
                 }
 
         }

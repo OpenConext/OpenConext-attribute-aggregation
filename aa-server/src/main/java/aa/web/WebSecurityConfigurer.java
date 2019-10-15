@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
@@ -105,6 +106,7 @@ public class WebSecurityConfigurer {
                 .authorizeRequests()
                 .antMatchers("/**").hasRole("USER");
         }
+
     }
 
     @Configuration
@@ -149,6 +151,12 @@ public class WebSecurityConfigurer {
         @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
             argumentResolvers.add(new FederatedUserHandlerMethodArgumentResolver());
+        }
+
+        @Override
+        public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+            super.configureContentNegotiation(configurer);
+            configurer.favorParameter(false).favorPathExtension(false);
         }
 
     }
