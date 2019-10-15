@@ -20,6 +20,7 @@ import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static java.util.Collections.singletonList;
@@ -42,7 +43,7 @@ public class AlaAttributeAggregatorTest {
     }
 
     @Before
-    public void before() throws IOException {
+    public void before() {
         AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("ala");
         configuration.setUser("user");
         configuration.setPassword("password");
@@ -57,7 +58,7 @@ public class AlaAttributeAggregatorTest {
         List<UserAttribute> userAttributes = subject.aggregate(
                 arpAggregationRequest.getUserAttributes(),
                 arpAggregationRequest.getArpAttributes());
-        assertEquals(10, userAttributes.size());
+        assertEquals(9, userAttributes.size());
         userAttributes.forEach(userAttribute -> assertEquals("ala", userAttribute.getSource()));
     }
 
@@ -68,7 +69,7 @@ public class AlaAttributeAggregatorTest {
     }
 
     private void stubForAla(String response) {
-        stubFor(get(urlPathEqualTo("/attribute_aggregation"))
+        stubFor(post(urlPathEqualTo("/attribute_aggregation"))
                 .withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")

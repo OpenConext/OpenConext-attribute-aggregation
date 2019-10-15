@@ -161,7 +161,7 @@
     "urn:mace:dir:attribute-def:mail": [
       {
         "value": "*",
-        "source": "ala"
+        "source": "idp"
       }
     ],
     "urn:mace:surf.nl:attribute-def:eckid": [

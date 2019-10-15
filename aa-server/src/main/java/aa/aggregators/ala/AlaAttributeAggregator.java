@@ -8,8 +8,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,18 +23,24 @@ public class AlaAttributeAggregator extends AbstractAttributeAggregator {
 
     public AlaAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         super(attributeAuthorityConfiguration);
-        this.httpHeaders.add(HttpHeaders.ACCEPT, "application/json");
+        this.httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        this.httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     @Override
     public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String eduPersonPrincipalName = getUserAttributeSingleValue(input, EDU_PERSON_PRINCIPAL_NAME);
+        String spEntityId = getUserAttributeSingleValue(input, SP_ENTITY_ID);
 
-        String endPoint = UriComponentsBuilder.fromHttpUrl(getAttributeAuthorityConfiguration().getEndpoint())
-                .queryParam("edu_person_principal_name", eduPersonPrincipalName).toUriString();
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("edu_person_principal_name", eduPersonPrincipalName);
+        form.add("sp_entity_id", spEntityId);
 
-        List<UserAttribute> userAttributes = this.getRestTemplate().exchange(endPoint, HttpMethod.GET,
-                new HttpEntity<>(httpHeaders), new ParameterizedTypeReference<List<UserAttribute>>() {
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, httpHeaders);
+
+        String endPoint = getAttributeAuthorityConfiguration().getEndpoint();
+        List<UserAttribute> userAttributes = this.getRestTemplate().exchange(endPoint, HttpMethod.POST,
+                request, new ParameterizedTypeReference<List<UserAttribute>>() {
                 }).getBody();
         List<String> userAttributesNames = userAttributes.stream().map(UserAttribute::getName).collect(Collectors.toList());
 
