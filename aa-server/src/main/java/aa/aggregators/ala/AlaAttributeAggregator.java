@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,15 +33,14 @@ public class AlaAttributeAggregator extends AbstractAttributeAggregator {
         String eduPersonPrincipalName = getUserAttributeSingleValue(input, EDU_PERSON_PRINCIPAL_NAME);
         String spEntityId = getUserAttributeSingleValue(input, SP_ENTITY_ID);
 
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("edu_person_principal_name", eduPersonPrincipalName);
-        form.add("sp_entity_id", spEntityId);
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(getAttributeAuthorityConfiguration().getEndpoint())
+                .queryParam("edu_person_principal_name", eduPersonPrincipalName)
+                .queryParam("sp_entity_id", spEntityId);
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, httpHeaders);
-
-        String endPoint = getAttributeAuthorityConfiguration().getEndpoint();
-        List<UserAttribute> userAttributes = this.getRestTemplate().exchange(endPoint, HttpMethod.POST,
-                request, new ParameterizedTypeReference<List<UserAttribute>>() {
+        String endPoint = builder.build().encode().toUriString();
+        List<UserAttribute> userAttributes = this.getRestTemplate().exchange(endPoint, HttpMethod.GET,
+                new HttpEntity<>(httpHeaders), new ParameterizedTypeReference<List<UserAttribute>>() {
                 }).getBody();
         List<String> userAttributesNames = userAttributes.stream().map(UserAttribute::getName).collect(Collectors.toList());
 

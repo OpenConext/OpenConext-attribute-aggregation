@@ -69,7 +69,7 @@ public class AlaAttributeAggregatorTest {
     }
 
     private void stubForAla(String response) {
-        stubFor(post(urlPathEqualTo("/attribute_aggregation"))
+        stubFor(get(urlPathEqualTo("/attribute_aggregation"))
                 .withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")

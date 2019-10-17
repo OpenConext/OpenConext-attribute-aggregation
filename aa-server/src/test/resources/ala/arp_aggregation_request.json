@@ -39,7 +39,7 @@
     {
       "name": "urn:mace:dir:attribute-def:eduPersonPrincipalName",
       "values": [
-        "j.doe@example.com"
+        "john doe@example.com"
       ]
     },
     {
