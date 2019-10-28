@@ -3,6 +3,9 @@ package aa.aggregators;
 import aa.aggregators.ala.AlaAttributeAggregator;
 import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.aggregators.idin.IdinAttributeAggregator;
+import aa.aggregators.manage.ManageAttributeAggregator;
+import aa.aggregators.manage.ManageConfig;
+import aa.aggregators.manage.SurfCrmAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.pseudo.PseudoEmailAggregator;
 import aa.aggregators.sab.SabAttributeAggregator;
@@ -93,6 +96,8 @@ public class AttributeAggregatorConfiguration {
                 return new SBSAttributeAggregator(configuration);
             case "ala":
                 return new AlaAttributeAggregator(configuration);
+            case "manage":
+                return new SurfCrmAttributeAggregator(configuration);
             default:
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);

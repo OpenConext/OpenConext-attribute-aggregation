@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "12033fa4-6b5a-49e0-8755-1dbae2804bb3",
+    "version": 36,
+    "type": "saml20_idp",
+    "data": {
+      "entityid": "urn:thki:sid:idp2",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "name:nl": "thkidp",
+        "name:en": "Example organization"
+      }
+    }
+  }
+]

@@ -16,12 +16,14 @@ public interface AttributeAggregator {
     String SCHAC_HOME_ORGANIZATION = "urn:mace:terena.org:attribute-def:schacHomeOrganization";
     String EMAIL = "urn:mace:dir:attribute-def:mail";
     String SP_ENTITY_ID = "SPentityID";
+    String IDP_ENTITY_ID = "IDPentityID";
 
     //output attribute names
     String EDU_PERSON_ENTITLEMENT = "urn:mace:dir:attribute-def:eduPersonEntitlement";
     String EDU_PERSON_AFFILIATION = "urn:mace:dir:attribute-def:eduPersonAffiliation";
     String IS_MEMBER_OF = "urn:mace:dir:attribute-def:isMemberOf";
     String ORCID = "urn:mace:dir:attribute-def:eduPersonOrcid";
+    String SURF_CRM_ID = "urn:mace:surf.nl:attribute-def:surf-crm-id";
 
     String getAttributeAuthorityId();
 

@@ -1,0 +1,180 @@
+{
+  "userAttributes": [
+    {
+      "name": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+      "values": [
+        "urn:collab:person:example.com:admin"
+      ]
+    },
+    {
+      "name": "SPentityID",
+      "values": [
+        "https://authz-playground.test2.surfconext.nl"
+      ]
+    },
+    {
+      "name": "IDPentityID",
+      "values": [
+        "https://mock-idp.nl"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:displayName",
+      "values": [
+        "John Doe"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:uid",
+      "values": [
+        "admin"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:cn",
+      "values": [
+        "John Doe"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:sn",
+      "values": [
+        "Doe"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+      "values": [
+        "john doe@example.com"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:givenName",
+      "values": [
+        "John"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:mail",
+      "values": [
+        "j.doe@example.com"
+      ]
+    },
+    {
+      "name": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+      "values": [
+        "example.com"
+      ]
+    },
+    {
+      "name": "urn:mace:dir:attribute-def:isMemberOf",
+      "values": [
+        "urn:collab:org:surf.nl"
+      ]
+    }
+  ],
+  "arpAttributes": {
+    "urn:mace:dir:attribute-def:cn": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:displayName": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:eduPersonEntitlement": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:eduPersonAffiliation": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:eduPersonOrcid": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:eduPersonPrincipalName": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:eduPersonScopedAffiliation": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:eduPersonTargetedID": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:givenName": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:isMemberOf": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:preferredLanguage": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:terena.org:attribute-def:schacHomeOrganization": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:terena.org:attribute-def:schacHomeOrganizationType": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:sn": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:uid": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ],
+    "urn:mace:dir:attribute-def:mail": [
+      {
+        "value": "*",
+        "source": "idp"
+      }
+    ],
+    "urn:mace:surf.nl:attribute-def:eckid": [
+      {
+        "value": "*",
+        "source": "ala"
+      }
+    ]
+  }
+}

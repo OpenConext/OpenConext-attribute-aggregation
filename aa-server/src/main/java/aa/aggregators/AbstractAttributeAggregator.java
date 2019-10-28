@@ -95,8 +95,12 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
 
     protected URI endpoint() {
+        return endpoint("");
+    }
+
+    protected URI endpoint(String postPath) {
         try {
-            return new URI(attributeAuthorityConfiguration.getEndpoint());
+            return new URI(attributeAuthorityConfiguration.getEndpoint() + postPath);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
