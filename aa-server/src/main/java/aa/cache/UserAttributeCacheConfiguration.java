@@ -9,7 +9,7 @@ public class UserAttributeCacheConfiguration {
 
     @Bean
     public UserAttributeCache inMemoryUserAttributeCache(@Value("${aggregate_cache_duration_milliseconds}") long cacheDuration) {
-        return new SimpleInMemoryUserAttributeCache(cacheDuration, cacheDuration);
+        return cacheDuration < 0 ? new NoopUserAttributeCache() : new SimpleInMemoryUserAttributeCache(cacheDuration, cacheDuration);
     }
 
 }
