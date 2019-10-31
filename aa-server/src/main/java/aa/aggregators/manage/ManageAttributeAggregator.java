@@ -31,6 +31,13 @@ public abstract class ManageAttributeAggregator extends AbstractAttributeAggrega
 
     protected abstract ManageConfig manageConfig();
 
+    @SuppressWarnings("unchecked")
+    String getMetaDataValue(List<Map> result, String attributeName) {
+        Map<String, Object> data = (Map<String, Object>) result.get(0).get("data");
+        Map<String, String> metaDataFields = (Map<String, String>) data.get("metaDataFields");
+        return metaDataFields.get(attributeName);
+    }
+
     @Override
     public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         ManageConfig manageConfig = manageConfig();
