@@ -1,6 +1,7 @@
 package aa.aggregators;
 
 import aa.aggregators.ala.AlaAttributeAggregator;
+import aa.aggregators.eduid.EduIdAttributeAggregator;
 import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.aggregators.idin.IdinAttributeAggregator;
 import aa.aggregators.manage.ManageAttributeAggregator;
@@ -96,6 +97,8 @@ public class AttributeAggregatorConfiguration {
                 return new SBSAttributeAggregator(configuration);
             case "ala":
                 return new AlaAttributeAggregator(configuration);
+            case "eduid":
+                return new EduIdAttributeAggregator(configuration);
             case "manage":
                 return new SurfCrmAttributeAggregator(configuration);
             default:

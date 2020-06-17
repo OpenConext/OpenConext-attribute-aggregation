@@ -54,8 +54,7 @@ public class AttributeAggregatorService {
         ANALYTICS_LOG.info("Started to aggregate attributes based on ARP for input {}", arpAggregationRequest);
 
         Set<String> sources = arpAggregationRequest.getArpAttributes().values().stream()
-            .map(arpValues -> arpValues.stream().map(ArpValue::getSource))
-            .flatMap(Function.identity())
+            .flatMap(arpValues -> arpValues.stream().map(ArpValue::getSource))
             .collect(Collectors.toSet());
 
         List<AttributeAuthorityConfiguration> authorities = configuration.getAuthorities().stream()

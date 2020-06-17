@@ -6,7 +6,7 @@ server:
 
 attribute_authorities_config_path: classpath:/local.attributeAuthorities.yml
 authorization_access_token_url: https://authz.test2.surfconext.nl/oauth/token
-aggregate_cache_duration_milliseconds: 300000
+aggregate_cache_duration_milliseconds: -1
 
 orcid:
   authorization_uri: https://sandbox.orcid.org/oauth/authorize
