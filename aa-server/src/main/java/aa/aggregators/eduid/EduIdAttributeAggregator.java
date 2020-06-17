@@ -32,4 +32,9 @@ public class EduIdAttributeAggregator extends AbstractAlaAttributeAggregator {
         return false;
     }
 
+    @Override
+    public boolean fallBackForMissingAttributesToUserAttributes() {
+        return false;
+    }
+
 }

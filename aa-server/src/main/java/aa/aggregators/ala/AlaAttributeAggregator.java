@@ -35,5 +35,10 @@ public class AlaAttributeAggregator extends AbstractAlaAttributeAggregator {
         return true;
     }
 
+    @Override
+    public boolean fallBackForMissingAttributesToUserAttributes() {
+        return true;
+    }
+
 
 }

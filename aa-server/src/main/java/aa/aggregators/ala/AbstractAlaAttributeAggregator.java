@@ -39,14 +39,15 @@ public abstract class AbstractAlaAttributeAggregator extends AbstractAttributeAg
                 new HttpEntity<>(httpHeaders), new ParameterizedTypeReference<List<UserAttribute>>() {
                 }).getBody();
         List<String> userAttributesNames = userAttributes.stream().map(UserAttribute::getName).collect(Collectors.toList());
-
-        //For all non-present values in the userAttributes we fall back to the values provided - if present and marked as 'ala' source
-        List<String> arpKeys = arpAttributes.keySet().stream()
-                .filter(samlAttributeName -> !userAttributesNames.contains(samlAttributeName) &&
-                        arpAttributes.get(samlAttributeName).stream().anyMatch(arpValue -> arpSourceValue().equals(arpValue.getSource())))
-                .collect(Collectors.toList());
-        List<UserAttribute> preserve = input.stream().filter(userAttribute -> arpKeys.contains(userAttribute.getName())).collect(Collectors.toList());
-        userAttributes.addAll(preserve);
+        if (fallBackForMissingAttributesToUserAttributes()) {
+            //For all non-present values in the userAttributes we fall back to the values provided - if present and marked as 'ala' source
+            List<String> arpKeys = arpAttributes.keySet().stream()
+                    .filter(samlAttributeName -> !userAttributesNames.contains(samlAttributeName) &&
+                            arpAttributes.get(samlAttributeName).stream().anyMatch(arpValue -> arpSourceValue().equals(arpValue.getSource())))
+                    .collect(Collectors.toList());
+            List<UserAttribute> preserve = input.stream().filter(userAttribute -> arpKeys.contains(userAttribute.getName())).collect(Collectors.toList());
+            userAttributes.addAll(preserve);
+        }
         userAttributes.forEach(userAttribute -> userAttribute.setSource(getAttributeAuthorityId()));
         return userAttributes;
     }
@@ -56,7 +57,9 @@ public abstract class AbstractAlaAttributeAggregator extends AbstractAttributeAg
         return input;
     }
 
-    public abstract String arpSourceValue() ;
+    public abstract String arpSourceValue();
 
     public abstract boolean decodeRequestParameters();
+
+    public abstract boolean fallBackForMissingAttributesToUserAttributes();
 }

@@ -16,6 +16,11 @@ public class AlaAttributeAggregatorTest extends AbstractAlaAttributeAggregatorTe
     }
 
     @Override
+    public String attributesJson() {
+        return "ala/attributes.json";
+    }
+
+    @Override
     public String arpAggregationRequestJson() {
         return "ala/arp_aggregation_request.json";
     }

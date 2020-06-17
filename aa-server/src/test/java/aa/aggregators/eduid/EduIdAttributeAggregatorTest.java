@@ -26,4 +26,9 @@ public class EduIdAttributeAggregatorTest extends AbstractAlaAttributeAggregator
         return "eduid";
     }
 
+    @Override
+    public String attributesJson() {
+        return "eduid/attributes.json";
+    }
+
 }

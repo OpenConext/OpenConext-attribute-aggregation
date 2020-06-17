@@ -55,12 +55,13 @@ public abstract class AbstractAlaAttributeAggregatorTest {
 
     @Test
     public void aggregate() throws IOException {
-        stubForAla(read("ala/attributes.json"));
+        stubForAla(read(attributesJson()));
         List<UserAttribute> userAttributes = subject.aggregate(
                 arpAggregationRequest.getUserAttributes(),
                 arpAggregationRequest.getArpAttributes());
-        assertEquals(9, userAttributes.size());
-        userAttributes.forEach(userAttribute -> assertEquals(arpSourceValue(), userAttribute.getSource()));
+        int expectedUserAttributesSize = subject.fallBackForMissingAttributesToUserAttributes() ? 9 : 1;
+        assertEquals(expectedUserAttributesSize, userAttributes.size());
+        userAttributes.forEach(userAttribute -> assertEquals(subject.arpSourceValue(), userAttribute.getSource()));
     }
 
     @Test
@@ -69,9 +70,11 @@ public abstract class AbstractAlaAttributeAggregatorTest {
         assertEquals(1, userAttributes.size());
     }
 
-    public abstract String arpAggregationRequestJson() ;
+    public abstract String attributesJson() ;
 
     public abstract String arpSourceValue() ;
+
+    public abstract String arpAggregationRequestJson() ;
 
     private void stubForAla(String response) {
         stubFor(get(urlPathEqualTo("/attribute_aggregation"))
