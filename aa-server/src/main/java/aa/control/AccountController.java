@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -123,13 +124,14 @@ public class AccountController {
     }
 
     @DeleteMapping("/internal/disconnect/{id}")
-    public void disconnect(@PathVariable("id") Long id) {
+    public ResponseEntity<Map<String, String>> disconnect(@PathVariable("id") Long id) {
         Account account = accountRepository.findOne(id);
         if (account == null) {
             throw new ResourceNotFoundException(String.format("Account %s not found", id));
         }
         LOG.debug("Deleting account {}", account);
         accountRepository.delete(account);
+        return ResponseEntity.ok(Collections.singletonMap("status", "OK"));
     }
 
 
