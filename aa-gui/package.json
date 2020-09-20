@@ -6,8 +6,8 @@
   "scripts": {
     "webpack": "webpack --config webpack.config.prod.js",
     "webpack-analyze": "webpack --config webpack.config.prod.js --json",
-    "webpack-dev-server": "webpack-dev-server -d --host 0.0.0.0",
-    "local": "webpack-dev-server -d --open --host 0.0.0.0",
+    "webpack-dev-server": "webpack-dev-server -d --host localhost",
+    "local": "webpack-dev-server -d --open --host localhost --config webpack.config.js",
     "lint": "eslint --ext .js --ext .jsx --ignore-pattern '**/node_modules/**' --ignore-pattern '**/__tests__/**' --ignore-pattern '**/dist/**/*.js' --ignore-pattern '**/coverage/**' .",
     "test": "jest --coverage"
   },

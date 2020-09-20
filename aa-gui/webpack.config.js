@@ -49,16 +49,9 @@ module.exports = {
         progress: true,
         stats: "errors-only",
         port: 8001,
-        proxy: [
-            {
-                context: function (pathname, req) {
-                    return pathname.match("^/aa/api");
-                },
-                target: {
-                    port: 8080
-                }
-            }
-        ]
+        proxy: {
+            '/aa/api': 'http://localhost:8080'
+        }
     },
     plugins: [
         extractCSS,
