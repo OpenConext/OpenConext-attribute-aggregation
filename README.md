@@ -89,6 +89,9 @@ And the API offers a end-point to delete accounts:
 ```bash
 curl -u eb:secret -X "DELETE" "https://aa.test2.surfconext.nl/aa/api/internal/disconnect/${account_id}"
 ```
+
+Which will return Json `{"status": "OK"}` on success.
+
 ### [Orcid](#orcid)
 
 You can locally test the account linking with ORCID. You will need a valid orcid client id and secret. Copy & paste
