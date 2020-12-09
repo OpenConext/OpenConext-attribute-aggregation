@@ -7,22 +7,19 @@ node_js:
 services:
 - mysql
 cache:
-  yarn: true
   directories:
   - node_modules
 before_install:
 - pip install --user codecov
 - nvm install 10.14.2
-- npm install -g yarn
-- yarn install
 install:
-- cd aa-gui && yarn install && cd ..
+- cd aa-gui && npm install && cd ..
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 before_script:
 - mysql -e "create database IF NOT EXISTS aaserver; grant all on aaserver.* to 'root';SET
   GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;" -uroot
 script:
 - mvn test
-- cd aa-gui && yarn install && yarn run lint && yarn test
+- cd aa-gui && npm install && npm run webpack
 after_success:
 - codecov
