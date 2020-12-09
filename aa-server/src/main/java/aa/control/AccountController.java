@@ -4,8 +4,10 @@ package aa.control;
 import aa.model.Account;
 import aa.model.AccountType;
 import aa.model.ResourceNotFoundException;
+import aa.model.UnauthorizedException;
 import aa.repository.AccountRepository;
 import aa.shibboleth.FederatedUser;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -23,11 +26,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpUtils;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +43,6 @@ import java.util.Optional;
 public class AccountController {
 
     private final static Logger LOG = LoggerFactory.getLogger(AccountController.class);
-    private static final String CLIENT_REDIRECT_URL = "client_redirect_url";
 
     @Autowired
     private AccountRepository accountRepository;
@@ -57,9 +62,14 @@ public class AccountController {
     @Value("${orcid.redirect_uri}")
     private String orcidRedirectUri;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    @Value("${orcid.profile_redirect_uri}")
+    private String profileRedirectUri;
 
-    private HttpHeaders httpHeaders = new HttpHeaders();
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    private final HttpHeaders httpHeaders = new HttpHeaders();
 
     public AccountController() {
         this.httpHeaders.add(HttpHeaders.ACCEPT, "application/json");
@@ -69,23 +79,29 @@ public class AccountController {
     public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
                         @RequestParam(value = "redirectUrl", required = false) String redirectUrl) throws IOException {
         LOG.debug("Starting ORCID connection linking for {} with redirect {}", federatedUser.uid, redirectUrl);
-        String uri;
-        if (StringUtils.hasText(redirectUrl)) {
-            String state = URLEncoder.encode(redirectUrl, "UTF-8");
-            uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s&state=%s",
-                orcidAuthorizationUri, orcidClientId, orcidRedirectUri, state);
-        } else {
-            uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s",
-                orcidAuthorizationUri, orcidClientId, orcidRedirectUri);
-        }
+        String state = String.format("redirect_url=%s&user_uid=%s",
+                StringUtils.hasText(redirectUrl) ? redirectUrl : "",
+                passwordEncoder.encode(federatedUser.uid));
+        String stateEncoded = URLEncoder.encode(state, "UTF-8");
+        String uri = String.format("%s?client_id=%s&response_type=code&scope=/authenticate&redirect_uri=%s&state=%s",
+                orcidAuthorizationUri, orcidClientId, orcidRedirectUri, stateEncoded);
         response.sendRedirect(uri);
     }
 
     @GetMapping("/redirect")
     public void redirect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
                          @RequestParam("code") String code,
-                         @RequestParam(value = "state", required = false) String state) throws IOException {
+                         @RequestParam("state") String state) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {} and state {}", federatedUser.uid, code, state);
+
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + state).build().getQueryParams();
+        String redirectUrl = params.getFirst("redirect_url");
+        String encodedUserUid = params.getFirst("user_uid");
+
+        if (!passwordEncoder.matches(federatedUser.uid, encodedUserUid)) {
+            throw new UnauthorizedException("Non matching user");
+        }
+
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("client_id", orcidClientId);
@@ -108,8 +124,9 @@ public class AccountController {
         accountRepository.save(account);
 
         LOG.debug("Saved ORCID linked account {}", account);
-        if (StringUtils.hasText(state)) {
-            response.sendRedirect(state);
+
+        if (StringUtils.hasText(redirectUrl) && redirectUrl.startsWith(profileRedirectUri)) {
+            response.sendRedirect(redirectUrl);
         } else {
             response.sendRedirect("/aa/api/client/connected.html");
         }
