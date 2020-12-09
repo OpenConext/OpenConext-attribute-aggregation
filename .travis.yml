@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 dist: trusty
 node_js:
-- '7'
+- '10'
 services:
 - mysql
 cache:
@@ -12,7 +12,7 @@ cache:
   - node_modules
 before_install:
 - pip install --user codecov
-- nvm install 7
+- nvm install 10.14.2
 - npm install -g yarn
 - yarn install
 install:
