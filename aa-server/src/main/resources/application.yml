@@ -14,7 +14,7 @@ orcid:
   client_id:
   client_secret:
   redirect_uri: http://localhost:8080/aa/api/redirect
-  profile_redirect_uri: https://profile.test2.surfconext.nl
+
 
 security:
   internal_user_name: eb

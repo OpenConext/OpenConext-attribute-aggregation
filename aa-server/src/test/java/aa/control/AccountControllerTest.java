@@ -134,4 +134,5 @@ public class AccountControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_NOT_FOUND);
     }
+
 }

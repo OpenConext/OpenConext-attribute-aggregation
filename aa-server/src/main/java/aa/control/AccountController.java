@@ -62,9 +62,6 @@ public class AccountController {
     @Value("${orcid.redirect_uri}")
     private String orcidRedirectUri;
 
-    @Value("${orcid.profile_redirect_uri}")
-    private String profileRedirectUri;
-
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -125,7 +122,7 @@ public class AccountController {
 
         LOG.debug("Saved ORCID linked account {}", account);
 
-        if (StringUtils.hasText(redirectUrl) && redirectUrl.startsWith(profileRedirectUri)) {
+        if (StringUtils.hasText(redirectUrl)) {
             response.sendRedirect(redirectUrl);
         } else {
             response.sendRedirect("/aa/api/client/connected.html");

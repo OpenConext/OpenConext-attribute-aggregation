@@ -14,7 +14,6 @@ orcid:
   client_id: APP-IP57TTCD5F8BAIGS
   client_secret: d3d8ddf6-9de9-49f7-9e18-9760cdebe208
   redirect_uri: http://localhost:8080/aa/api/redirect
-  profile_redirect_uri: https://profile.test2.surfconext.nl
 
 security:
   internal_user_name: eb
