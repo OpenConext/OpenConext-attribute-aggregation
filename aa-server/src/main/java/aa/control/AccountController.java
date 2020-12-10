@@ -73,7 +73,7 @@ public class AccountController {
     }
 
     @GetMapping("/client/connect")
-    public void connect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
+    public void connect(HttpServletResponse response, FederatedUser federatedUser,
                         @RequestParam(value = "redirectUrl", required = false) String redirectUrl) throws IOException {
         LOG.debug("Starting ORCID connection linking for {} with redirect {}", federatedUser.uid, redirectUrl);
         String state = String.format("redirect_url=%s&user_uid=%s",
@@ -86,7 +86,7 @@ public class AccountController {
     }
 
     @GetMapping("/redirect")
-    public void redirect(HttpServletRequest request, HttpServletResponse response, FederatedUser federatedUser,
+    public void redirect(HttpServletResponse response, FederatedUser federatedUser,
                          @RequestParam("code") String code,
                          @RequestParam("state") String state) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {} and state {}", federatedUser.uid, code, state);
