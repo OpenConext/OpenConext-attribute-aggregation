@@ -1,7 +1,7 @@
 authorities:
   - {
     id: "sab",
-    description: "SURFnet Autorisatie Beheer",
+    description: "SURF Autorisatie Beheer",
     endpoint: "http://localhost:8889/sab",
     user: "user",
     password: "secret",
