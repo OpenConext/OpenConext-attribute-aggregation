@@ -1617,9 +1617,10 @@ commander@2.9.x:
   dependencies:
     graceful-readlink ">= 1.0.0"
 
-commander@~2.11.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
+commander@~2.14.1:
+  version "2.14.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
+  integrity sha512-+YR16o3rK53SmWHU3rEM3tPAh2rwb1yPcQX5irVn7mb0gXbwuCCrnkbV5+PBfETdfg1vui07nM6PCG1zndcjQw==
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -2591,9 +2592,9 @@ flatten@^1.0.2:
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
 follow-redirects@^1.0.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
-  integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
+  version "1.14.7"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
+  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
 
 for-in@^1.0.1:
   version "1.0.2"
@@ -3077,9 +3078,10 @@ https-browserify@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-0.0.0.tgz#b3ffdfe734b2a3d4a9efd58e8654c91fce86eafd"
 
-"i18n-js@http://github.com/fnando/i18n-js/archive/v3.0.0.tar.gz":
+"i18n-js@https://github.com/fnando/i18n-js/archive/v3.0.0.tar.gz":
   version "0.0.0"
-  resolved "http://github.com/fnando/i18n-js/archive/v3.0.0.tar.gz#15901af4a5d07527c804106a0971c01d2f181068"
+  uid "15901af4a5d07527c804106a0971c01d2f181068"
+  resolved "https://github.com/fnando/i18n-js/archive/v3.0.0.tar.gz#15901af4a5d07527c804106a0971c01d2f181068"
 
 iconv-lite@0.4.19, iconv-lite@~0.4.13:
   version "0.4.19"
@@ -6134,11 +6136,12 @@ ua-parser-js@^0.7.9:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
   integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
 
-"uglify-es@git://github.com/mishoo/UglifyJS2#harmony":
-  version "3.1.10"
-  resolved "git://github.com/mishoo/UglifyJS2#bbf38dc9c00cedba6581c4ee92db984e2b24f670"
+"uglify-es@https://github.com/mishoo/UglifyJS2#harmony":
+  version "3.3.10"
+  uid "569757d14dbbe04f66af65d7bf0600b3a75efd96"
+  resolved "https://github.com/mishoo/UglifyJS2#569757d14dbbe04f66af65d7bf0600b3a75efd96"
   dependencies:
-    commander "~2.11.0"
+    commander "~2.14.1"
     source-map "~0.6.1"
 
 uglify-js@2.6.x, uglify-js@~2.6.0:
