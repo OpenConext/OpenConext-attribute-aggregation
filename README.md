@@ -9,7 +9,7 @@ OpenConext Attribute Aggregation
 
 ### [System Requirements](#system-requirements)
 
-- Java 8
+- Java 11
 - Maven 3
 - MySQL 5.5
 - npm
