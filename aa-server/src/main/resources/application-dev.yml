@@ -4,7 +4,7 @@ server:
   session:
     timeout: 28800
 
-attribute_authorities_config_path: classpath:/local.attributeAuthorities.yml
+attribute_authorities_config_path: classpath:/attributeAuthorities.yml
 authorization_access_token_url: https://authz.test2.surfconext.nl/oauth/token
 aggregate_cache_duration_milliseconds: -1
 
