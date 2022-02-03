@@ -20,20 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
-import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
-import static aa.aggregators.AttributeAggregator.ORCID;
+import static aa.aggregators.AttributeAggregator.*;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, value =
-    {"spring.profiles.active=no-csrf,aa-test, dev", "attribute_authorities_config_path=classpath:testAttributeAuthorities.yml"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        value = {"attribute_authorities_config_path=classpath:testAttributeAuthorities.yml"})
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
-
-    @Override
-    protected boolean isBasicAuthenticated() {
-        return true;
-    }
 
     @Test
     public void testAggregateWithArp() throws Exception {
@@ -41,10 +34,10 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         Map<String, List<ArpValue>> arp = new HashMap<>();
         arp.put(ORCID, Arrays.asList(new ArpValue("*", "aa1")));
         arp.put(EDU_PERSON_ENTITLEMENT, Arrays.asList(new ArpValue("nope", "aa1")));
-        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest( singletonList(input), arp);
+        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(singletonList(input), arp);
 
         RequestEntity<ArpAggregationRequest> requestEntity = new RequestEntity<>(arpAggregationRequest, headers, HttpMethod.POST,
-            new URI("http://localhost:" + port + "/aa/api/client/attribute/aggregation"));
+                new URI("http://localhost:" + port + "/aa/api/client/attribute/aggregation"));
 
         ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
 
@@ -65,10 +58,10 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void testAggregatedWithFaultyJson() throws Exception {
         String json = IOUtils.toString(new ClassPathResource("json/eb/faulty_request_eb.json").getURL(), Charset.defaultCharset());
         RequestEntity<String> requestEntity = new RequestEntity<>(json, headers, HttpMethod.POST,
-            new URI("http://localhost:" + port + "/aa/api/client/attribute/aggregation"));
+                new URI("http://localhost:" + port + "/aa/api/client/attribute/aggregation"));
 
         ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
-        assertEquals(500, re.getStatusCode().value());
+        assertEquals(400, re.getStatusCode().value());
 
     }
 

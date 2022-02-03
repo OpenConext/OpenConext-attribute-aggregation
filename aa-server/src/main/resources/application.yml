@@ -1,8 +1,10 @@
 server:
-  contextPath: /aa/api
+  servlet:
+    context-path: /aa/api
+    session:
+      timeout: 28800
   server-header:
-  session:
-    timeout: 28800
+
 
 attribute_authorities_config_path: classpath:/attributeAuthorities.yml
 authorization_access_token_url: https://authz.test2.surfconext.nl/oauth/token
@@ -42,12 +44,11 @@ spring:
     url: jdbc:mysql://localhost/aaserver?autoReconnect=true&useSSL=false
     username: root
     password:
-    tomcat:
-      test-on-borrow: true
-      validation-query: SELECT 1
-      remove-abandoned: true
   main:
     banner-mode: "off"
+  flyway:
+    validate-on-migrate: false
+    table: schema_version
 
 # In a multi master database setup toggle which machine is reponsible for cron jobs
 cron_job_responsible: true

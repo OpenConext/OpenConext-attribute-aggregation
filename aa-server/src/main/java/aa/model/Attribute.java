@@ -2,6 +2,7 @@ package aa.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -15,6 +16,7 @@ import javax.persistence.Transient;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Attribute implements Cloneable {
 
     private Long id;

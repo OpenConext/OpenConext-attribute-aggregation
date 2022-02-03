@@ -8,6 +8,6 @@ public class AuthorityConfigurationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetAuthorityById() throws Exception {
-        new AuthorityConfiguration(Collections.emptyList()).getAuthorityById("nope");
+        new AuthorityConfiguration().getAuthorityById("nope");
     }
 }

@@ -5,22 +5,26 @@ import aa.shibboleth.ShibbolethUserDetailService;
 import aa.shibboleth.mock.MockShibbolethFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -29,11 +33,16 @@ import java.util.List;
  * <p>
  * Protect the internal endpoints for EB with basic authentication.
  * <p>
- * Do not protect public endpoints like /health and /info
+ * Do not protect public endpoints like actuator/
  */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfigurer {
+
+    @Bean
+    PasswordEncoder getPasswordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -53,27 +62,22 @@ public class WebSecurityConfigurer {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                .requestMatchers().antMatchers("/client/**", "/redirect")
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .and()
-                .csrf()
-                .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
-                .and()
-                .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
-                .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
-                .addFilterBefore(
-                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean()),
-                    AbstractPreAuthenticatedProcessingFilter.class
-                )
-                .authorizeRequests()
-                .antMatchers("/client/**").hasRole("ADMIN");
+                    .csrf().disable()
+                    .requestMatchers()
+                    .antMatchers("/client/**", "/redirect")
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and()
+                    .addFilterBefore(
+                            new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean()),
+                            AbstractPreAuthenticatedProcessingFilter.class
+                    )
+                    .addFilterBefore(new SessionAliveFilter(), ShibbolethPreAuthenticatedProcessingFilter.class)
+                    .authorizeRequests()
+                    .antMatchers("/client/**").hasRole("USER");
 
-            if (environment.acceptsProfiles("no-csrf")) {
-                http.csrf().disable();
-            }
-            if (environment.acceptsProfiles("dev", "no-csrf")) {
+            if (environment.acceptsProfiles(Profiles.of("test"))) {
                 //we can't use @Profile, because we need to add it before the real filter
                 http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
@@ -111,7 +115,7 @@ public class WebSecurityConfigurer {
 
     @Configuration
     @Order
-    public static class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter  {
+    public static class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
         @Value("${security.internal_user_name}")
         private String attributeAggregationUserName;
@@ -121,7 +125,7 @@ public class WebSecurityConfigurer {
 
         @Override
         public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/health", "/info");
+            web.ignoring().antMatchers("/actuator/**");
         }
 
         @Override
@@ -146,7 +150,7 @@ public class WebSecurityConfigurer {
     }
 
     @Configuration
-    public class MvcConfig extends WebMvcConfigurerAdapter {
+    public class MvcConfig implements WebMvcConfigurer {
 
         @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -155,8 +159,7 @@ public class WebSecurityConfigurer {
 
         @Override
         public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-            super.configureContentNegotiation(configurer);
-            configurer.favorParameter(false).favorPathExtension(false);
+            configurer.favorParameter(false);
         }
 
     }
