@@ -11,3 +11,4 @@ aa-gui/dist
 aa-gui/coverage
 local.attributeAuthorities.yml
 application-dev.yml
+dependency.tree

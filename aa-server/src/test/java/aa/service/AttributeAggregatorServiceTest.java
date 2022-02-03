@@ -70,7 +70,9 @@ public class AttributeAggregatorServiceTest {
         attributeAuthorityConfiguration.setRequiredInputAttributes(Collections.singletonList(new RequiredInputAttribute(NAME_ID)));
 
         List<AttributeAuthorityConfiguration> authorities = singletonList(attributeAuthorityConfiguration);
-        AuthorityConfiguration authorityConfiguration = new AuthorityConfiguration(authorities);
+        AuthorityConfiguration authorityConfiguration = new AuthorityConfiguration();
+        authorityConfiguration.setAuthorities(authorities);
+
         TestingAttributeAggregator attributeAggregator = new TestingAttributeAggregator(attributeAuthorityConfiguration) {
             @Override
             public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {

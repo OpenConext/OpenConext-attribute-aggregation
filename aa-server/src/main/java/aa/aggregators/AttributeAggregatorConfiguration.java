@@ -35,12 +35,12 @@ import static java.util.stream.Collectors.toList;
 @Configuration
 public class AttributeAggregatorConfiguration {
 
-    private String authorizationAccessTokenUrl;
-    private String pseudoMailPostfix;
-    private AuthorityResolver authorityResolver;
-    private UserAttributeCache userAttributeCache;
-    private AccountRepository accountRepository;
-    private PseudoEmailRepository pseudoEmailRepository;
+    private final String authorizationAccessTokenUrl;
+    private final String pseudoMailPostfix;
+    private final AuthorityResolver authorityResolver;
+    private final UserAttributeCache userAttributeCache;
+    private final AccountRepository accountRepository;
+    private final PseudoEmailRepository pseudoEmailRepository;
 
     @Autowired
     public AttributeAggregatorConfiguration(@Value("${authorization_access_token_url}") String authorizationAccessTokenUrl,
@@ -58,13 +58,13 @@ public class AttributeAggregatorConfiguration {
     }
 
     @Bean
-    @Profile({"aa-test"})
+    @Profile({"test"})
     public AttributeAggregatorService testingAttributeAggregatorService() {
-        return getAttributeAggregatorService(config -> new TestingAttributeAggregator(config));
+        return getAttributeAggregatorService(TestingAttributeAggregator::new);
     }
 
     @Bean
-    @Profile({"!aa-test"})
+    @Profile({"!test"})
     public AttributeAggregatorService attributeAggregatorService() {
         return getAttributeAggregatorService(this::attributeAggregatorById);
     }

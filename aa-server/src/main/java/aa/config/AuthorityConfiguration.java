@@ -1,45 +1,29 @@
 package aa.config;
 
 import aa.model.AttributeAuthorityConfiguration;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class AuthorityConfiguration {
 
-    private Map<String, AttributeAuthorityConfiguration> authorities = new HashMap<>();
+    private List<AttributeAuthorityConfiguration> authorities = new ArrayList<>();
 
-    public AuthorityConfiguration() {
-    }
-
-    public AuthorityConfiguration(List<AttributeAuthorityConfiguration> authorities) {
-        setAuthorities(authorities);
-    }
-
-    public Collection<AttributeAuthorityConfiguration> getAuthorities() {
-        return authorities.values();
-    }
-
-    public void setAuthorities(List<AttributeAuthorityConfiguration> authorities) {
-        this.authorities = authorities.stream().collect(Collectors.toMap(AttributeAuthorityConfiguration::getId, Function.identity()));
+    public List<AttributeAuthorityConfiguration> getAuthorities() {
+        return authorities;
     }
 
     public AttributeAuthorityConfiguration getAuthorityById(String authorityId) {
-        AttributeAuthorityConfiguration attributeAuthorityConfiguration = authorities.get(authorityId);
-        if (attributeAuthorityConfiguration == null) {
-            throw new IllegalArgumentException("AttributeAuthority " + authorityId + " is not configured. Configured are " + authorities);
-        }
-        return attributeAuthorityConfiguration;
-    }
-
-    @Override
-    public String toString() {
-        return "AuthorityConfiguration{" +
-            "authorities=" + authorities +
-            '}';
+        return authorities.stream().filter(authority -> authority.getId().equals(authorityId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

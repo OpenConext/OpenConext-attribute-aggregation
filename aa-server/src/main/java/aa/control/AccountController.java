@@ -86,7 +86,8 @@ public class AccountController {
     }
 
     @GetMapping("/redirect")
-    public void redirect(HttpServletResponse response, FederatedUser federatedUser,
+    public void redirect(HttpServletResponse response,
+                         FederatedUser federatedUser,
                          @RequestParam("code") String code,
                          @RequestParam("state") String state) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {} and state {}", federatedUser.uid, code, state);
@@ -139,10 +140,8 @@ public class AccountController {
 
     @DeleteMapping("/internal/disconnect/{id}")
     public ResponseEntity<Map<String, String>> disconnect(@PathVariable("id") Long id) {
-        Account account = accountRepository.findOne(id);
-        if (account == null) {
-            throw new ResourceNotFoundException(String.format("Account %s not found", id));
-        }
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Account %s not found", id)));
         LOG.debug("Deleting account {}", account);
         accountRepository.delete(account);
         return ResponseEntity.ok(Collections.singletonMap("status", "OK"));

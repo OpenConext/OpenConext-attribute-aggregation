@@ -53,7 +53,7 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
         String uid = getUserAttributeSingleValue(input, UID);
         AttributeAuthorityConfiguration configuration = super.getAttributeAuthorityConfiguration();
 
-        if (StringUtils.isEmpty(this.token)) {
+        if (!StringUtils.hasText(this.token)) {
             this.token = obtainToken();
         }
         HttpHeaders headers = new HttpHeaders();

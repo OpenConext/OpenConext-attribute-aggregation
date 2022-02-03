@@ -21,7 +21,7 @@ public class SurfCrmAttributeAggregator extends ManageAttributeAggregator {
     @Override
     protected List<UserAttribute> processResult(List<Map> result) {
         String institutionGuid = getMetaDataValue(result, "coin:institution_guid");
-        return StringUtils.isEmpty(institutionGuid) ? Collections.emptyList() :
+        return !StringUtils.hasText(institutionGuid) ? Collections.emptyList() :
                 mapValuesToUserAttribute(SURF_CRM_ID, Collections.singletonList(institutionGuid));
     }
 

@@ -1,11 +1,17 @@
 package aa;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.TraceWebFilterAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.audit.AuditAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.trace.http.HttpTraceAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 
-@SpringBootApplication(exclude = {TraceWebFilterAutoConfiguration.class, MetricFilterAutoConfiguration.class})
+@SpringBootApplication(exclude = {
+        FreeMarkerAutoConfiguration.class,
+        AuditAutoConfiguration.class,
+        HttpTraceAutoConfiguration.class,
+        MetricsAutoConfiguration.class})
 public class Application {
 
     public static void main(String[] args) {

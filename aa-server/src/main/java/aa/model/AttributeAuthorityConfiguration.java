@@ -3,29 +3,29 @@ package aa.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
+@NoArgsConstructor
 public class AttributeAuthorityConfiguration {
 
     private String id;
     private String description;
     private String endpoint;
     private String user;
-    @JsonIgnore
-    private String password;
     private List<Attribute> attributes;
     private List<RequiredInputAttribute> requiredInputAttributes = new ArrayList<>();
     private int timeOut;
     private String validationRegExp;
-
-    public AttributeAuthorityConfiguration() {
-    }
+    @JsonIgnore
+    private String password;
 
     public AttributeAuthorityConfiguration(String id) {
         this.id = id;
