@@ -16,7 +16,7 @@ public class ApplicationTest extends AbstractIntegrationTest {
 
     @Test
     public void startUp() {
-        ResponseEntity<Map> response = restTemplate.getForEntity("http://localhost:" + port + "/aa/api/actuator/health", Map.class);
+        ResponseEntity<Map> response = restTemplate.getForEntity("http://localhost:" + port + "/aa/api/internal/health", Map.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(response.getBody().get("status"), "UP");
     }
