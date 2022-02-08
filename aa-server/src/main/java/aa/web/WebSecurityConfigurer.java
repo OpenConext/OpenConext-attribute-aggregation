@@ -21,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -102,13 +101,13 @@ public class WebSecurityConfigurer {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                .antMatcher("/deprovision/**")
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf().disable()
-                .addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class)
-                .authorizeRequests()
-                .antMatchers("/**").hasRole("USER");
+                    .antMatcher("/deprovision/**")
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .csrf().disable()
+                    .addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class)
+                    .authorizeRequests()
+                    .antMatchers("/**").hasRole("USER");
         }
 
     }
@@ -124,27 +123,27 @@ public class WebSecurityConfigurer {
         private String attributeAggregationPassword;
 
         @Override
-        public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/actuator/**");
+        public void configure(WebSecurity web) {
+            web.ignoring().antMatchers("/internal/health", "/internal/info");
         }
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http
-                .antMatcher("/**")
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf()
-                .disable()
-                .addFilterBefore(
-                    new BasicAuthenticationFilter(
-                        new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
-                    BasicAuthenticationFilter.class
-                )
-                .authorizeRequests()
-                .antMatchers("/internal/**").hasRole("ADMIN")
-                .antMatchers("/**").hasRole("USER");
+                    .antMatcher("/**")
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .csrf()
+                    .disable()
+                    .addFilterBefore(
+                            new BasicAuthenticationFilter(
+                                    new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
+                            BasicAuthenticationFilter.class
+                    )
+                    .authorizeRequests()
+                    .antMatchers("/internal/**").hasRole("ADMIN")
+                    .antMatchers("/**").hasRole("USER");
         }
 
     }

@@ -30,9 +30,6 @@ api:
 pseudo:
   mail_postfix: surfconext.nl
 
-flyway:
-  table: schema_version
-
 spring:
   jpa:
     properties:
@@ -56,13 +53,21 @@ pseudo_emails_retention_days_period: 90
 
 
 # We disable all endpoints except health for the load-balancer and info for git information.
-endpoints:
-  enabled: false
+management:
   health:
-    enabled: true
-    sensitive: false
+    mail:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+      base-path: "/internal"
+  endpoint:
+    info:
+      enabled: true
   info:
-    enabled: true
+    git:
+      mode: full
 
 # used by the git plugin
 info:
