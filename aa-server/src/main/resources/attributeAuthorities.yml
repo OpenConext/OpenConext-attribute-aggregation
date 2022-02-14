@@ -9,7 +9,7 @@ authorities:
       attributes: [
         {
           name: "urn:mace:dir:attribute-def:mail",
-          description: "The pseudo eemail address of the user.",
+          description: "The pseudo email address of the user.",
           type: "string",
           example: "john.doe@example.org"
         }
