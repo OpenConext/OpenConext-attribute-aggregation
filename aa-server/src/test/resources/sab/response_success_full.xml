@@ -35,6 +35,10 @@
                         <saml:AttributeValue xsi:type="xs:string">ad93daef-0911-e511-80d0-005056956c1a
                         </saml:AttributeValue>
                     </saml:Attribute>
+                    <saml:Attribute Name="urn:oid:1.3.6.1.4.1.1076.20.100.10.50.4"
+                                    NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                        <saml:AttributeValue xsi:type="xs:string">+31887873000</saml:AttributeValue>
+                    </saml:Attribute>
                 </saml:AttributeStatement>
             </saml:Assertion>
         </samlp:Response>
