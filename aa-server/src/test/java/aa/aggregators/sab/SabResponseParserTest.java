@@ -33,6 +33,7 @@ public class SabResponseParserTest {
         Map<SabInfoType, List<String>> result = doParse("sab/response_success_full.xml");
         assertEquals(Arrays.asList("SURFNET"), result.get(SabInfoType.ORGANIZATION));
         assertEquals(Arrays.asList("ad93daef-0911-e511-80d0-005056956c1a"), result.get(SabInfoType.GUID));
+        assertEquals(Arrays.asList("+31887873000"), result.get(SabInfoType.MOBILE));
     }
 
     @Test(expected = XMLStreamException.class)

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static aa.aggregators.sab.SabInfoType.GUID;
+import static aa.aggregators.sab.SabInfoType.MOBILE;
 import static aa.aggregators.sab.SabInfoType.ORGANIZATION;
 import static aa.aggregators.sab.SabInfoType.ROLE;
 import static java.util.stream.IntStream.range;
@@ -38,7 +39,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 public class SabResponseParser {
 
     public Map<SabInfoType, List<String>> parse(Reader soap) throws XMLStreamException {
-        //despite it's name, the XMLInputFactoryImpl is not thread safe
+        //despite its name, the XMLInputFactoryImpl is not thread safe
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
         XMLStreamReader reader = factory.createXMLStreamReader(soap);

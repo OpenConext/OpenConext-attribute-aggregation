@@ -12,7 +12,11 @@ public enum SabInfoType {
 
     GUID(
         "urn:mace:surfnet.nl:surfnet.nl:sab:organizationGUID:",
-        "urn:oid:1.3.6.1.4.1.1076.20.100.10.50.2");
+        "urn:oid:1.3.6.1.4.1.1076.20.100.10.50.2"),
+
+    MOBILE(
+        "urn:mace:surfnet.nl:surfnet.nl:sab:mobile:",
+        "urn:oid:1.3.6.1.4.1.1076.20.100.10.50.4");
 
     private final String prefix;
     private final String urn;

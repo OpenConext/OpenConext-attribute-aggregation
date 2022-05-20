@@ -24,6 +24,11 @@
                 Name="urn:oid:1.3.6.1.4.1.1076.20.100.10.50.2"
                 FriendlyName="organisatieGUID">
             </saml:Attribute>
+            <saml:Attribute
+                NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+                Name="urn:oid:1.3.6.1.4.1.1076.20.100.10.50.4"
+                FriendlyName="mobile">
+            </saml:Attribute>
         </samlp:AttributeQuery>
     </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
