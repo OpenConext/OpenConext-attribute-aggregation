@@ -48,7 +48,7 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
     public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String userId = getUserAttributeSingleValue(input, NAME_ID);
         String request = request(userId);
-        this.httpHeaders.setContentType(new MediaType("application", "soap+xml"));
+        this.httpHeaders.setContentType(new MediaType("text", "xml"));
         ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request, this.httpHeaders), String.class);
         Map<SabInfoType, List<String>> result;
         String body = null;
