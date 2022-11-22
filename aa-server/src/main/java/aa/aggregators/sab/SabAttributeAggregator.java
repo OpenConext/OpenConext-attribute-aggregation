@@ -10,7 +10,9 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import javax.xml.stream.XMLStreamException;
@@ -29,6 +31,7 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
 
     private static final DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC);
     private final String template;
+    private HttpHeaders httpHeaders = new HttpHeaders();
 
     private final SabResponseParser parser = new SabResponseParser();
 
@@ -45,7 +48,8 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
     public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String userId = getUserAttributeSingleValue(input, NAME_ID);
         String request = request(userId);
-        ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request), String.class);
+        this.httpHeaders.setContentType(new MediaType("application", "soap+xml"));
+        ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request, this.httpHeaders), String.class);
         Map<SabInfoType, List<String>> result;
         String body = null;
         try {
