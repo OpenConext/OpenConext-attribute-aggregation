@@ -49,6 +49,7 @@ public class SabAttributeAggregator extends AbstractAttributeAggregator {
         String userId = getUserAttributeSingleValue(input, NAME_ID);
         String request = request(userId);
         this.httpHeaders.setContentType(new MediaType("text", "xml"));
+        this.httpHeaders.set("SOAPAction", "http://www.oasis-open.org/committees/security");
         ResponseEntity<String> response = getRestTemplate().exchange(endpoint(), HttpMethod.POST, new HttpEntity<>(request, this.httpHeaders), String.class);
         Map<SabInfoType, List<String>> result;
         String body = null;
