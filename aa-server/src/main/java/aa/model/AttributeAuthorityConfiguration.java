@@ -18,9 +18,15 @@ public class AttributeAuthorityConfiguration {
 
     private String id;
     private String description;
+    private AggregatorType type;
     private String endpoint;
     private String user;
+    private String requestMethod;
+    private List<Header> headers;
+    private List<PathParam> pathParams;
+    private List<RequestParam> requestParams;
     private List<Attribute> attributes;
+    private List<Mapping> mappings;
     private List<RequiredInputAttribute> requiredInputAttributes = new ArrayList<>();
     private int timeOut;
     private String validationRegExp;

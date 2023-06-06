@@ -4,11 +4,10 @@ import aa.aggregators.ala.AlaAttributeAggregator;
 import aa.aggregators.eduid.EduIdAttributeAggregator;
 import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.aggregators.idin.IdinAttributeAggregator;
-import aa.aggregators.manage.ManageAttributeAggregator;
-import aa.aggregators.manage.ManageConfig;
 import aa.aggregators.manage.SurfCrmAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.pseudo.PseudoEmailAggregator;
+import aa.aggregators.rest.RestAttributeAggregator;
 import aa.aggregators.sab.SabAttributeAggregator;
 import aa.aggregators.sbs.SBSAttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
@@ -16,6 +15,7 @@ import aa.aggregators.voot.VootAttributeAggregator;
 import aa.cache.UserAttributeCache;
 import aa.config.AuthorityConfiguration;
 import aa.config.AuthorityResolver;
+import aa.model.AggregatorType;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.repository.AccountRepository;
 import aa.repository.PseudoEmailRepository;
@@ -105,6 +105,13 @@ public class AttributeAggregatorConfiguration {
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);
                 } else {
+                    // Check if there is a type that can be used
+                    if (null != configuration.getType()) {
+                        if (configuration.getType() == AggregatorType.rest) {
+                            return new RestAttributeAggregator(configuration);
+                        }
+                    }
+
                     //We don't want to fail here as it might be that new AA's are already defined but not yet implemented
                     return null;
                 }
