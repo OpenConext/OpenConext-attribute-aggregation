@@ -111,6 +111,73 @@ New Attribute Authorities first must be added and configured in `attributeAuthor
 
 To actually use the new authority in the test/acc/prod environment it also needs to be configured in OpenConext-deploy [attributeAuthorities.yml.j2](https://github.com/OpenConext/OpenConext-deploy/blob/master/roles/attribute-aggregation-server/templates/attributeAuthorities.yml.j2).
 
+#### REST attribute aggregator
+This reusable aggregator can be used for retrieving data from a REST endpoint and supports various options for configuring a HTTP request to that endpoint e.g. an API key.
+Using this type does not require adding an authority implementation.
+
+New entries are added in attributeAuthorities.yml.
+
+Below is an example of the full configuration with explanations for the options:
+
+    - {
+        id: "<id>",
+        description: "<description>",
+        endpoint: "<endpoint>",
+        type: "rest",
+        // Username for basic authentication
+        user: "",
+        // Password for basic authentication
+        password: "",
+        // Headers to add in the HTTP request
+        headers: [
+            {
+              "key": "<key>",
+              "value": "<value>",
+            }
+        ],
+        // Path parameters to use in the value for 'endpoint'
+        // Wildcards can be added with %s e.g. https://endpoint/%s/subpath/%s...
+        // The index below will correspond to the order in which the wildcards are replaced
+        // sourceAttribute refers to the attribute received from EngineBlock to use as the substitute
+        pathParams: [
+        {
+            "index": 0,
+            "sourceAttribute": "urn:mace:terena.org:attribute-def:schacHomeOrganization"
+        },
+        {
+            "index": 1,
+            "sourceAttribute": "urn:mace:dir:attribute-def:uid"
+        }
+        ],
+        // Options are 'GET', 'POST', 'PUT', 'DELETE', default is 'GET'
+        requestMethod: 'GET',
+        // Request parameters to use in the HTTP request, will be appended as ?name=value&...
+        // sourceAttribute refers to the attribute received from EngineBlock to use as the substitute
+        requestParams: [
+            {
+                "name": "<name>",
+                "sourceAttribute": "urn:mace:terena.org:attribute-def:schacHomeOrganization"
+            }
+        ],
+        // Mapping to apply to the response received from the HTTP request
+        // responseKey corresponds to the field in the response object of which to retrieve the value
+        // targetAttribute corresponds to the attribute to send the value as in the result of aggregation
+        mappings: [
+        {
+            "responseKey": "myResponseKey",
+            "targetAttribute": "myTargetAttribute"
+        }
+        ],
+        timeOut: 15000,
+        attributes: [],
+        requiredInputAttributes: [
+            {
+                name: "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+            }
+        ],
+        validationRegExp: "[a-zA-Z0-9]*"
+    }
+
 ### [Configuration and deployment](#configuration-and-deployment)
 
 On its classpath, the application has an [application.yml](aa-server/src/main/resources/application.yml) file that
