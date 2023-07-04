@@ -8,6 +8,8 @@ import aa.model.UserAttribute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RestAttributeAggregator extends AbstractAttributeAggregator {
 
@@ -40,6 +43,9 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator {
         headers.setContentType(MediaType.APPLICATION_JSON);
         if (null != configuration.getHeaders()) {
             configuration.getHeaders().forEach(header -> headers.add(header.getKey(), header.getValue()));
+        }
+        if (configuration.getUser() != null && configuration.getPassword() != null) {
+            headers.setBasicAuth(configuration.getUser(), configuration.getPassword());
         }
         // Process path parameters
         String endpoint = configuration.getEndpoint();
@@ -81,23 +87,31 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator {
             return result;
         }
 
-        JsonNode node;
+        ArrayNode arrayNode;
         try {
-            node = objectMapper.readTree(data);
+            JsonNode  node = objectMapper.readTree(data);
+            arrayNode = node.isArray() ? (ArrayNode) node : new ArrayNode(JsonNodeFactory.instance, List.of(node));
         } catch (JsonProcessingException exception) {
             LOG.warn("Can not parse response from REST endpoint, returning empty enriched attribute list");
             exception.printStackTrace();
             return result;
         }
-
-        configuration.getMappings().forEach(mapping -> {
-            JsonNode jsonNode = node.findValue(mapping.getResponseKey());
-            if (null != jsonNode) {
-                result.add(createAttribute(configuration.getId(), mapping.getTargetAttribute(), jsonNode.asText()));
-            }
-        });
-
-        return result;
+        for (int i = 0; i < arrayNode.size(); i++) {
+            JsonNode node = arrayNode.get(i);
+            configuration.getMappings().forEach(mapping -> {
+                JsonNode jsonNode = node.findValue(mapping.getResponseKey());
+                if (jsonNode != null) {
+                    result.add(createAttribute(configuration.getId(), mapping.getTargetAttribute(), jsonNode.asText()));
+                }
+            });
+        }
+        Map<String, List<UserAttribute>> groupedBy = result.stream().collect(Collectors.groupingBy(UserAttribute::getName));
+        return groupedBy.entrySet().stream().map(entry ->
+                new UserAttribute(
+                        entry.getKey(),
+                        entry.getValue().stream().map(UserAttribute::getValues).flatMap(Collection::stream).collect(Collectors.toList()),
+                        configuration.getId())
+        ).collect(Collectors.toList());
     }
 
     private UserAttribute createAttribute(String sourceId, String key, String value) {

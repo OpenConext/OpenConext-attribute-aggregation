@@ -107,11 +107,10 @@ public class AttributeAggregatorConfiguration {
                 } else {
                     // Check if there is a type that can be used
                     if (null != configuration.getType()) {
-                        if (configuration.getType() == AggregatorType.rest) {
+                        if (AggregatorType.rest.equals(configuration.getType() )) {
                             return new RestAttributeAggregator(configuration);
                         }
                     }
-
                     //We don't want to fail here as it might be that new AA's are already defined but not yet implemented
                     return null;
                 }
