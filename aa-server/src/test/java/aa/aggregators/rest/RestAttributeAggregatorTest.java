@@ -165,10 +165,10 @@ public class RestAttributeAggregatorTest {
                 any(ParameterizedTypeReference.class)
         );
         assertEquals(2, result.size());
-        assertEquals("target1", result.get(0).getName());
-        assertEquals("value1", result.get(0).getValues().get(0));
-        assertEquals("target2", result.get(1).getName());
-        assertEquals("value2", result.get(1).getValues().get(0));
+        String value1 = result.stream().filter(userAttribute -> userAttribute.getName().equals("target1")).findFirst().get().getValues().get(0);
+        assertEquals("value1", value1);
+        String value2 = result.stream().filter(userAttribute -> userAttribute.getName().equals("target2")).findFirst().get().getValues().get(0);
+        assertEquals("value2", value2);
     }
 
     @Test
