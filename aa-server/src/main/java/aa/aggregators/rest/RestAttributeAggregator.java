@@ -15,6 +15,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
@@ -79,37 +81,45 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator {
                 }).getBody();
     }
 
+    @SuppressWarnings("unchecked")
     private List<UserAttribute> mapToAttributes(String data, AttributeAuthorityConfiguration configuration) {
         List<UserAttribute> result = new ArrayList<>();
 
-        if (null == configuration.getMappings() || configuration.getMappings().isEmpty()) {
-            LOG.warn("No configured mappings found for retrieved data from REST endpoint, returning empty enriched attribute list");
-            return result;
+        if (CollectionUtils.isEmpty(configuration.getMappings())) {
+            throw new IllegalArgumentException("No configured mappings found for retrieved data from REST endpoint, returning empty enriched attribute list");
         }
 
-        ArrayNode arrayNode;
+        List<Map<String, Object>> rootList;
         try {
-            JsonNode  node = objectMapper.readTree(data);
-            arrayNode = node.isArray() ? (ArrayNode) node : new ArrayNode(JsonNodeFactory.instance, List.of(node));
-        } catch (JsonProcessingException exception) {
-            LOG.warn("Can not parse response from REST endpoint, returning empty enriched attribute list");
-            exception.printStackTrace();
-            return result;
-        }
-        for (int i = 0; i < arrayNode.size(); i++) {
-            JsonNode node = arrayNode.get(i);
-            configuration.getMappings().forEach(mapping -> {
-                JsonNode jsonNode = node.findValue(mapping.getResponseKey());
-                if (jsonNode != null) {
-                    result.add(createAttribute(configuration.getId(), mapping.getTargetAttribute(), jsonNode.asText()));
+            Object obj = objectMapper.readValue(data, Object.class);
+            if (StringUtils.hasText(configuration.getRootListName())) {
+                rootList = (List<Map<String, Object>>) ((Map) obj).get(configuration.getRootListName());
+            } else {
+                if (obj instanceof List) {
+                    rootList = (List<Map<String, Object>>) obj;
+                } else {
+                    rootList = List.of((Map<String, Object>) obj);
                 }
-            });
+            }
+        } catch (JsonProcessingException exception) {
+            LOG.error("Can not parse response from REST endpoint, returning empty enriched attribute list", exception);
+            return Collections.emptyList();
         }
+        rootList.forEach(m -> configuration.getMappings().forEach(mapping -> {
+            Object o = m.get(mapping.getResponseKey());
+            if (o != null) {
+                result.add(createAttribute(configuration.getId(), mapping.getTargetAttribute(), o.toString()));
+            }
+        }));
+        //Make sure that all values with the same name are grouped together
         Map<String, List<UserAttribute>> groupedBy = result.stream().collect(Collectors.groupingBy(UserAttribute::getName));
         return groupedBy.entrySet().stream().map(entry ->
                 new UserAttribute(
                         entry.getKey(),
-                        entry.getValue().stream().map(UserAttribute::getValues).flatMap(Collection::stream).collect(Collectors.toList()),
+                        entry.getValue().stream()
+                                .map(UserAttribute::getValues)
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.toList()),
                         configuration.getId())
         ).collect(Collectors.toList());
     }

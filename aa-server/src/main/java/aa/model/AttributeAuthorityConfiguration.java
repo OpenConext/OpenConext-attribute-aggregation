@@ -22,6 +22,7 @@ public class AttributeAuthorityConfiguration {
     private String endpoint;
     private String user;
     private String requestMethod;
+    private String rootListName;
     private List<Header> headers;
     private List<PathParam> pathParams;
     private List<RequestParam> requestParams;
@@ -42,6 +43,4 @@ public class AttributeAuthorityConfiguration {
         this.attributes = attributes;
         this.validationRegExp = validationRegExp;
     }
-
-
 }
