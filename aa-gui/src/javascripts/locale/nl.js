@@ -65,7 +65,10 @@ I18n.translations.nl = {
         name: "Naam",
         description: "Omschrijving",
         type: "Type",
-        example: "Voorbeeld"
+        example: "Voorbeeld",
+        pathParams: "Path parameters",
+        requestParams: "Request parameters",
+        mappings: "Mappings"
     },
 
     playground: {

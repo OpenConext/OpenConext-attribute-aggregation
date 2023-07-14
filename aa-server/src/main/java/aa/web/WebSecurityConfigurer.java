@@ -76,7 +76,7 @@ public class WebSecurityConfigurer {
                     .authorizeRequests()
                     .antMatchers("/client/**").hasRole("USER");
 
-            if (environment.acceptsProfiles(Profiles.of("test"))) {
+            if (environment.acceptsProfiles(Profiles.of("test", "mock"))) {
                 //we can't use @Profile, because we need to add it before the real filter
                 http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
             }

@@ -66,7 +66,10 @@ I18n.translations.en = {
         name: "Name",
         description: "Description",
         type: "Type",
-        example: "Example"
+        example: "Example",
+        pathParams: "Path parameters",
+        requestParams: "Request parameters",
+        mappings: "Mappings"
     },
 
     playground: {

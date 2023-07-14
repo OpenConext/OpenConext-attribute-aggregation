@@ -3,7 +3,7 @@ import React from "react";
 import I18n from "i18n-js";
 
 import {authorityConfiguration} from "../api";
-import {stop} from "../utils/utils";
+import {isEmpty, stop} from "../utils/utils";
 
 const attributeKeys = ["description", "type", "example"];
 
@@ -57,6 +57,33 @@ export default class AuthorityConfiguration extends React.PureComponent {
                     <li key={authority.id + "-" + attr.name}>{attr.name}</li>
                 )}
                 </ul>
+                {!isEmpty(authority.pathParams) &&
+                    <div>
+                        <span>{I18n.t("authority.pathParams")}</span>
+                        <ul>
+                            {authority.pathParams.map((param, index) =>
+                                <li key={index}>{param.sourceAttribute}</li>
+                            )}
+                        </ul>
+                    </div>}
+                {!isEmpty(authority.requestParams) &&
+                    <div>
+                        <span>{I18n.t("authority.requestParams")}</span>
+                        <ul>
+                            {authority.requestParams.map((param, index) =>
+                                <li key={index}>{param.name}</li>
+                            )}
+                        </ul>
+                    </div>}
+                {!isEmpty(authority.mappings) &&
+                    <div>
+                        <span>{I18n.t("authority.mappings")}</span>
+                        <ul>
+                            {authority.mappings.map((mapping, index) =>
+                                <li key={index}>{mapping.responseKey + " => " + mapping.targetAttribute}</li>
+                            )}
+                        </ul>
+                    </div>}
                 {this.renderAttributes(authority.attributes)}
                 <span/>
             </div>
@@ -66,7 +93,7 @@ export default class AuthorityConfiguration extends React.PureComponent {
     renderAttributes = attributes =>
         <div>
             {attributes.map(this.renderAttribute)}
-        </div>
+        </div>;
 
     renderAttribute(attribute, index) {
         const valueToString = val => val !== undefined && val !== null ? val.toString() : "";
