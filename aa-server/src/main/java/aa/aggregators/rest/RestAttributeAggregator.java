@@ -1,15 +1,10 @@
 package aa.aggregators.rest;
 
 import aa.aggregators.AbstractAttributeAggregator;
-import aa.model.ArpValue;
-import aa.model.AttributeAuthorityConfiguration;
-import aa.model.PathParam;
-import aa.model.UserAttribute;
+import aa.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import io.restassured.path.json.JsonPath;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RestAttributeAggregator extends AbstractAttributeAggregator {
 
@@ -83,35 +77,41 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator {
 
     @SuppressWarnings("unchecked")
     private List<UserAttribute> mapToAttributes(String data, AttributeAuthorityConfiguration configuration) {
-        List<UserAttribute> result = new ArrayList<>();
-
         if (CollectionUtils.isEmpty(configuration.getMappings())) {
             throw new IllegalArgumentException("No configured mappings found for retrieved data from REST endpoint, returning empty enriched attribute list");
         }
 
+        List<UserAttribute> result = new ArrayList<>();
         List<Map<String, Object>> rootList;
         try {
             Object obj = objectMapper.readValue(data, Object.class);
             if (StringUtils.hasText(configuration.getRootListName())) {
-                rootList = (List<Map<String, Object>>) ((Map) obj).get(configuration.getRootListName());
+                obj = JsonPath.from(data).get(configuration.getRootListName());
+            }
+
+            if (obj instanceof List) {
+                rootList = (List<Map<String, Object>>) obj;
             } else {
-                if (obj instanceof List) {
-                    rootList = (List<Map<String, Object>>) obj;
-                } else {
-                    rootList = List.of((Map<String, Object>) obj);
-                }
+                rootList = List.of((Map<String, Object>) obj);
             }
         } catch (JsonProcessingException exception) {
             LOG.error("Can not parse response from REST endpoint, returning empty enriched attribute list", exception);
             return Collections.emptyList();
         }
         rootList.forEach(m -> configuration.getMappings().forEach(mapping -> {
+            // Check if filter is present and applies
+            MappingFilter filter = mapping.getFilter();
+            if (null != filter) {
+                if (!filter.getValue().equals(m.get(filter.getKey()))) {
+                    return;
+                }
+            }
             Object o = m.get(mapping.getResponseKey());
             if (o != null) {
                 result.add(createAttribute(configuration.getId(), mapping.getTargetAttribute(), o.toString()));
             }
         }));
-        //Make sure that all values with the same name are grouped together
+        // Make sure that all values with the same name are grouped together
         Map<String, List<UserAttribute>> groupedBy = result.stream().collect(Collectors.groupingBy(UserAttribute::getName));
         return groupedBy.entrySet().stream().map(entry ->
                 new UserAttribute(

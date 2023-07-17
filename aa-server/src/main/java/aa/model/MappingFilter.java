@@ -9,12 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Mapping {
+public class MappingFilter {
 
-    private String responseKey;
+    private String key;
 
-    private String targetAttribute;
-
-    private MappingFilter filter;
+    private String value;
 
 }

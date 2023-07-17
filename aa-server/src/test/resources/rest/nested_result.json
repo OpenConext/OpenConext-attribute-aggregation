@@ -1,0 +1,12 @@
+{
+  "records": [
+    {
+      "field1": "value1",
+      "field2": {
+        "subField1": "subValue1",
+        "subField2": "subValue2"
+      }
+    }
+  ],
+  "count": 1
+}
