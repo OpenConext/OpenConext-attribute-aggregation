@@ -45,7 +45,7 @@ public class AccessAttributeAggregatorTest {
         configuration.setRequiredInputAttributes(List.of(new RequiredInputAttribute(NAME_ID), new RequiredInputAttribute(SP_ENTITY_ID)));
         configuration.setPathParams(Arrays.asList(new PathParam(1, NAME_ID)));
         configuration.setRequestParams(List.of(new RequestParam("SPentityID","SPentityID")));
-        configuration.setMappings(List.of(new Mapping("id", IS_MEMBER_OF)));
+        configuration.setMappings(List.of(new Mapping("id", IS_MEMBER_OF, null)));
         subject = new RestAttributeAggregator(configuration);
     }
 

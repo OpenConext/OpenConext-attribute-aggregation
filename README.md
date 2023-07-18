@@ -158,7 +158,10 @@ Below is an example of the full configuration with explanations for the options:
                 "name": "<name>",
                 "sourceAttribute": "urn:mace:terena.org:attribute-def:schacHomeOrganization"
             }
-        ],
+        ],x
+        // Optional: specify node from API response for which to apply mapping for, by default the root node is used.
+        // Nesting is possible using dot notation e.g field.nestedField1[0].nestedField2 etc.
+        rootListName: "<node name>",
         // Mapping to apply to the response received from the HTTP request
         // responseKey corresponds to the field in the response object of which to retrieve the value
         // targetAttribute corresponds to the attribute to send the value as in the result of aggregation
@@ -166,6 +169,13 @@ Below is an example of the full configuration with explanations for the options:
         {
             "responseKey": "myResponseKey",
             "targetAttribute": "myTargetAttribute"
+            // Optional: filter to search for specific node relative to the node used as root 
+            // (after applying rootListName if present). Useful in case of searching for value 
+            // where other field equals another value. 
+            "filter": {
+                "key": "<key>",
+                "value": "<value>"
+            }
         }
         ],
         timeOut: 15000,
