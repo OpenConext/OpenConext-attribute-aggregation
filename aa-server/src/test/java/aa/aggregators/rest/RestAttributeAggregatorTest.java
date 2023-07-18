@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -42,10 +41,23 @@ public class RestAttributeAggregatorTest {
         configuration = new AttributeAuthorityConfiguration("domain1");
         configuration.setEndpoint("https://domain1.com");
         configuration.setTimeOut(15000);
-        configuration.setMappings(List.of(new Mapping("dummy", "dummy", null)));
+        configuration.setMappings(List.of(new Mapping("dummy", "dummy", new MappingFilter())));
         configuration.setRequestMethod("GET");
         subject = new RestAttributeAggregator(configuration);
         ReflectionTestUtils.setField(subject, "restTemplate", restTemplate);
+    }
+
+    @Test
+    void aggregateEmptyMappings() {
+        configuration.setMappings(Collections.emptyList());
+        List<UserAttribute> input = List.of(
+                new UserAttribute("attribute1", Collections.singletonList("value1")),
+                new UserAttribute("attribute2", Collections.singletonList("value2"))
+        );
+        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .thenReturn(ResponseEntity.ok("response"));
+
+        assertThrows(IllegalArgumentException.class, () -> subject.aggregate(input, Collections.emptyMap()));
     }
 
     @Test
@@ -244,6 +256,46 @@ public class RestAttributeAggregatorTest {
         assertEquals(1, result.size());
         assertEquals(1, result.get(0).getValues().size());
         assertEquals("value3", result.get(0).getValues().get(0));
+    }
+
+    @Test
+    void aggregateDoNotApplyEmptyFilter() throws IOException {
+        MappingFilter filter = new MappingFilter();
+        filter.setKey("");
+        filter.setValue("value");
+
+        configuration.setRootListName("records");
+        configuration.setRequestParams(new ArrayList<>(List.of(
+                new RequestParam("param1", "attribute1"),
+                new RequestParam("param2", "attribute2")
+        )));
+        configuration.setMappings(List.of(
+                new Mapping("field1", "target1", filter)
+        ));
+        List<UserAttribute> input = List.of(
+                new UserAttribute("attribute1", Collections.singletonList("value1")),
+                new UserAttribute("attribute2", Collections.singletonList("value2"))
+        );
+        Object o = objectMapper
+                .readValue(new ClassPathResource("rest/multiple_result.json").getInputStream(), Object.class);
+        JsonNode apiResponse = objectMapper
+                .readValue(new ClassPathResource("rest/multiple_result.json").getInputStream(), JsonNode.class);
+        String stringResponse = objectMapper.writeValueAsString(apiResponse);
+        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .thenReturn(ResponseEntity.ok(stringResponse));
+
+        List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
+
+        verify(restTemplate, times(1)).exchange(
+                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(HttpMethod.GET),
+                any(),
+                any(ParameterizedTypeReference.class)
+        );
+        assertEquals(1, result.size());
+        assertEquals(2, result.get(0).getValues().size());
+        assertEquals("value1", result.get(0).getValues().get(0));
+        assertEquals("value3", result.get(0).getValues().get(1));
     }
 
     @Test

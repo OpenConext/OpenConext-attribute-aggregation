@@ -101,10 +101,8 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator {
         rootList.forEach(m -> configuration.getMappings().forEach(mapping -> {
             // Check if filter is present and applies
             MappingFilter filter = mapping.getFilter();
-            if (null != filter) {
-                if (!filter.getValue().equals(m.get(filter.getKey()))) {
-                    return;
-                }
+            if (null != filter && StringUtils.hasText(filter.getKey()) && !filter.getValue().equals(m.get(filter.getKey()))) {
+                return;
             }
             Object o = m.get(mapping.getResponseKey());
             if (o != null) {
