@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.scheduling.TaskScheduler;
 
 import java.io.IOException;
 import java.util.Map;
@@ -33,7 +34,8 @@ public class AttributeAggregatorConfigurationTest {
             new AuthorityResolver(new DefaultResourceLoader(), configFileLocation),
             new NoopUserAttributeCache(),
             Mockito.mock(AccountRepository.class),
-            Mockito.mock(PseudoEmailRepository.class)
+            Mockito.mock(PseudoEmailRepository.class),
+            Mockito.mock(TaskScheduler.class)
         );
     }
 

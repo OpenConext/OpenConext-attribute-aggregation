@@ -1,6 +1,7 @@
 package aa.aggregators;
 
 import aa.model.AttributeAuthorityConfiguration;
+import aa.model.Cache;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
 import org.apache.http.auth.AuthScope;
@@ -178,5 +179,10 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
                     pattern);
         }
         return result;
+    }
+
+    public boolean cachingEnabled() {
+        Cache cacheConfig = attributeAuthorityConfiguration.getCache();
+        return null != cacheConfig && Boolean.TRUE.equals(cacheConfig.getEnabled());
     }
 }
