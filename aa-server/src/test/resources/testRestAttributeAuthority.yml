@@ -1,0 +1,55 @@
+authorities:
+  - {
+    id: "rest",
+    description: "REST endpoint for retrieving data",
+    endpoint: "https://rest-endpoint.com/",
+    type: "rest",
+    headers: [
+      {
+        "key": "Authorization",
+        "value": "Bearer token",
+      }
+    ],
+    requestMethod: 'GET',
+    pathParams: [
+      {
+        "index": 0,
+        "sourceAttribute": "attribute1"
+      }
+    ],
+    handleResponseErrorAsEmpty: true,
+    mappings: [
+      {
+        "responseKey": "responseKey1",
+        "targetAttribute": "targetAttribute1",
+      }
+    ],
+    timeOut: 15000,
+    attributes: [ ],
+    requiredInputAttributes: [
+      {
+        name: "attribute1",
+      }
+    ],
+    validationRegExp: "[a-zA-Z0-9]*",
+    cache: {
+      enabled: true,
+      endpoint: "https://cache.com",
+      headers: [
+        {
+          "key": "Authorization",
+          "value": "Bearer token2",
+        }
+      ],
+      rootListName: "findAll{record->record.%s == \"%s\"}[0]",
+      filters: [
+        {
+          "index": 0,
+          "key": "responseKey1",
+          "sourceAttribute": "attribute1"
+        }
+      ],
+      requestMethod: 'GET',
+      refreshCron: "0 0 0 30 2 *"
+    }
+  }

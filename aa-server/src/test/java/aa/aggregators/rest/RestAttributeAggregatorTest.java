@@ -680,4 +680,37 @@ public class RestAttributeAggregatorTest {
         assertThrows(RestClientException.class, () -> subject.aggregate(input, Collections.emptyMap()));
     }
 
+    @Test
+    void aggregateFailCacheRefresh() {
+        configuration.setRootListName("records");
+        configuration.setRequestParams(new ArrayList<>(List.of(
+                new RequestParam("param1", "attribute1"),
+                new RequestParam("param2", "attribute2")
+        )));
+        configuration.setMappings(List.of(
+                new Mapping("field1", "target1", null),
+                new Mapping("field2", "target2", null)
+        ));
+        configuration.setCache(new Cache(
+                true,
+                "https://cache.com",
+                "",
+                "GET",
+                null,
+                "records",
+                Collections.singletonList(new CacheFilter(0, "field1", "attribute1"))
+        ));
+        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .thenThrow(new RestClientException("error"));
+
+        subject.run();
+
+        verify(restTemplate, times(1)).exchange(
+                eq("https://cache.com"),
+                eq(HttpMethod.GET),
+                any(),
+                any(ParameterizedTypeReference.class)
+        );
+    }
+
 }

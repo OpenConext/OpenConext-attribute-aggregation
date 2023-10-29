@@ -56,4 +56,11 @@ public class AttributeAggregatorConfigurationTest {
         subject.attributeAggregatorService();
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRestAttributeAggregatorService() throws Exception {
+        this.doBefore("classpath:/testRestAttributeAuthority.yml");
+        subject.attributeAggregatorService();
+    }
+
 }
