@@ -29,10 +29,12 @@ public class AttributeAuthorityConfiguration {
     private List<Attribute> attributes;
     private List<Mapping> mappings;
     private List<RequiredInputAttribute> requiredInputAttributes = new ArrayList<>();
+    private Cache cache;
     private int timeOut;
     private String validationRegExp;
     @JsonIgnore
     private String password;
+    private Boolean handleResponseErrorAsEmpty;
 
     public AttributeAuthorityConfiguration(String id) {
         this.id = id;

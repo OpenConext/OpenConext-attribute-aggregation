@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +43,7 @@ public class AttributeAggregatorConfiguration {
     private final UserAttributeCache userAttributeCache;
     private final AccountRepository accountRepository;
     private final PseudoEmailRepository pseudoEmailRepository;
+    private final TaskScheduler taskScheduler;
 
     @Autowired
     public AttributeAggregatorConfiguration(@Value("${authorization_access_token_url}") String authorizationAccessTokenUrl,
@@ -48,13 +51,15 @@ public class AttributeAggregatorConfiguration {
                                             AuthorityResolver authorityResolver,
                                             UserAttributeCache userAttributeCache,
                                             AccountRepository accountRepository,
-                                            PseudoEmailRepository pseudoEmailRepository) {
+                                            PseudoEmailRepository pseudoEmailRepository,
+                                            TaskScheduler taskScheduler) {
         this.authorizationAccessTokenUrl = authorizationAccessTokenUrl;
         this.pseudoMailPostfix = pseudoMailPostfix;
         this.authorityResolver = authorityResolver;
         this.userAttributeCache = userAttributeCache;
         this.accountRepository = accountRepository;
         this.pseudoEmailRepository = pseudoEmailRepository;
+        this.taskScheduler = taskScheduler;
     }
 
     @Bean
@@ -108,7 +113,11 @@ public class AttributeAggregatorConfiguration {
                     // Check if there is a type that can be used
                     if (null != configuration.getType()) {
                         if (AggregatorType.rest.equals(configuration.getType() )) {
-                            return new RestAttributeAggregator(configuration);
+                            RestAttributeAggregator restAggregator = new RestAttributeAggregator(configuration);
+                            if (restAggregator.cachingEnabled()) {
+                                this.taskScheduler.schedule(restAggregator, new CronTrigger(configuration.getCache().getRefreshCron()));
+                            }
+                            return restAggregator;
                         }
                     }
                     //We don't want to fail here as it might be that new AA's are already defined but not yet implemented

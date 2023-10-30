@@ -35,4 +35,6 @@ public interface AttributeAggregator {
 
     List<UserAttribute> filterInvalidResponses(List<UserAttribute> input);
 
+    boolean cachingEnabled();
+
 }

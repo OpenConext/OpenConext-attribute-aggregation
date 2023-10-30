@@ -160,7 +160,8 @@ Below is an example of the full configuration with explanations for the options:
             }
         ],x
         // Optional: specify node from API response for which to apply mapping for, by default the root node is used.
-        // Nesting is possible using dot notation e.g field.nestedField1[0].nestedField2 etc.
+        // Nesting is possible using dot notation e.g field.nestedField1[0].nestedField2 etc. Any paths navigations
+        // are possible from GPath
         rootListName: "<node name>",
         // Mapping to apply to the response received from the HTTP request
         // responseKey corresponds to the field in the response object of which to retrieve the value
@@ -185,7 +186,32 @@ Below is an example of the full configuration with explanations for the options:
                 name: "urn:mace:terena.org:attribute-def:schacHomeOrganization",
             }
         ],
-        validationRegExp: "[a-zA-Z0-9]*"
+        validationRegExp: "[a-zA-Z0-9]*",
+        // Optional: specify caching which will be used in case an error occurs when retrieving data.
+        // Cache endpoint is configured separately but should return the same response structure as the primary endpoint.
+        cache: {
+            enabled: true,
+            endpoint: "<endpoint>",
+            headers: [
+                {
+                  "key": "<key>",
+                  "value": "<value>",
+                }
+            ],
+            // Specify path to relevant record. Caution: if an entire list is retrieved then it is advised to 
+            // define a filter to the relevant record e.g. findAll{record->record.%s == \"%s\"}[0]. In this example
+            // attributes are used from the 'filters' section so that it is possible to filter by properties. Filters
+            // are optional. Path navigations and filter are possible from GPath
+            rootListName: "<node name>", 
+            filters: {
+                index: 0,
+                key: "<key>",
+                sourceAttribute: "<attribute name>"
+            },
+            requestMethod: 'GET',
+            // Specify frequency at which data is retrieved from the cache endpoint
+            refreshCron: "* * * * * *"
+        }
     }
 
 ### [Configuration and deployment](#configuration-and-deployment)
