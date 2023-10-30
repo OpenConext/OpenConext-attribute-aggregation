@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openconext</groupId>
         <artifactId>attribute-aggregation</artifactId>
-        <version>3.0.7</version>
+        <version>3.0.8</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -40,7 +40,8 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
             <version>9.19.4</version>
-        </dependency>        <dependency>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
