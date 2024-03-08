@@ -1,0 +1,29 @@
+server:
+  servlet:
+    context-path: /
+    session:
+      timeout: 28800
+  server-header:
+
+attribute_authorities_config_path: file:///files/attributeAuthorities.yml
+aggregate_cache_duration_milliseconds: -1
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+        dialect: org.hibernate.dialect.MariaDB53Dialect
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://mariadb/aa?autoReconnect=true&useSSL=false
+    username: aarw
+    password: secret
+  main:
+    banner-mode: "off"
+  flyway:
+    validate-on-migrate: false
+    table: schema_version
+    enabled: true
+
+cron_job_responsible: true
