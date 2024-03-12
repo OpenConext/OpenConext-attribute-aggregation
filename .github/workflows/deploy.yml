@@ -89,6 +89,20 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract metadata (tags, labels) for Server Docker
+        id: meta_server
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/openconext/openconext-attribute-aggregation/aa-server
+          flavor: |
+            latest=false
+          tags: |
+            type=ref,event=tag
+            type=raw,event=tag,value=latest
+            type=raw,event=workflow_dispatch,value=snapshot
+            type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
+            type=sha
+
       - name: Build and push the aa server image
         uses: docker/build-push-action@v5
         with:
@@ -96,5 +110,5 @@ jobs:
           file: aa-server/docker/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta_server.outputs.tags }}
+          labels: ${{ steps.meta_server.outputs.labels }}
