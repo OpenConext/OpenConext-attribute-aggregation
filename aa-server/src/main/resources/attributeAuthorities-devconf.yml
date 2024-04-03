@@ -1,0 +1,21 @@
+authorities:
+  - {
+      id: "voot",
+      description: "An extensible protocol for dynamic exchange of group and authorization data",
+      endpoint: "https://voot.dev.openconext.local",
+      user: "",
+      password: "",
+      timeOut: 1000,
+      attributes:
+        [
+          {
+            name: "urn:mace:dir:attribute-def:isMemberOf",
+            description: "Lists the collaborative organisations / groups the user is a member of",
+            type: "string",
+            example: "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:admins",
+          },
+        ],
+      requiredInputAttributes:
+        [{ name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified" }],
+      validationRegExp: "^urn:collab:group:.*$",
+    }
