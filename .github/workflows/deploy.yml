@@ -129,7 +129,7 @@ jobs:
       - name: Build and push the aa gui image
         uses: docker/build-push-action@v5
         with:
-          context: aa-server
+          context: aa-gui
           file: aa-gui/docker/Dockerfile
           platforms: linux/amd64
           push: true
