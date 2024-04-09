@@ -158,7 +158,7 @@ Below is an example of the full configuration with explanations for the options:
                 "name": "<name>",
                 "sourceAttribute": "urn:mace:terena.org:attribute-def:schacHomeOrganization"
             }
-        ],x
+        ],
         // Optional: specify node from API response for which to apply mapping for, by default the root node is used.
         // Nesting is possible using dot notation e.g field.nestedField1[0].nestedField2 etc. Any paths navigations
         // are possible from GPath
