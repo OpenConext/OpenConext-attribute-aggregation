@@ -24,6 +24,7 @@ public interface AttributeAggregator {
     String IS_MEMBER_OF = "urn:mace:dir:attribute-def:isMemberOf";
     String ORCID = "urn:mace:dir:attribute-def:eduPersonOrcid";
     String SURF_CRM_ID = "urn:mace:surf.nl:attribute-def:surf-crm-id";
+    String SURF_AUTORISATIES = "urn:mace:surf.nl:attribute-def:surf-autorisaties";
 
     String getAttributeAuthorityId();
 

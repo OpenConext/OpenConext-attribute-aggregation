@@ -9,6 +9,7 @@ import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.pseudo.PseudoEmailAggregator;
 import aa.aggregators.rest.RestAttributeAggregator;
 import aa.aggregators.sab.SabAttributeAggregator;
+import aa.aggregators.sabrest.SabRestAttributeAggregator;
 import aa.aggregators.sbs.SBSAttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
 import aa.aggregators.voot.VootAttributeAggregator;
@@ -106,6 +107,8 @@ public class AttributeAggregatorConfiguration {
                 return new EduIdAttributeAggregator(configuration);
             case "manage":
                 return new SurfCrmAttributeAggregator(configuration);
+            case "sabrest":
+                return new SabRestAttributeAggregator(configuration);
             default:
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);

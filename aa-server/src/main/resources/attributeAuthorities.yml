@@ -112,3 +112,36 @@ authorities:
       ],
       validationRegExp: "^urn:mace:surfnet.nl:surfmarket.nl:.*$"
     }
+  - {
+    id: "sabrest",
+    description: "SURF Autorisatie Beheer - REST",
+    endpoint: "https://sab-ng.surfnet.nl",
+    user: "",
+    password: "",
+    timeOut: 1000,
+    attributes: [
+      {
+        name: "urn:mace:dir:attribute-def:eduPersonEntitlement",
+        description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
+        type: "string",
+        example: "urn:mace:surfnet.nl:surfnet.nl:sab:role:Instellingsbevoegde"
+      },
+      {
+        name: "urn:mace:surf.nl:attribute-def:surf-autorisaties",
+        description: "urn:mace:surfnet.nl:surfnet.nl:sab:organizationGUID:ad93daef-0911-e511-80d0-005056956c1a",
+        type: "string",
+        example: "urn:mace:surfnet.nl:surfnet.nl:sab:role:Instellingsbevoegde"
+      }
+
+    ],
+    requiredInputAttributes: [
+      {
+        name: "urn:mace:dir:attribute-def:uid",
+      },
+      {
+        name: "IDPentityID",
+      }
+
+    ],
+    validationRegExp: "^urn:mace:dir:attribute-def:(eduPersonEntitlement|surf-autorisaties):[A-Z0-9+-]+$"
+  }
