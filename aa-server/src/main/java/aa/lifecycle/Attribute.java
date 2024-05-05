@@ -9,8 +9,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@EqualsAndHashCode
-@ToString
 public class Attribute {
 
     private String name;

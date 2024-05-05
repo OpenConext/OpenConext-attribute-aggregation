@@ -26,7 +26,8 @@ public class SBSAttributeAggregator extends AbstractAttributeAggregator {
         Optional<UserAttribute> emailUserAttribute = input.stream().filter(attr -> attr.getName().equals(EMAIL))
                 .findFirst();
 
-        StringBuilder endpoint = new StringBuilder(getAttributeAuthorityConfiguration().getEndpoint().concat("?edu_person_principal_name=").concat(eduPersonPrincipalName));
+        StringBuilder endpoint = new StringBuilder(getAttributeAuthorityConfiguration().getEndpoint()
+                .concat("?edu_person_principal_name=").concat(encode(eduPersonPrincipalName)));
         emailUserAttribute.ifPresent(userAttribute -> {
             List<String> values = userAttribute.getValues();
             if (!CollectionUtils.isEmpty(values)) {

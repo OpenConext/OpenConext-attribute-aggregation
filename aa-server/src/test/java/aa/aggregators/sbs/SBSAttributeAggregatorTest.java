@@ -12,11 +12,11 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static aa.aggregators.AttributeAggregator.EDU_PERSON_PRINCIPAL_NAME;
-import static aa.aggregators.AttributeAggregator.IS_MEMBER_OF;
+import static aa.aggregators.AttributeAggregator.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.singletonList;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
@@ -26,7 +26,7 @@ public class SBSAttributeAggregatorTest {
 
     private SBSAttributeAggregator subject;
 
-    private List<UserAttribute> input = singletonList(new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList("urn:john")));
+    private final List<UserAttribute> input = singletonList(new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList("urn:john")));
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8889);
@@ -52,7 +52,21 @@ public class SBSAttributeAggregatorTest {
 
         List<String> values = userAttribute.getValues();
         assertEquals(2, values.size());
+    }
 
+    @Test
+    public void testGetMembershipsWithEmail() throws Exception {
+        String response = read("sbs/memberships.json");
+        stubForSBS(response);
+        List<UserAttribute> inputWithEmail = new ArrayList<>(input);
+        inputWithEmail.add(new UserAttribute(EMAIL, singletonList("joth@example.com")));
+        List<UserAttribute> userAttributes = subject.aggregate(inputWithEmail, Collections.emptyMap());
+        assertEquals(1, userAttributes.size());
+        UserAttribute userAttribute = userAttributes.get(0);
+        assertEquals(IS_MEMBER_OF, userAttribute.getName());
+
+        List<String> values = userAttribute.getValues();
+        assertEquals(2, values.size());
     }
 
     @Test

@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -165,11 +166,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
 
     protected String encode(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException();
-        }
+        return URLEncoder.encode(s, StandardCharsets.UTF_8);
     }
 
     private boolean filterAttributeValue(UserAttribute userAttribute, String value, Pattern pattern) {

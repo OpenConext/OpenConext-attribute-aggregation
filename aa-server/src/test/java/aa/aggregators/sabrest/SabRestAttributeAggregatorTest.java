@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static aa.aggregators.AttributeAggregator.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.junit.Assert.assertEquals;
@@ -50,6 +51,8 @@ public class SabRestAttributeAggregatorTest {
         String response = IOUtils.toString(new ClassPathResource("sabrest/response_success.json").getInputStream(), Charset.defaultCharset());
         stubFor(get(urlPathEqualTo("/api/profile"))
                 .withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
+                .withQueryParam("uid", equalTo("henny"))
+                .withQueryParam("idp", equalTo("surfnet.nl"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -84,6 +87,19 @@ public class SabRestAttributeAggregatorTest {
         List<UserAttribute> userAttributes = subject.aggregate(input,
                 Map.of(EDU_PERSON_ENTITLEMENT, List.of(new ArpValue("*", "sabrest")),
                         SURF_AUTORISATIES, List.of(new ArpValue("*", "sabrest"))));
+        assertEquals(0, userAttributes.size());
+    }
+
+    @Test
+    public void testAggregateMissingAttributes() throws Exception {
+        String response = IOUtils.toString(new ClassPathResource("sabrest/response_missing_organisation.json").getInputStream(), Charset.defaultCharset());
+        stubFor(get(urlPathEqualTo("/api/profile"))
+                .withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(response)));
+        List<UserAttribute> userAttributes = subject.aggregate(input,emptyMap());
         assertEquals(0, userAttributes.size());
     }
 

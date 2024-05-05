@@ -19,7 +19,6 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class PseudoEmail {
 
     @Id
