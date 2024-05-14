@@ -16,22 +16,25 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("unchecked")
 public class SabRestAttributeAggregator extends AbstractAttributeAggregator {
 
+    private final String sabRestEndpoint;
+
     public SabRestAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         super(attributeAuthorityConfiguration);
+        //https://sab-ng.surfnet.nl/api/profile?uid=henny&idp=surfnet.nl
+        String endpointSab = getAttributeAuthorityConfiguration().getEndpoint();
+        if (!endpointSab.endsWith("/")) {
+            endpointSab += "/";
+        }
+        endpointSab += "api/profile?uid={uid}&idp={idp}";
+        sabRestEndpoint = endpointSab;
     }
 
     @Override
 
     public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         String uid = getUserAttributeSingleValue(input, UID);
-        String idp = getUserAttributeSingleValue(input, IDP_ENTITY_ID);
-        //https://sab-ng.surfnet.nl/api/profile?uid=henny&idp=surfnet.nl
-        String endpoint = getAttributeAuthorityConfiguration().getEndpoint();
-        if (!endpoint.endsWith("/")) {
-            endpoint += "/";
-        }
-        endpoint += "api/profile?uid={uid}&idp={idp}";
-        Map result = getRestTemplate().getForObject(endpoint, Map.class, uid, idp);
+        String idp = getUserAttributeSingleValue(input, SCHAC_HOME_ORGANIZATION);
+        Map result = getRestTemplate().getForObject(sabRestEndpoint, Map.class, uid, idp);
         if (!result.containsKey("message") || !result.get("message").equals("OK")) {
             return emptyList();
         }

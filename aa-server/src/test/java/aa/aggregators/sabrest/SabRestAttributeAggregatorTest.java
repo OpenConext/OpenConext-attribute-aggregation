@@ -30,7 +30,7 @@ public class SabRestAttributeAggregatorTest {
 
     private final List<UserAttribute> input = List.of(
             new UserAttribute(UID, singletonList("henny")),
-            new UserAttribute(IDP_ENTITY_ID, singletonList("surfnet.nl")));
+            new UserAttribute(SCHAC_HOME_ORGANIZATION, singletonList("surfnet.nl")));
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8889);

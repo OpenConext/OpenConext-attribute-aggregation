@@ -128,7 +128,7 @@ authorities:
       },
       {
         name: "urn:mace:surf.nl:attribute-def:surf-autorisaties",
-        description: "urn:mace:surfnet.nl:surfnet.nl:sab:organizationGUID:ad93daef-0911-e511-80d0-005056956c1a",
+        description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
         type: "string",
         example: "urn:mace:surfnet.nl:surfnet.nl:sab:role:Instellingsbevoegde"
       }
@@ -139,9 +139,9 @@ authorities:
         name: "urn:mace:dir:attribute-def:uid",
       },
       {
-        name: "IDPentityID",
+        name: "urn:mace:terena.org:attribute-def:schacHomeOrganization",
       }
 
     ],
-    validationRegExp: "^urn:mace:dir:attribute-def:(eduPersonEntitlement|surf-autorisaties):[A-Z0-9+-]+$"
+    validationRegExp: "^urn:mace:surfnet.nl:(surfnet\\.nl|surfmarket\\.nl|surfsara\\.nl|surf\\.nl):sab:(role|organizationCode|organizationGUID|mobile):[A-Z0-9+-]+$"
   }
