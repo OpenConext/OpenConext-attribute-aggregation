@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static aa.aggregators.AttributeAggregator.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -23,6 +24,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SabRestAttributeAggregatorTest {
 
@@ -42,7 +44,7 @@ public class SabRestAttributeAggregatorTest {
         configuration.setPassword("password");
         configuration.setEndpoint("http://localhost:8889");
         configuration.setRequiredInputAttributes(List.of(new RequiredInputAttribute(UID), new RequiredInputAttribute(IDP_ENTITY_ID)));
-        configuration.setValidationRegExp("^urn:mace:dir:attribute-def:(eduPersonEntitlement|surf-autorisaties):[A-Z0-9+-]+$");
+        configuration.setValidationRegExp("^urn:mace:surfnet.nl:(surfnet\\.nl|surf\\.nl):sab:(role|organizationCode|organizationGUID|mobile):[A-Z0-9_+-]+$");
         subject = new SabRestAttributeAggregator(configuration);
     }
 
@@ -73,6 +75,11 @@ public class SabRestAttributeAggregatorTest {
         userAttribute = userAttributes.get(1);
         assertEquals(SURF_AUTORISATIES, userAttribute.getName());
         assertEquals(values, userAttribute.getValues());
+
+        String validationRegExp = subject.getAttributeAuthorityConfiguration().getValidationRegExp();
+        Pattern pattern = Pattern.compile(validationRegExp, Pattern.CASE_INSENSITIVE);
+        userAttribute.getValues().forEach(value ->
+                assertTrue(value + " matches '" + validationRegExp + "'", pattern.matcher(value).matches()));
     }
 
     @Test
