@@ -1,9 +1,7 @@
 package aa.aggregators.rest;
 
-import aa.aggregators.voot.VootAttributeAggregator;
 import aa.model.*;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,12 +16,10 @@ import java.util.List;
 
 import static aa.aggregators.AttributeAggregator.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static java.util.Collections.singletonList;
-import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AccessAttributeAggregatorTest {
+public class InviteAttributeAggregatorTest {
 
     private RestAttributeAggregator subject;
 
@@ -60,7 +56,7 @@ public class AccessAttributeAggregatorTest {
 
         List<String> values = userAttribute.getValues();
         assertEquals(2, values.size());
-
+        assertEquals(List.of("aa", "bb"), values.stream().map(s -> s.substring(s.lastIndexOf(":") + 1)).toList());
         values.forEach(value -> assertTrue(value.startsWith("urn:mace:surf.nl:test.surfaccess.nl")));
     }
 

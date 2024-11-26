@@ -141,7 +141,8 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator impleme
                         entry.getValue().stream()
                                 .map(UserAttribute::getValues)
                                 .flatMap(Collection::stream)
-                                .collect(Collectors.toList()),
+                                .sorted()
+                                .toList(),
                         configuration.getId())
         ).collect(Collectors.toList());
     }
