@@ -101,7 +101,7 @@ jobs:
             type=raw,value=snapshot,enable=${{ github.event_name == 'workflow_dispatch' }}
             type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
             type=sha
-      
+
       - name: Extract metadata (tags, labels) for Gui Docker
         id: meta_gui
         uses: docker/metadata-action@v5
@@ -120,18 +120,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: aa-server
-          file: aa-server/docker/Dockerfile
+          file: docker/Dockerfile
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta_server.outputs.tags }}
           labels: ${{ steps.meta_server.outputs.labels }}
-      
-      - name: Build and push the aa gui image
-        uses: docker/build-push-action@v5
-        with:
-          context: aa-gui
-          file: aa-gui/docker/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ${{ steps.meta_gui.outputs.tags }}
-          labels: ${{ steps.meta_gui.outputs.labels }}
