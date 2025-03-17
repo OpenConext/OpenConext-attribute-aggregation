@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class UserLifeCycleControllerTest extends AbstractIntegrationTest {
 
-    private String personUrn = "saml2_user.com";
+    private final String personUrn = "saml2_user.com";
 
     @Test
     public void preview() {

@@ -46,7 +46,6 @@ spring:
     validate-on-migrate: false
     table: schema_version
     enabled: true
-
 # In a multi master database setup toggle which machine is reponsible for cron jobs
 cron_job_responsible: true
 pseudo_emails_retention_days_period: 90

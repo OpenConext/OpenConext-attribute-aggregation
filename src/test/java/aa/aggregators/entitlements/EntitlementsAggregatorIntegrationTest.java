@@ -66,11 +66,11 @@ public class EntitlementsAggregatorIntegrationTest extends AbstractIntegrationTe
         ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(userAttributes, arp);
 
         RequestEntity<ArpAggregationRequest> requestEntity = new RequestEntity<>(arpAggregationRequest, headers, HttpMethod.POST,
-                new URI("http://localhost:" + port + "/aa/api/client/attribute/aggregation"));
+                new URI("http://localhost:" + port + "/aa/api/internal/attribute/aggregation"));
 
-        ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
+//        ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
 
-        ResponseEntity<List<UserAttribute>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<UserAttribute>>() {
+        ResponseEntity<List<UserAttribute>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, responseEntity.getStatusCodeValue());
 

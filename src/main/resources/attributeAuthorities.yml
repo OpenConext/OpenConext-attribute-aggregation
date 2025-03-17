@@ -72,8 +72,8 @@ authorities:
       id: "voot",
       description: "An extensible protocol for dynamic exchange of group and authorization data",
       endpoint: "https://voot.test2.surfconext.nl",
-      user: "",
-      password: "",
+      user: "voot",
+      password: "secret",
       timeOut: 1000,
       attributes: [
         {

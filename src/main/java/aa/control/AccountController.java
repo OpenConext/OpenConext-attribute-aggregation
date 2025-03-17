@@ -65,7 +65,8 @@ public class AccountController {
     }
 
     @GetMapping("/client/connect")
-    public void connect(HttpServletResponse response, FederatedUser federatedUser,
+    public void connect(HttpServletResponse response,
+                        FederatedUser federatedUser,
                         @RequestParam(value = "redirectUrl", required = false) String redirectUrl) throws IOException {
         LOG.debug("Starting ORCID connection linking for {} with redirect {}", federatedUser.uid, redirectUrl);
         String state = String.format("redirect_url=%s&user_uid=%s",

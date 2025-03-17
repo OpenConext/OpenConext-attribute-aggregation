@@ -31,7 +31,7 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
         ServletWebRequest webRequest = new ServletWebRequest(request);
 
         Map<String, Object> result = errorAttributes.getErrorAttributes(webRequest,
-                ErrorAttributeOptions.of(ErrorAttributeOptions.Include.EXCEPTION));
+                ErrorAttributeOptions.defaults());
 
         Throwable error = errorAttributes.getError(webRequest);
 

@@ -97,12 +97,15 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator impleme
                     .ifPresent(param -> builder.queryParam(requestParam.getName(), param.getValues().get(0)))
             );
         }
+        HttpMethod method;
 
-        HttpMethod method = HttpMethod.valueOf(requestMethod);
-        if (null == method) {
+        if (requestMethod == null) {
             LOG.info("Can not resolve unknown HTTP method: {}, defaulting to GET", requestMethod);
             method = HttpMethod.GET;
+        } else {
+            method = HttpMethod.valueOf(requestMethod);
         }
+
 
         return getRestTemplate().exchange(builder.toUriString(), method,
                 new HttpEntity<>(null, headers), new ParameterizedTypeReference<>() {

@@ -28,6 +28,11 @@ import static org.junit.Assert.assertEquals;
         value = {"attribute_authorities_config_path=classpath:testAttributeAuthorities.yml"})
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
+    @Override
+    protected boolean isBasicAuthenticated() {
+        return true;
+    }
+
     @Test
     public void testAggregateWithArp() throws Exception {
         UserAttribute input = new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, singletonList("urn:collab:person:example.com:admin"));
@@ -37,11 +42,11 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(singletonList(input), arp);
 
         RequestEntity<ArpAggregationRequest> requestEntity = new RequestEntity<>(arpAggregationRequest, headers, HttpMethod.POST,
-                new URI("http://localhost:" + port + "/aa/api/client/attribute/aggregation"));
+                new URI("http://localhost:" + port + "/aa/api/internal/attribute/aggregation"));
 
         ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
 
-        ResponseEntity<List<UserAttribute>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<UserAttribute>>() {
+        ResponseEntity<List<UserAttribute>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {
         });
 
         List<UserAttribute> userAttributes = response.getBody();

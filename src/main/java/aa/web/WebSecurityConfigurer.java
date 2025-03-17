@@ -20,6 +20,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -54,7 +59,7 @@ public class WebSecurityConfigurer {
                                                 AuthenticationManager authenticationManager,
                                                 Environment environment) throws Exception {
         http
-                .securityMatcher("/redirect/**")
+                .securityMatcher("/redirect", "/client/**")
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new ShibbolethPreAuthenticatedProcessingFilter(authenticationManager),
@@ -107,5 +112,21 @@ public class WebSecurityConfigurer {
                 )
                 .build();
     }
+
+    @Configuration
+    public class MvcConfig implements WebMvcConfigurer {
+
+        @Override
+        public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+            argumentResolvers.add(new FederatedUserHandlerMethodArgumentResolver());
+        }
+
+        @Override
+        public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+            configurer.favorParameter(false);
+        }
+
+    }
+
 
 }

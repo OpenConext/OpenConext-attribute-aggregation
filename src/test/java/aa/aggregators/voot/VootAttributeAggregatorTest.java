@@ -10,6 +10,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -33,9 +38,7 @@ public class VootAttributeAggregatorTest {
 
     private VootAttributeAggregator subject;
 
-    private List<UserAttribute> input = singletonList(new UserAttribute(NAME_ID, singletonList("urn")));
-
-    private String accessTokenResponse = "{ \"access_token\"  : \"378389ea-ff94-494e-8ec6-3b0e62659bef\"}";
+    private final List<UserAttribute> input = singletonList(new UserAttribute(NAME_ID, singletonList("urn")));
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8889);
@@ -48,16 +51,24 @@ public class VootAttributeAggregatorTest {
         configuration.setEndpoint("http://localhost:8889/voot");
         configuration.setRequiredInputAttributes(singletonList(new RequiredInputAttribute(NAME_ID)));
         subject = new VootAttributeAggregator(configuration, "http://localhost:8889/authorize");
+        String accessTokenResponse = "{ \"access_token\"  : \"378389ea-ff94-494e-8ec6-3b0e62659bef\", \"token_type\": \"Bearer\"}";
         stubFor(post(urlEqualTo("/authorize")).withHeader("Authorization", equalTo("Basic " + encodeBase64String("user:password".getBytes())))
             .willReturn(aResponse().withStatus(200).withBody(accessTokenResponse).withHeader("Content-Type", "application/json"))
         );
+        ServletRequestAttributes requestAttributes = new ServletRequestAttributes(new MockHttpServletRequest(), new MockHttpServletResponse());
+        RequestContextHolder.setRequestAttributes(requestAttributes);
     }
 
     @Test
     public void testGetGroupsHappyFlow() throws Exception {
         String response = read("voot/groups.json");
         stubForVoot(response);
+
+        subject.aggregate(input, Collections.emptyMap());
+
+        stubForVootInScenario(response, 200, "first_call_done", "second_call_done");
         List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
+
         assertEquals(1, userAttributes.size());
         UserAttribute userAttribute = userAttributes.get(0);
         assertEquals(IS_MEMBER_OF, userAttribute.getName());
@@ -77,11 +88,11 @@ public class VootAttributeAggregatorTest {
     }
 
     /*
-     * See //http://wiremock.org/stateful-behaviour.html for scenario suppurt in WireMock
+     * See //http://wiremock.org/stateful-behaviour.html for scenario support in WireMock
      */
     @Test
     public void testGetGroupsTokenNotFoundRetry() throws Exception {
-        //first we do the normal succes flow where a token is obtained
+        //first we do the normal success flow where a token is obtained
         testGetGroupsHappyFlow();
 
         //ask for groups again, but now throw 401 - access token is not valid - the first time
