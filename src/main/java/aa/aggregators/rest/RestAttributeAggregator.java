@@ -4,6 +4,7 @@ import aa.aggregators.AbstractAttributeAggregator;
 import aa.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.path.json.JsonPath;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.util.CollectionUtils;
@@ -104,7 +105,8 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator impleme
         }
 
         return getRestTemplate().exchange(builder.toUriString(), method,
-                new HttpEntity<>(null, headers), new ParameterizedTypeReference<>() {});
+                new HttpEntity<>(null, headers), new ParameterizedTypeReference<>() {
+                });
     }
 
     private List<UserAttribute> mapToAttributes(String data, AttributeAuthorityConfiguration configuration, List<UserAttribute> input) {
@@ -150,9 +152,9 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator impleme
      * Search for relevant root element from the provided data. Data is handled as JSON string to which JSONPath mapping
      * is applied. In case cache data is used then apply mapping and filtering defined in cache configuration.
      *
-     * @param data Data retrieved from REST API
+     * @param data          Data retrieved from REST API
      * @param configuration Relevant attribute authority configuration
-     * @param input Input attributes to apply filtering to cache data if required
+     * @param input         Input attributes to apply filtering to cache data if required
      * @return List of relevant records from data
      */
     @SuppressWarnings("unchecked")

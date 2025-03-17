@@ -405,7 +405,7 @@ public class RestAttributeAggregatorTest {
         when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new HttpStatusCodeException(HttpStatus.NOT_FOUND, "", stringResponse.getBytes(), StandardCharsets.UTF_8) {
                     @Override
-                    public HttpStatus getStatusCode() {
+                    public HttpStatusCode getStatusCode() {
                         return super.getStatusCode();
                     }
                 });
@@ -443,7 +443,7 @@ public class RestAttributeAggregatorTest {
         when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new HttpStatusCodeException(HttpStatus.NOT_FOUND, "", "".getBytes(), StandardCharsets.UTF_8) {
                     @Override
-                    public HttpStatus getStatusCode() {
+                    public HttpStatusCode getStatusCode() {
                         return super.getStatusCode();
                     }
                 });
@@ -470,7 +470,7 @@ public class RestAttributeAggregatorTest {
         when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new HttpStatusCodeException(HttpStatus.NOT_FOUND, "", "".getBytes(), StandardCharsets.UTF_8) {
                     @Override
-                    public HttpStatus getStatusCode() {
+                    public HttpStatusCode getStatusCode() {
                         return super.getStatusCode();
                     }
                 });

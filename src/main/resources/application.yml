@@ -35,10 +35,9 @@ spring:
     properties:
       hibernate:
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-        dialect: org.hibernate.dialect.MariaDB53Dialect
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/aaserver?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://localhost/aaserver?autoReconnect=true&useSSL=false&permitMysqlScheme=true&allowPublicKeyRetrieval=true
     username: root
     password:
   main:

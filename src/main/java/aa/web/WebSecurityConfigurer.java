@@ -2,15 +2,11 @@ package aa.web;
 
 import aa.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import aa.shibboleth.ShibbolethUserDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -53,11 +49,15 @@ public class WebSecurityConfigurer {
     @Bean
     public SecurityFilterChain orcidFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         return http
-                .securityMatcher("/redirect/**")  // Matches specific endpoints
+                .securityMatcher("/redirect/**")
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new ShibbolethPreAuthenticatedProcessingFilter(authenticationManager),
                         AbstractPreAuthenticatedProcessingFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest()
+                        .authenticated()
+                )
                 .build();
     }
 
@@ -65,7 +65,7 @@ public class WebSecurityConfigurer {
     @Bean
     public SecurityFilterChain lifeCycleFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/deprovision/**")  // Matches specific endpoints
+                .securityMatcher("/deprovision/**")
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -74,6 +74,10 @@ public class WebSecurityConfigurer {
                                 new BasicAuthenticationManager(lifeCycleUserName, lifeCyclePassword)
                         ), BasicAuthenticationFilter.class
                 )
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest()
+                        .authenticated()
+                )
                 .build();
 
     }
@@ -81,7 +85,7 @@ public class WebSecurityConfigurer {
     @Bean
     public SecurityFilterChain attributeAggregationFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/internal/**")  // Matches specific endpoints
+                .securityMatcher("/internal/**")
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new BasicAuthenticationFilter(new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
@@ -89,6 +93,8 @@ public class WebSecurityConfigurer {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/internal/health", "/internal/info")
                         .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .build();
     }

@@ -53,8 +53,10 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
     protected RestTemplate initializeRestTemplate(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         RestTemplate restTemplate = new RestTemplate(getRequestFactory(attributeAuthorityConfiguration));
-        BasicAuthenticationInterceptor interceptor = new BasicAuthenticationInterceptor(attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword());
-        restTemplate.getInterceptors().add(interceptor);
+        if (StringUtils.hasText(attributeAuthorityConfiguration.getUser())) {
+            BasicAuthenticationInterceptor interceptor = new BasicAuthenticationInterceptor(attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword());
+            restTemplate.getInterceptors().add(interceptor);
+        }
         return restTemplate;
     }
 

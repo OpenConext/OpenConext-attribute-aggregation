@@ -50,7 +50,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
     @Value("${security.internal_password}")
     private String attributeAggregationPassword;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Test
     public void connect() throws Exception {
@@ -58,7 +58,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
                 .config(newConfig().redirect(redirectConfig().followRedirects(false)))
                 .param("redirectUrl", "https://redirect.url")
                 .when()
-                .get("aa/api/client/connect")
+                .get("/aa/api/client/connect")
                 .then()
                 .statusCode(SC_MOVED_TEMPORARILY)
                 .header("Location", startsWith("https://sandbox.orcid.org/oauth/authorize?"));
@@ -75,7 +75,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
                 .param("code", "123456")
                 .param("state", "redirect_url=http://example.org/redirect&user_uid=" + encoded)
                 .when()
-                .get("aa/api/redirect")
+                .get("/aa/api/redirect")
                 .then()
                 .statusCode(SC_MOVED_TEMPORARILY)
                 .header("Location", "http://example.org/redirect");
@@ -89,22 +89,22 @@ public class AccountControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void redirectWithTamperedUser() throws Exception {
+    public void redirectWithTamperedUser() {
         String encoded = passwordEncoder.encode("nope");
         given()
                 .param("code", "123456")
                 .param("state", "redirect_url=http://example.org/redirect&user_uid=" + encoded)
                 .when()
-                .get("aa/api/redirect")
+                .get("/aa/api/redirect")
                 .then()
                 .statusCode(SC_FORBIDDEN);
     }
     @Test
-    public void accounts() throws Exception {
+    public void accounts() {
         given()
                 .auth().preemptive().basic(attributeAggregationUserName, attributeAggregationPassword)
                 .when()
-                .get("aa/api/internal/accounts/{urn}", "saml2_user.com")
+                .get("/aa/api/internal/accounts/{urn}", "saml2_user.com")
                 .then()
                 .statusCode(SC_OK)
                 .body("id", hasItems(1))
@@ -116,7 +116,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
         given()
                 .auth().preemptive().basic(attributeAggregationUserName, attributeAggregationPassword)
                 .when()
-                .delete("aa/api/internal/disconnect/{id}", 1L)
+                .delete("/aa/api/internal/disconnect/{id}", 1L)
                 .then()
                 .statusCode(SC_OK)
                 .body("status", equalTo("OK"));
