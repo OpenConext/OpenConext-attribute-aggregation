@@ -3,13 +3,13 @@ package aa.control;
 import aa.model.ArpAggregationRequest;
 import aa.model.UserAttribute;
 import aa.service.AttributeAggregatorService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,9 +23,8 @@ public class AttributeAggregatorController {
         this.attributeAggregatorService = attributeAggregatorService;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = {"/internal/attribute/aggregation", "/client/attribute/aggregation"})
+    @PostMapping("/internal/attribute/aggregation")
     public List<UserAttribute> arpBasedAggregation(@Valid @RequestBody ArpAggregationRequest arpAggregationRequest) {
-        List<UserAttribute> userAttributes = attributeAggregatorService.aggregateBasedOnArp(arpAggregationRequest);
-        return userAttributes;
+        return attributeAggregatorService.aggregateBasedOnArp(arpAggregationRequest);
     }
 }

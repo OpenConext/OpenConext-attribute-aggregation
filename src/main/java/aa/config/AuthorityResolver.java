@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -31,7 +32,7 @@ public class AuthorityResolver {
     }
 
     private void parse(ResourceLoader resourceLoader, String configFileLocation) throws IOException {
-        Constructor constructor = new Constructor(AuthorityConfiguration.class);
+        Constructor constructor = new Constructor(AuthorityConfiguration.class, new LoaderOptions());
         TypeDescription authorityConfigurationDescription = new TypeDescription(AuthorityConfiguration.class);
         authorityConfigurationDescription.addPropertyParameters("authorities", AttributeAuthorityConfiguration.class);
 

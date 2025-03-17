@@ -4,21 +4,16 @@ import aa.model.AttributeAuthorityConfiguration;
 import aa.model.Cache;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -26,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
@@ -40,10 +34,12 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
     protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
+    @Getter
     private final AttributeAuthorityConfiguration attributeAuthorityConfiguration;
 
     private final List<String> attributeKeysRequired;
 
+    @Getter
     private RestTemplate restTemplate;
 
     public AbstractAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
@@ -56,11 +52,10 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
 
     protected RestTemplate initializeRestTemplate(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
-        try {
-            return new RestTemplate(getRequestFactory(attributeAuthorityConfiguration));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        RestTemplate restTemplate = new RestTemplate(getRequestFactory(attributeAuthorityConfiguration));
+        BasicAuthenticationInterceptor interceptor = new BasicAuthenticationInterceptor(attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword());
+        restTemplate.getInterceptors().add(interceptor);
+        return restTemplate;
     }
 
     @Override
@@ -86,14 +81,6 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     @Override
     public String getAttributeAuthorityId() {
         return attributeAuthorityConfiguration.getId();
-    }
-
-    public AttributeAuthorityConfiguration getAttributeAuthorityConfiguration() {
-        return attributeAuthorityConfiguration;
-    }
-
-    public RestTemplate getRestTemplate() {
-        return restTemplate;
     }
 
     protected URI endpoint() {
@@ -128,23 +115,14 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
     }
 
     private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration
-                                                               attributeAuthorityConfiguration) throws
-            MalformedURLException {
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
-                .evictIdleConnections(10l, TimeUnit.SECONDS);
-        if (StringUtils.hasText(attributeAuthorityConfiguration.getUser())) {
-            BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-            basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials
-                    (attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword()));
-            httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
-        }
+                                                               attributeAuthorityConfiguration) {
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        // Set the connectionRequestTimeout value to 10 seconds
+        requestFactory.setConnectionRequestTimeout(10000);
         int timeOut = attributeAuthorityConfiguration.getTimeOut();
-        httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeOut)
-                .setConnectTimeout(timeOut).setSocketTimeout(timeOut).build());
-
-        CloseableHttpClient httpClient = httpClientBuilder.build();
-        return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient,
-                attributeAuthorityConfiguration.getEndpoint());
+        requestFactory.setConnectTimeout(timeOut);
+        requestFactory.setReadTimeout(timeOut);
+        return requestFactory;
     }
 
     @Override
@@ -157,10 +135,10 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         String validationRegExp = attributeAuthorityConfiguration.getValidationRegExp();
         final Pattern pattern = Pattern.compile(validationRegExp, Pattern.CASE_INSENSITIVE);
         return input.stream().map(userAttribute -> new UserAttribute(
-                userAttribute.getName(),
-                userAttribute.getValues().stream().filter(value -> filterAttributeValue(userAttribute, value, pattern))
-                        .collect(toList()),
-                userAttribute.getSource()))
+                        userAttribute.getName(),
+                        userAttribute.getValues().stream().filter(value -> filterAttributeValue(userAttribute, value, pattern))
+                                .collect(toList()),
+                        userAttribute.getSource()))
                 .filter(userAttribute -> !CollectionUtils.isEmpty(userAttribute.getValues()))
                 .collect(toList());
     }
