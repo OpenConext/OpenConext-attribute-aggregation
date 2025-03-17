@@ -2,9 +2,12 @@ package aa.web;
 
 import aa.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import aa.shibboleth.ShibbolethUserDetailService;
+import aa.shibboleth.mock.MockShibbolethFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,8 +50,10 @@ public class WebSecurityConfigurer {
     }
 
     @Bean
-    public SecurityFilterChain orcidFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        return http
+    public SecurityFilterChain orcidFilterChain(HttpSecurity http,
+                                                AuthenticationManager authenticationManager,
+                                                Environment environment) throws Exception {
+        http
                 .securityMatcher("/redirect/**")
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -57,8 +62,12 @@ public class WebSecurityConfigurer {
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest()
                         .authenticated()
-                )
-                .build();
+                );
+        if (environment.acceptsProfiles(Profiles.of("test", "mock"))) {
+            //we can't use @Profile, because we need to add it before the real filter
+            http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
+        }
+        return http.build();
     }
 
 
