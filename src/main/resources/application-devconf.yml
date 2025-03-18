@@ -13,7 +13,6 @@ spring:
     properties:
       hibernate:
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-        dialect: org.hibernate.dialect.MariaDB53Dialect
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mysql://mariadb/aa?autoReconnect=true&useSSL=false
