@@ -20,21 +20,19 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static aa.aggregators.AttributeAggregator.EDU_PERSON_ENTITLEMENT;
-import static aa.aggregators.AttributeAggregator.NAME_ID;
+import static aa.aggregators.AttributeAggregator.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        value = {"attribute_authorities_config_path=classpath:testSabAttributeAuthority.yml"})
+        value = {"attribute_authorities_config_path=classpath:testSabRestAttributeAuthority.yml"})
 @ActiveProfiles(profiles = {"prod"}, inheritProfiles = false)
-public class SabAttributeAggregatorControllerTest extends AbstractIntegrationTest {
+public class SabRestAttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Override
     protected boolean isBasicAuthenticated() {
@@ -46,12 +44,18 @@ public class SabAttributeAggregatorControllerTest extends AbstractIntegrationTes
 
     @Test
     public void testSabRegExp() throws IOException, URISyntaxException {
-        String stubResponse = IOUtils.toString(new ClassPathResource("sab/response_empty.xml").getInputStream(), Charset.defaultCharset());
-        stubFor(post(urlEqualTo("/sab")).willReturn(aResponse().withStatus(200).withBody(stubResponse)));
+        String stubResponse = IOUtils.toString(new ClassPathResource("sabrest/response_success.json").getInputStream(), Charset.defaultCharset());
+        stubFor(get(urlPathEqualTo("/api/profile")).willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(stubResponse)));
 
-        UserAttribute input = new UserAttribute(NAME_ID, singletonList("urn:collab:person:example.com:admin"));
-        Map<String, List<ArpValue>> arp = Collections.singletonMap(EDU_PERSON_ENTITLEMENT, Arrays.asList(new ArpValue("*", "sab")));
-        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(singletonList(input), arp);
+        Map<String, List<ArpValue>> arp = Collections.singletonMap(EDU_PERSON_ENTITLEMENT,
+                List.of(new ArpValue("*", "sabrest")));
+        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(List.of(
+                new UserAttribute(UID, singletonList("uid")),
+                new UserAttribute(SCHAC_HOME_ORGANIZATION, singletonList("example.com"))
+        ), arp);
 
         RequestEntity<ArpAggregationRequest> requestEntity = new RequestEntity<>(arpAggregationRequest, headers, HttpMethod.POST,
                 new URI("http://localhost:" + port + "/aa/api/internal/attribute/aggregation"));
@@ -60,7 +64,7 @@ public class SabAttributeAggregatorControllerTest extends AbstractIntegrationTes
         });
 
         List<UserAttribute> userAttributes = response.getBody();
-        assertEquals(6, userAttributes.get(0).getValues().size());
+        assertEquals(5, userAttributes.get(0).getValues().size());
     }
 
 }

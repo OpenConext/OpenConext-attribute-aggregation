@@ -8,7 +8,6 @@ import aa.aggregators.manage.SurfCrmAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.pseudo.PseudoEmailAggregator;
 import aa.aggregators.rest.RestAttributeAggregator;
-import aa.aggregators.sab.SabAttributeAggregator;
 import aa.aggregators.sabrest.SabRestAttributeAggregator;
 import aa.aggregators.sbs.SBSAttributeAggregator;
 import aa.aggregators.test.TestingAttributeAggregator;
@@ -28,9 +27,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor;
-import org.springframework.web.client.RestClient;
 
 import java.util.List;
 import java.util.Objects;
@@ -90,8 +86,6 @@ public class AttributeAggregatorConfiguration {
     private AttributeAggregator attributeAggregatorById(AttributeAuthorityConfiguration configuration) {
         String id = configuration.getId();
         switch (id) {
-            case "sab":
-                return new SabAttributeAggregator(configuration);
             case "voot":
                 return new VootAttributeAggregator(configuration, authorizationAccessTokenUrl);
             case "orcid":
@@ -118,7 +112,7 @@ public class AttributeAggregatorConfiguration {
                 } else {
                     // Check if there is a type that can be used
                     if (null != configuration.getType()) {
-                        if (AggregatorType.rest.equals(configuration.getType() )) {
+                        if (AggregatorType.rest.equals(configuration.getType())) {
                             RestAttributeAggregator restAggregator = new RestAttributeAggregator(configuration);
                             if (restAggregator.cachingEnabled()) {
                                 this.taskScheduler.schedule(restAggregator, new CronTrigger(configuration.getCache().getRefreshCron()));

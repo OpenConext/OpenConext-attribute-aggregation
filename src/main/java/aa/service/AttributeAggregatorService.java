@@ -97,7 +97,7 @@ public class AttributeAggregatorService {
     private List<UserAttribute> getUserAttributes(List<UserAttribute> input,
                                                   Map<String, List<ArpValue>> arpAttributes,
                                                   Collection<AttributeAuthorityConfiguration> authorityConfigurations) {
-        //all of the names of input UserAttributes that at least have one non-empty value
+        //all the names of input UserAttributes that at least have one non-empty value
         List<String> inputNames = input.stream().filter(userAttribute -> userAttribute.getValues().stream()
             .anyMatch(StringUtils::hasText))
             .map(UserAttribute::getName)

@@ -60,14 +60,8 @@ public class VootAttributeAggregator extends AbstractAttributeAggregator {
                 new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository)
         );
 
-        OAuth2AuthorizedClientManager authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
-                clientRegistrationRepository,
-                authorizedClientRepository
-        );
-        //TODO find out how and if access_tokens are cached, maybe 
         AuthorizedClientServiceOAuth2AuthorizedClientManager clientManager =
                 new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository));
-//        OAuth2ClientHttpRequestInterceptor requestInterceptor = new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
         OAuth2ClientHttpRequestInterceptor requestInterceptor = new OAuth2ClientHttpRequestInterceptor(clientManager);
         OAuth2AuthorizationFailureHandler authorizationFailureHandler = OAuth2ClientHttpRequestInterceptor.authorizationFailureHandler(authorizedClientRepository);
         requestInterceptor.setAuthorizationFailureHandler(authorizationFailureHandler);
