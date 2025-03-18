@@ -102,24 +102,10 @@ jobs:
             type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
             type=sha
 
-      - name: Extract metadata (tags, labels) for Gui Docker
-        id: meta_gui
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/openconext/openconext-attribute-aggregation/aa-gui
-          flavor: |
-            latest=false
-          tags: |
-            type=ref,event=tag
-            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/') }}
-            type=raw,value=snapshot,enable=${{ github.event_name == 'workflow_dispatch' }}
-            type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
-            type=sha
-
       - name: Build and push the aa server image
         uses: docker/build-push-action@v5
         with:
-          context: aa-server
+          context: .
           file: docker/Dockerfile
           platforms: linux/amd64
           push: true
