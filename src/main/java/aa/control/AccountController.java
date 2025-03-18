@@ -85,7 +85,7 @@ public class AccountController {
                          @RequestParam("state") String state) throws IOException {
         LOG.debug("Redirect from ORCID for {} with code {} and state {}", federatedUser.uid, code, state);
 
-        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + state).build().getQueryParams();
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromUriString("http://localhost?" + state).build().getQueryParams();
         String redirectUrl = params.getFirst("redirect_url");
         String encodedUserUid = params.getFirst("user_uid");
 

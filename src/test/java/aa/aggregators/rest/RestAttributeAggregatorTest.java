@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
+@SuppressWarnings("unchecked")
 public class RestAttributeAggregatorTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

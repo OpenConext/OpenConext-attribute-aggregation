@@ -72,7 +72,7 @@ public class EntitlementsAggregatorIntegrationTest extends AbstractIntegrationTe
 
         ResponseEntity<List<UserAttribute>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {
         });
-        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertEquals(200, responseEntity.getStatusCode().value());
 
         return responseEntity;
     }

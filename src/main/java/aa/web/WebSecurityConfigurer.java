@@ -43,6 +43,7 @@ public class WebSecurityConfigurer {
     private String attributeAggregationPassword;
 
     @Bean
+    @SuppressWarnings("deprecation")
     PasswordEncoder getPasswordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
