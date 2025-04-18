@@ -19,7 +19,7 @@ import java.util.Map;
 
 public abstract class ManageAttributeAggregator extends AbstractAttributeAggregator {
 
-    private HttpHeaders httpHeaders = new HttpHeaders();
+    private final HttpHeaders httpHeaders = new HttpHeaders();
 
     public ManageAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         super(attributeAuthorityConfiguration);
@@ -48,7 +48,6 @@ public abstract class ManageAttributeAggregator extends AbstractAttributeAggrega
         Map<String, Object> body = new HashMap<>();
         body.put(manageConfig.getManageQueryParameter(), searchValue);
         body.put("REQUESTED_ATTRIBUTES", Collections.singletonList(manageConfig.getRequestAttribute()));
-
 
         List<Map> result = getRestTemplate().exchange(endpoint, HttpMethod.POST, new HttpEntity<Object>(body, httpHeaders), new ParameterizedTypeReference<List<Map>>() {
         }).getBody();
