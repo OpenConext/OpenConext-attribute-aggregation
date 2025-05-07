@@ -1,6 +1,7 @@
 package aa.aggregators.rest;
 
 import aa.model.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InviteAttributeAggregatorTest {
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private RestAttributeAggregator subject;
 
@@ -42,7 +44,7 @@ public class InviteAttributeAggregatorTest {
         configuration.setPathParams(Arrays.asList(new PathParam(1, NAME_ID)));
         configuration.setRequestParams(List.of(new RequestParam("SPentityID","SPentityID")));
         configuration.setMappings(List.of(new Mapping("id", IS_MEMBER_OF, null)));
-        subject = new RestAttributeAggregator(configuration);
+        subject = new RestAttributeAggregator(configuration, objectMapper);
     }
 
     @Test

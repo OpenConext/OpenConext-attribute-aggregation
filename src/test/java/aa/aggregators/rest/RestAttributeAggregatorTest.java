@@ -45,7 +45,7 @@ public class RestAttributeAggregatorTest {
         configuration.setTimeOut(15000);
         configuration.setMappings(List.of(new Mapping("dummy", "dummy", new MappingFilter())));
         configuration.setRequestMethod("GET");
-        subject = new RestAttributeAggregator(configuration);
+        subject = new RestAttributeAggregator(configuration, objectMapper);
         ReflectionTestUtils.setField(subject, "restTemplate", restTemplate);
     }
 

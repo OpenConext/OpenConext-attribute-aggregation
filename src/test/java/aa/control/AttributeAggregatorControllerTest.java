@@ -44,8 +44,6 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         RequestEntity<ArpAggregationRequest> requestEntity = new RequestEntity<>(arpAggregationRequest, headers, HttpMethod.POST,
                 new URI("http://localhost:" + port + "/aa/api/internal/attribute/aggregation"));
 
-        ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
-
         ResponseEntity<List<UserAttribute>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {
         });
 

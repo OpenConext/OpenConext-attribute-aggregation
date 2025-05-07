@@ -4,6 +4,7 @@ import aa.aggregators.ala.AlaAttributeAggregator;
 import aa.aggregators.eduid.EduIdAttributeAggregator;
 import aa.aggregators.entitlements.EntitlementsAggregator;
 import aa.aggregators.idin.IdinAttributeAggregator;
+import aa.aggregators.institution.InstitutionAttributeAggregator;
 import aa.aggregators.manage.SurfCrmAttributeAggregator;
 import aa.aggregators.orcid.OrcidAttributeAggregator;
 import aa.aggregators.pseudo.PseudoEmailAggregator;
@@ -20,11 +21,13 @@ import aa.model.AttributeAuthorityConfiguration;
 import aa.repository.AccountRepository;
 import aa.repository.PseudoEmailRepository;
 import aa.service.AttributeAggregatorService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 
@@ -44,15 +47,19 @@ public class AttributeAggregatorConfiguration {
     private final AccountRepository accountRepository;
     private final PseudoEmailRepository pseudoEmailRepository;
     private final TaskScheduler taskScheduler;
+    private final Resource serviceProviderConfigPath;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public AttributeAggregatorConfiguration(@Value("${authorization_access_token_url}") String authorizationAccessTokenUrl,
                                             @Value("${pseudo.mail_postfix}") String pseudoMailPostfix,
+                                            @Value("${institution.service_provider_config_path}") Resource serviceProviderConfigPath,
                                             AuthorityResolver authorityResolver,
                                             UserAttributeCache userAttributeCache,
                                             AccountRepository accountRepository,
                                             PseudoEmailRepository pseudoEmailRepository,
-                                            TaskScheduler taskScheduler) {
+                                            TaskScheduler taskScheduler,
+                                            ObjectMapper objectMapper) {
         this.authorizationAccessTokenUrl = authorizationAccessTokenUrl;
         this.pseudoMailPostfix = pseudoMailPostfix;
         this.authorityResolver = authorityResolver;
@@ -60,6 +67,8 @@ public class AttributeAggregatorConfiguration {
         this.accountRepository = accountRepository;
         this.pseudoEmailRepository = pseudoEmailRepository;
         this.taskScheduler = taskScheduler;
+        this.serviceProviderConfigPath = serviceProviderConfigPath;
+        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -106,6 +115,8 @@ public class AttributeAggregatorConfiguration {
                 return new SurfCrmAttributeAggregator(configuration);
             case "sabrest":
                 return new SabRestAttributeAggregator(configuration);
+            case "institution":
+                return new InstitutionAttributeAggregator(configuration, serviceProviderConfigPath, objectMapper);
             default:
                 if (id.startsWith("test:")) {
                     return new TestingAttributeAggregator(configuration);
@@ -113,7 +124,7 @@ public class AttributeAggregatorConfiguration {
                     // Check if there is a type that can be used
                     if (null != configuration.getType()) {
                         if (AggregatorType.rest.equals(configuration.getType())) {
-                            RestAttributeAggregator restAggregator = new RestAttributeAggregator(configuration);
+                            RestAttributeAggregator restAggregator = new RestAttributeAggregator(configuration, objectMapper);
                             if (restAggregator.cachingEnabled()) {
                                 this.taskScheduler.schedule(restAggregator, new CronTrigger(configuration.getCache().getRefreshCron()));
                             }

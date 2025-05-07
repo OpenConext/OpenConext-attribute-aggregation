@@ -1,0 +1,41 @@
+{
+  "given_name": [
+    "John"
+  ],
+  "family_name": [
+    "Doe"
+  ],
+  "name": [
+    "Prof.dr. John Doe"
+  ],
+  "email": [
+    "john.doe@example.com"
+  ],
+  "ou": [
+    "Faculty of Science"
+  ],
+  "schac_home_organization": [
+    "university.nl"
+  ],
+  "eduperson_scoped_affiliation": [
+    "student@uniharderwijk.nl"
+  ],
+  "uids": [
+    "jdoe123"
+  ],
+  "schac_personal_unique_code": [
+    "S12345678"
+  ],
+  "eduperson_principal_name": [
+    "johndoe@studenthartingcollege.nl"
+  ],
+  "eduperson_entitlement": [
+    "urn:x-surfnet:surf.nl:surfdrive:quota:100"
+  ],
+  "edumember_is_member_of": [
+    "research-group"
+  ],
+  "eckid": [
+    "eck123456"
+  ]
+}

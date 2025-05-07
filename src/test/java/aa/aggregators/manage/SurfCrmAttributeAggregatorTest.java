@@ -28,9 +28,9 @@ import static org.junit.Assert.assertEquals;
 
 public class SurfCrmAttributeAggregatorTest {
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private ArpAggregationRequest arpAggregationRequest = objectMapper.readValue(new ClassPathResource("manage/arp_aggregation_request.json").getInputStream(),
+    private final ArpAggregationRequest arpAggregationRequest = objectMapper.readValue(new ClassPathResource("manage/arp_aggregation_request.json").getInputStream(),
             ArpAggregationRequest.class);
 
     private SurfCrmAttributeAggregator subject;

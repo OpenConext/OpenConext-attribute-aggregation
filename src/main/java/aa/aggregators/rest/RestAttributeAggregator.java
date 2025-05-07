@@ -26,9 +26,9 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator impleme
 
     private String cacheData;
 
-    public RestAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
+    public RestAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration, ObjectMapper objectMapper) {
         super(attributeAuthorityConfiguration);
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
     }
 
     @Override

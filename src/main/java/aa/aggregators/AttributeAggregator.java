@@ -17,6 +17,7 @@ public interface AttributeAggregator {
     String EMAIL = "urn:mace:dir:attribute-def:mail";
     String SP_ENTITY_ID = "SPentityID";
     String IDP_ENTITY_ID = "IDPentityID";
+    String EDU_ID = "urn:mace:eduid.nl:1.1";
 
     //output attribute names
     String EDU_PERSON_ENTITLEMENT = "urn:mace:dir:attribute-def:eduPersonEntitlement";

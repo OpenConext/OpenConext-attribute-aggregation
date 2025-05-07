@@ -1,0 +1,15 @@
+authorities:
+  - {
+    id: "institution",
+    timeOut: 100,
+    attributes: [ ],
+    requiredInputAttributes: [
+      {
+        name: "SPentityID"
+      },
+      {
+        name: "urn:mace:eduid.nl:1.1"
+      }
+    ],
+    validationRegExp: ".*"
+  }
