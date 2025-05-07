@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 public class InstitutionAttributeAggregator extends AbstractAttributeAggregator {
 
-
     private final Map<String, InstitutionEndpoint> institutionServicesConfig;
     private final SAMLMapping samlMapping = new SAMLMapping();
 
