@@ -4,6 +4,7 @@ info:
   version: 1.0.0
   description: |
     API voor het opvragen van attributen op basis van een eduID.
+    Authenticatie gebeurt via HTTP Basic Authentication.
 servers:
   - url: https://instelling.tld/api
 paths:
@@ -12,6 +13,7 @@ paths:
       summary: Haal attributen op voor een gebruiker
       description: |
         Retourneert de attributen die gekoppeld zijn aan het opgegeven eduID.
+        Vereist HTTP Basic Authentication.
       parameters:
         - name: eduid
           in: path
@@ -21,6 +23,8 @@ paths:
             type: string
             format: uuid
             example: 0000-1111-2222-3333
+      security:
+        - basicAuth: []
       responses:
         '200':
           description: Succesvolle respons met attributen.
@@ -44,7 +48,19 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 error: "User not found"
+        '401':
+          description: Authenticatie vereist of ongeldig.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Unauthorized"
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     AttributeArray:
       type: array
@@ -68,35 +84,3 @@ components:
         ou:
           $ref: '#/components/schemas/AttributeArray'
           example: ["Faculty of Science"]
-        schac_home_organization:
-          $ref: '#/components/schemas/AttributeArray'
-          example: ["university.nl"]
-        eduperson_scoped_affiliation:
-          $ref: '#/components/schemas/AttributeArray'
-          example: ["student@uniharderwijk.nl"]
-        uids:
-          $ref: '#/components/schemas/AttributeArray'
-          example: ["jdoe123"]
-        schac_personal_unique_code:
-          $ref: '#/components/schemas/AttributeArray'
-          example: ["S12345678"]
-        eduperson_principal_name:
-          $ref: '#/components/schemas/AttributeArray'
-          example: ["johndoe@studenthartingcollege.nl"]
-        eduperson_entitlement:
-          $ref: '#/components/schemas/AttributeArray'
-          example: ["urn:x-surfnet:surf.nl:surfdrive:quota:100"]
-        edumember_is_member_of:
-          $ref: '#/components/schemas/AttributeArray'
-          example: ["research-group"]
-        eckid:
-          $ref: '#/components/schemas/AttributeArray'
-          example: ["eck123456"]
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Beschrijving van de foutmelding
-      required:
-        - error

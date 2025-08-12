@@ -3,7 +3,7 @@
   "info": {
     "title": "Instelling Attributes API",
     "version": "1.0.0",
-    "description": "API voor het opvragen van attributen op basis van een eduID."
+    "description": "API voor het opvragen van attributen op basis van een eduID. Authenticatie gebeurt via HTTP Basic Authentication."
   },
   "servers": [
     {
@@ -14,7 +14,7 @@
     "/attributes/{eduid}": {
       "get": {
         "summary": "Haal attributen op voor een gebruiker",
-        "description": "Retourneert de attributen die gekoppeld zijn aan het opgegeven eduID.",
+        "description": "Retourneert de attributen die gekoppeld zijn aan het opgegeven eduID. Vereist HTTP Basic Authentication.",
         "parameters": [
           {
             "name": "eduid",
@@ -26,6 +26,11 @@
               "format": "uuid",
               "example": "0000-1111-2222-3333"
             }
+          }
+        ],
+        "security": [
+          {
+            "basicAuth": []
           }
         ],
         "responses": {
@@ -64,12 +69,31 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Authenticatie vereist of ongeldig.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
           }
         }
       }
     }
   },
   "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
     "schemas": {
       "AttributeArray": {
         "type": "array",
@@ -145,6 +169,10 @@
         "required": ["error"]
       }
     }
-  }
+  },
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ]
 }
-
