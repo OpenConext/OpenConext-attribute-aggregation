@@ -5,15 +5,18 @@ info:
   description: |
     API voor het opvragen van attributen op basis van een eduID.
     Authenticatie gebeurt via HTTP Basic Authentication.
+    **Let op:** deze API mag uitsluitend via een beveiligde HTTPS-verbinding worden aangeroepen.
 servers:
   - url: https://instelling.tld/api
+    description: Productieomgeving (alleen HTTPS toegestaan)
 paths:
   /attributes/{eduid}:
     get:
       summary: Haal attributen op voor een gebruiker
       description: |
         Retourneert de attributen die gekoppeld zijn aan het opgegeven eduID.
-        Vereist HTTP Basic Authentication.
+        Alle velden in de response zijn optioneel.
+        Vereist HTTP Basic Authentication en HTTPS.
       parameters:
         - name: eduid
           in: path
@@ -27,7 +30,7 @@ paths:
         - basicAuth: []
       responses:
         '200':
-          description: Succesvolle respons met attributen.
+          description: Succesvolle respons met attributen (alle velden optioneel).
           content:
             application/json:
               schema:
@@ -56,6 +59,14 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 error: "Unauthorized"
+        '500':
+          description: Interne serverfout.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Internal server error"
 components:
   securitySchemes:
     basicAuth:
@@ -68,6 +79,9 @@ components:
         type: string
     UserAttributes:
       type: object
+      description: |
+        Bevat alle mogelijke attributen van een gebruiker.
+        Alle velden zijn optioneel; afwezigheid betekent dat het attribuut niet bekend is.
       properties:
         given_name:
           $ref: '#/components/schemas/AttributeArray'
@@ -84,3 +98,37 @@ components:
         ou:
           $ref: '#/components/schemas/AttributeArray'
           example: ["Faculty of Science"]
+        schac_home_organization:
+          $ref: '#/components/schemas/AttributeArray'
+          example: ["university.nl"]
+        eduperson_scoped_affiliation:
+          $ref: '#/components/schemas/AttributeArray'
+          example: ["student@uniharderwijk.nl"]
+        uids:
+          $ref: '#/components/schemas/AttributeArray'
+          example: ["jdoe123"]
+        schac_personal_unique_code:
+          $ref: '#/components/schemas/AttributeArray'
+          example: ["S12345678"]
+        eduperson_principal_name:
+          $ref: '#/components/schemas/AttributeArray'
+          example: ["johndoe@studenthartingcollege.nl"]
+        eduperson_entitlement:
+          $ref: '#/components/schemas/AttributeArray'
+          example: ["urn:x-surfnet:surf.nl:surfdrive:quota:100"]
+        edumember_is_member_of:
+          $ref: '#/components/schemas/AttributeArray'
+          example: ["research-group"]
+        eckid:
+          $ref: '#/components/schemas/AttributeArray'
+          example: ["eck123456"]
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Beschrijving van de foutmelding
+      required:
+        - error
+security:
+  - basicAuth: []

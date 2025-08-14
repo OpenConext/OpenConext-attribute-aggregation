@@ -3,18 +3,19 @@
   "info": {
     "title": "Instelling Attributes API",
     "version": "1.0.0",
-    "description": "API voor het opvragen van attributen op basis van een eduID. Authenticatie gebeurt via HTTP Basic Authentication."
+    "description": "API voor het opvragen van attributen op basis van een eduID.\nAuthenticatie gebeurt via HTTP Basic Authentication.\n**Let op:** deze API mag uitsluitend via een beveiligde HTTPS-verbinding worden aangeroepen."
   },
   "servers": [
     {
-      "url": "https://instelling.tld/api"
+      "url": "https://instelling.tld/api",
+      "description": "Productieomgeving (alleen HTTPS toegestaan)"
     }
   ],
   "paths": {
     "/attributes/{eduid}": {
       "get": {
         "summary": "Haal attributen op voor een gebruiker",
-        "description": "Retourneert de attributen die gekoppeld zijn aan het opgegeven eduID. Vereist HTTP Basic Authentication.",
+        "description": "Retourneert de attributen die gekoppeld zijn aan het opgegeven eduID.\nAlle velden in de response zijn optioneel.\nVereist HTTP Basic Authentication en HTTPS.",
         "parameters": [
           {
             "name": "eduid",
@@ -35,7 +36,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Succesvolle respons met attributen.",
+            "description": "Succesvolle respons met attributen (alle velden optioneel).",
             "content": {
               "application/json": {
                 "schema": {
@@ -82,6 +83,19 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Interne serverfout.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
           }
         }
       }
@@ -103,6 +117,7 @@
       },
       "UserAttributes": {
         "type": "object",
+        "description": "Bevat alle mogelijke attributen van een gebruiker. Alle velden zijn optioneel; afwezigheid betekent dat het attribuut niet bekend is.",
         "properties": {
           "given_name": {
             "$ref": "#/components/schemas/AttributeArray",
