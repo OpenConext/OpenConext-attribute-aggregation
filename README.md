@@ -31,32 +31,16 @@ grant all on aaserver.* to 'root'@'localhost';
 
 ## [Building and running](#building-and-running)
 
-### [The aa-server](#aa-server)
+### [The server](#server)
 
 This project uses Spring Boot and Maven. To run locally, type:
 
-`cd aa-server`
+`cd aa`
 
 `mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=dev"`
 
 When developing, it's convenient to just execute the applications main-method, which is in [Application](aa-server/src/main/java/aa/Application.java). Don't forget
 to set the active profile to dev.
-
-### [The aa-gui](#aa-gui)
-
-The client is build with react.js and to get initially started:
-
-`cd aa-gui`
-
-To run locally:
-
-`npm run local`
-
-Browse to the [application homepage](http://localhost:8001/).
-
-When new npm dependencies are added:
-
-`npm install`
 
 ## [Miscellaneous](#miscellaneous)
 
