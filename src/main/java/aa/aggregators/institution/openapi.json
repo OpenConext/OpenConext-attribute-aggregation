@@ -1,0 +1,193 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Instelling Attributes API",
+    "version": "1.0.0",
+    "description": "API voor het opvragen van attributen op basis van een eduID.\nAuthenticatie gebeurt via HTTP Basic Authentication.\n**Let op:** deze API mag uitsluitend via een beveiligde HTTPS-verbinding worden aangeroepen."
+  },
+  "servers": [
+    {
+      "url": "https://instelling.tld/api",
+      "description": "Productieomgeving (alleen HTTPS toegestaan)"
+    }
+  ],
+  "paths": {
+    "/attributes/{eduid}": {
+      "get": {
+        "summary": "Haal attributen op voor een gebruiker",
+        "description": "Retourneert de attributen die gekoppeld zijn aan het opgegeven eduID.\nAlle velden in de response zijn optioneel.\nVereist HTTP Basic Authentication en HTTPS.",
+        "parameters": [
+          {
+            "name": "eduid",
+            "in": "path",
+            "required": true,
+            "description": "Het eduID van de gebruiker (UUID-formaat).",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "0000-1111-2222-3333"
+            }
+          }
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succesvolle respons met attributen (alle velden optioneel).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAttributes"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ongeldige request, bijvoorbeeld verkeerd UUID-formaat.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Invalid eduID format"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Gebruiker niet gevonden voor het opgegeven eduID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "User not found"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authenticatie vereist of ongeldig.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Interne serverfout.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "AttributeArray": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "UserAttributes": {
+        "type": "object",
+        "description": "Bevat alle mogelijke attributen van een gebruiker. Alle velden zijn optioneel; afwezigheid betekent dat het attribuut niet bekend is.",
+        "properties": {
+          "given_name": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["John"]
+          },
+          "family_name": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["Doe"]
+          },
+          "name": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["Prof.dr. John Doe"]
+          },
+          "email": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["john.doe@example.com"]
+          },
+          "ou": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["Faculty of Science"]
+          },
+          "schac_home_organization": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["university.nl"]
+          },
+          "eduperson_scoped_affiliation": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["student@uniharderwijk.nl"]
+          },
+          "uids": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["jdoe123"]
+          },
+          "schac_personal_unique_code": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["S12345678"]
+          },
+          "eduperson_principal_name": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["johndoe@studenthartingcollege.nl"]
+          },
+          "eduperson_entitlement": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["urn:x-surfnet:surf.nl:surfdrive:quota:100"]
+          },
+          "edumember_is_member_of": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["research-group"]
+          },
+          "eckid": {
+            "$ref": "#/components/schemas/AttributeArray",
+            "example": ["eck123456"]
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Beschrijving van de foutmelding"
+          }
+        },
+        "required": ["error"]
+      }
+    }
+  },
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ]
+}
