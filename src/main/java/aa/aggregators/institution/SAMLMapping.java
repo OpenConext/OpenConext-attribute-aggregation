@@ -24,6 +24,7 @@ public class SAMLMapping {
         mapping.put("urn:mace:surf.nl:attribute-def:eckid", "eckid");
         mapping.put("urn:schac:attribute-def:schacDateOfBirth", "date_of_birth");
         mapping.put("urn:mace:dir:attribute-def:preferredLanguage", "preferred_language");
+        mapping.put("urn:mace:dir:attribute-def:uid", "uids");
     }
 
     public Optional<String> convertSAMLAttributeName(String samlAttributeName) {

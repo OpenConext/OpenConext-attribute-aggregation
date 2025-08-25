@@ -19,6 +19,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.charset.Charset;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,6 +58,7 @@ public class InstitutionAttributeAggregatorTest {
                 ),
                 Map.of(EDU_PERSON_PRINCIPAL_NAME, List.of(new ArpValue("*", "institution")),
                         EMAIL, List.of(new ArpValue("*", "nope")),
+                        UID, List.of(new ArpValue("*", "institution")),
                         "urn:schac:attribute-def:schacDateOfBirth", List.of(new ArpValue("*", "institution")),
                         "unknown-saml-attribute", List.of(new ArpValue("*", "institution"))));
 
@@ -76,11 +78,17 @@ public class InstitutionAttributeAggregatorTest {
                 .post("/aa/api/internal/attribute/aggregation")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(1, userAttributes.size());
+        assertEquals(2, userAttributes.size());
+        userAttributes.sort(Comparator.comparing(UserAttribute::getName));
         UserAttribute userAttribute = userAttributes.getFirst();
         assertEquals(EDU_PERSON_PRINCIPAL_NAME, userAttribute.getName());
         assertEquals(1, userAttribute.getValues().size());
         assertEquals("johndoe@studenthartingcollege.nl", userAttribute.getValues().getFirst());
+
+        userAttribute = userAttributes.get(1);
+        assertEquals(UID, userAttribute.getName());
+        assertEquals(1, userAttribute.getValues().size());
+        assertEquals("jdoe123", userAttribute.getValues().getFirst());
     }
 
     @SneakyThrows
