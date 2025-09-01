@@ -5,6 +5,11 @@ import aa.model.Cache;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
 import lombok.Getter;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -22,8 +27,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import static io.restassured.path.json.JsonPath.config;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -119,7 +126,21 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
     private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration
                                                                attributeAuthorityConfiguration) {
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        ConnectionConfig connectionConfig = ConnectionConfig
+                .custom()
+                .setTimeToLive(60, TimeUnit.SECONDS)
+                .build();
+
+        PoolingHttpClientConnectionManager connManager =
+                PoolingHttpClientConnectionManagerBuilder.create()
+                        .setDefaultConnectionConfig(connectionConfig)
+                        .build();
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(connManager)
+                .build();
+
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
         // Set the connectionRequestTimeout value to 10 seconds
         requestFactory.setConnectionRequestTimeout(10000);
         int timeOut = attributeAuthorityConfiguration.getTimeOut();
