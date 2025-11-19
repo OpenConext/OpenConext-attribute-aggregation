@@ -5,6 +5,7 @@ import aa.repository.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -21,11 +22,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(value = {"/aa/api"})
 public class UserLifeCycleController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserLifeCycleController.class);
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
     public UserLifeCycleController(AccountRepository accountRepository) {

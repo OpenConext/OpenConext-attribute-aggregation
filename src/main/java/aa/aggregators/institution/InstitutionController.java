@@ -1,7 +1,9 @@
 package aa.aggregators.institution;
 
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping(value = {"/aa/api"})
 public class InstitutionController {
 
     private final Map<String, List<String>> userInfo = new HashMap<>();

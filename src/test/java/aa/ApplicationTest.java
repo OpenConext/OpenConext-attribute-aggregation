@@ -16,15 +16,15 @@ public class ApplicationTest extends AbstractIntegrationTest {
 
     @Test
     public void startUp() {
-        ResponseEntity<Map> response = restTemplate.getForEntity("http://localhost:" + port + "/aa/api/internal/health", Map.class);
+        ResponseEntity<Map> response = restTemplate.getForEntity("http://localhost:" + port + "/internal/health", Map.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(response.getBody().get("status"), "UP");
+        assertEquals("UP", response.getBody().get("status"));
     }
 
     @Test
     public void testMain() {
-        Application application = new Application();
-        application.main(new String[]{});
+//        Application application = new Application();
+        Application.main(new String[]{});
     }
 
 }

@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /aa/api
+    context-path:
     session:
       timeout: 28800
   server-header:

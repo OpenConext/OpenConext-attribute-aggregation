@@ -60,7 +60,7 @@ public class WebSecurityConfigurer {
                                                 AuthenticationManager authenticationManager,
                                                 Environment environment) throws Exception {
         http
-                .securityMatcher("/redirect", "/client/**")
+                .securityMatcher("/aa/api/redirect", "/aa/api/client/**")
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new ShibbolethPreAuthenticatedProcessingFilter(authenticationManager),
@@ -80,7 +80,7 @@ public class WebSecurityConfigurer {
     @Bean
     public SecurityFilterChain lifeCycleFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/deprovision/**")
+                .securityMatcher("/aa/api/deprovision/**")
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -100,7 +100,7 @@ public class WebSecurityConfigurer {
     @Bean
     public SecurityFilterChain attributeAggregationFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/internal/**")
+                .securityMatcher("/aa/api/internal/**")
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new BasicAuthenticationFilter(new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
