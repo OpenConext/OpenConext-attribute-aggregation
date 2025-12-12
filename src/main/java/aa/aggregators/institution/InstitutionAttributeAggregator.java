@@ -58,6 +58,8 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
         String eduID = input.stream().filter(attribute -> attribute.getName().equals(EDU_ID))
                 .findFirst().get().getValues().getFirst();
         String url = String.format("%s/api/attributes/%s", removeTrailingSlash(institutionEndpoint.getBaseURL()), eduID);
+        //TODO: Use try / catch, and in case of error, default to the input user attributes.
+        //See https://github.com/OpenConext/OpenConext-attribute-aggregation/issues/144
         Map<String, List<String>> body = restTemplate.getForEntity(url, Map.class).getBody();
 
         LOG.debug("Received response {} from {} for SP {}", body, institutionEndpoint.getBaseURL(), spEntityID);
