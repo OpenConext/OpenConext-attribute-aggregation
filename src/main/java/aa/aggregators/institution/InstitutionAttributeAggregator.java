@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -68,15 +67,18 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
         Map<String, List<String>> body;
         try {
             body = restTemplate.getForEntity(url, Map.class).getBody();
-        } catch (RuntimeException e) {
-            String msg = String.format("InstitutionEndpoint %s configured for: %s, returned an error",
-                    institutionEndpoint, spEntityID);
+        } catch (HttpStatusCodeException e) {
+            String msg = String.format("InstitutionEndpoint %s configured for: %s, returned an error", institutionEndpoint, spEntityID);
             // A 404 if the user wasn't found is not an error
-            if (e instanceof HttpStatusCodeException && ((HttpStatusCodeException) e).getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 LOG.info(msg + " 404 Not Found");
             } else {
                 LOG.error(msg, e);
             }
+            return errorResponse(input);
+        } catch (RuntimeException e) {
+            // For network errors or other runtime issues
+            LOG.error("System error calling InstitutionEndpoint", e);
             return errorResponse(input);
         }
 
