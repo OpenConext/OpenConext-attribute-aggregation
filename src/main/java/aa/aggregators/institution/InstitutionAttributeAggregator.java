@@ -8,8 +8,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -66,13 +69,15 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
         try {
             body = restTemplate.getForEntity(url, Map.class).getBody();
         } catch (RuntimeException e) {
-            String msg = String.format("InstitutionEndpoint %s configured for: %s, returned an error", institutionEndpoint, spEntityID);
+            String msg = String.format("InstitutionEndpoint %s configured for: %s, returned an error",
+                    institutionEndpoint, spEntityID);
             // A 404 if the user wasn't found is not an error
-            if (e.getStatusCode().value() == 404) {
+            if (e instanceof HttpStatusCodeException && ((HttpStatusCodeException) e).getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 LOG.info(msg + " 404 Not Found");
             } else {
                 LOG.error(msg, e);
             }
+            return errorResponse(input);
         }
 
         LOG.debug("Received response {} from {} for SP {}", body, institutionEndpoint.getBaseURL(), spEntityID);
