@@ -9,6 +9,7 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,6 +42,11 @@ public class InstitutionAttributeAggregatorTest {
     @Before
     public void before() throws Exception {
         RestAssured.port = port;
+    }
+
+    @After
+    public void cleanup() {
+        wireMockRule.resetRequests();  // Clear the request journal
     }
 
     @SneakyThrows
@@ -173,6 +179,40 @@ public class InstitutionAttributeAggregatorTest {
                 .withHeader("Authorization", equalTo("Basic " + encodeBase64String("api-user:secret".getBytes())))
                 .willReturn(aResponse().withStatus(404)
                         .withHeader("Content-Type", "application/json")));
+
+        List<UserAttribute> userAttributes = given()
+                .auth().preemptive().basic("eb", "secret")
+                .body(arpAggregationRequest)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post("/aa/api/internal/attribute/aggregation")
+                .as(new TypeRef<>() {
+                });
+        //Only the EDU_PERSON_PRINCIPAL_NAME is present in the ARP given as input
+        assertEquals(List.of("admin@example.com"),
+                userAttributes.stream().map(userAttribute -> userAttribute.getValues())
+                        .flatMap(Collection::stream)
+                        .toList()
+        );
+    }
+
+    @SneakyThrows
+    @Test
+    public void aggregateWithNotFoundResponse() {
+        String eduID = UUID.randomUUID().toString();
+        List<UserAttribute> userAttributesInput = List.of(
+                new UserAttribute(SP_ENTITY_ID, List.of("https://mock-sp")),
+                new UserAttribute(EDU_ID, List.of(eduID)),
+                new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, List.of("admin@example.com"))
+        );
+        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(
+                userAttributesInput,
+                Map.of(EDU_PERSON_PRINCIPAL_NAME, List.of(new ArpValue("*", "institution")),
+                        EMAIL, List.of(new ArpValue("*", "nope")),
+                        UID, List.of(new ArpValue("*", "institution")),
+                        "urn:schac:attribute-def:schacDateOfBirth", List.of(new ArpValue("*", "institution")),
+                        "unknown-saml-attribute", List.of(new ArpValue("*", "institution"))));
 
         List<UserAttribute> userAttributes = given()
                 .auth().preemptive().basic("eb", "secret")
