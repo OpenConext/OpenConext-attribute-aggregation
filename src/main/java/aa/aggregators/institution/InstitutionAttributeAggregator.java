@@ -30,7 +30,7 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
         super(attributeAuthorityConfiguration);
         Map<String, Map<String, String>> config = objectMapper.readValue(serviceProviderConfigPath.getInputStream(), new TypeReference<>() {
         });
-        this.institutionServicesConfig  = config
+        this.institutionServicesConfig = config
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap(entry -> entry.getKey(), entry ->
@@ -40,13 +40,15 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         //This is by contract. The spEntityID is always present
-        String spEntityID =input.stream().filter(userAttribute -> userAttribute.getName().equals(SP_ENTITY_ID))
+        String spEntityID = input.stream().filter(userAttribute -> userAttribute.getName().equals(SP_ENTITY_ID))
                 .findFirst().get().getValues().getFirst();
         InstitutionEndpoint institutionEndpoint = institutionServicesConfig.get(spEntityID);
         if (institutionEndpoint == null) {
-            throw new IllegalArgumentException("No InstitutionEndpoint configured for: " + spEntityID);
+            LOG.error("No InstitutionEndpoint configured for: {}", spEntityID);
+            return errorResponse(input);
         }
         RestTemplate restTemplate = super.initializeRestTemplate(super.getAttributeAuthorityConfiguration());
         BasicAuthenticationInterceptor interceptor = new BasicAuthenticationInterceptor(
@@ -58,9 +60,16 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
         String eduID = input.stream().filter(attribute -> attribute.getName().equals(EDU_ID))
                 .findFirst().get().getValues().getFirst();
         String url = String.format("%s/api/attributes/%s", removeTrailingSlash(institutionEndpoint.getBaseURL()), eduID);
-        //TODO: Use try / catch, and in case of error, default to the input user attributes.
+        //Use try / catch, and in case of error, default to the input user attributes.
         //See https://github.com/OpenConext/OpenConext-attribute-aggregation/issues/144
-        Map<String, List<String>> body = restTemplate.getForEntity(url, Map.class).getBody();
+        Map<String, List<String>> body;
+        try {
+            body = restTemplate.getForEntity(url, Map.class).getBody();
+        } catch (RuntimeException e) {
+            String msg = String.format("InstitutionEndpoint %s configured for: %s, returned an error", institutionEndpoint, spEntityID);
+            LOG.error(msg, e);
+            return errorResponse(input);
+        }
 
         LOG.debug("Received response {} from {} for SP {}", body, institutionEndpoint.getBaseURL(), spEntityID);
 
@@ -79,6 +88,15 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
                 List<String> values = body.get(optionalName.get());
                 if (!CollectionUtils.isEmpty(values)) {
                     result.add(new UserAttribute(samlAttributeName, values, super.getAttributeAuthorityId()));
+                } else {
+                    //Look up the value of the attribute from the EB input and if present, use that as the return value
+                    input.stream()
+                            .filter(userAttribute -> userAttribute.getName().equals(samlAttributeName))
+                            .findFirst()
+                            .ifPresent(userAttribute -> result.add(
+                                    new UserAttribute(
+                                            samlAttributeName, userAttribute.getValues(), super.getAttributeAuthorityId()))
+                            );
                 }
             }
         });
@@ -90,5 +108,16 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
             return baseURL.substring(0, baseURL.length() - 1);
         }
         return baseURL;
+    }
+
+    private List<UserAttribute> errorResponse(List<UserAttribute> userAttributesInput) {
+        //We must add the correct source of the attribute, otherwise it is filtered out in the upstream stream
+        return userAttributesInput.stream()
+                .map(userAttribute -> new UserAttribute(
+                        userAttribute.getName(),
+                        userAttribute.getValues(),
+                        super.getAttributeAuthorityId()
+                ))
+                .toList();
     }
 }

@@ -19,10 +19,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.charset.Charset;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static aa.aggregators.AttributeAggregator.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -147,6 +144,88 @@ public class InstitutionAttributeAggregatorTest {
                 .post("/aa/api/internal/attribute/aggregation")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(0, userAttributes.size());
+        //Only the EDU_PERSON_PRINCIPAL_NAME is present in the ARP given as input
+        assertEquals(List.of("admin@example.com"),
+                userAttributes.stream().map(userAttribute -> userAttribute.getValues())
+                        .flatMap(Collection::stream)
+                        .toList()
+        );
     }
+
+    @SneakyThrows
+    @Test
+    public void aggregateWithErrorResponse() {
+        String eduID = UUID.randomUUID().toString();
+        List<UserAttribute> userAttributesInput = List.of(
+                new UserAttribute(SP_ENTITY_ID, List.of("https://mock-sp")),
+                new UserAttribute(EDU_ID, List.of(eduID)),
+                new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, List.of("admin@example.com"))
+        );
+        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(
+                userAttributesInput,
+                Map.of(EDU_PERSON_PRINCIPAL_NAME, List.of(new ArpValue("*", "institution")),
+                        EMAIL, List.of(new ArpValue("*", "nope")),
+                        UID, List.of(new ArpValue("*", "institution")),
+                        "urn:schac:attribute-def:schacDateOfBirth", List.of(new ArpValue("*", "institution")),
+                        "unknown-saml-attribute", List.of(new ArpValue("*", "institution"))));
+
+        stubFor(get(urlPathEqualTo("/api/attributes/" + eduID))
+                .withHeader("Authorization", equalTo("Basic " + encodeBase64String("api-user:secret".getBytes())))
+                .willReturn(aResponse().withStatus(404)
+                        .withHeader("Content-Type", "application/json")));
+
+        List<UserAttribute> userAttributes = given()
+                .auth().preemptive().basic("eb", "secret")
+                .body(arpAggregationRequest)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post("/aa/api/internal/attribute/aggregation")
+                .as(new TypeRef<>() {
+                });
+        //Only the EDU_PERSON_PRINCIPAL_NAME is present in the ARP given as input
+        assertEquals(List.of("admin@example.com"),
+                userAttributes.stream().map(userAttribute -> userAttribute.getValues())
+                        .flatMap(Collection::stream)
+                        .toList()
+        );
+    }
+
+    @SneakyThrows
+    @Test
+    public void aggregateWithMissingReturnUserAttribute() {
+        String eduID = UUID.randomUUID().toString();
+        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(
+                List.of(
+                        new UserAttribute(SP_ENTITY_ID, List.of("https://mock-sp")),
+                        new UserAttribute(EDU_ID, List.of(eduID)),
+                        new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, List.of("admin@example.com"))
+                ),
+                Map.of(EDU_PERSON_PRINCIPAL_NAME, List.of(new ArpValue("*", "institution"))));
+
+        //Mock an empty result from the institution, the original attribute must be returned
+        String response = "{}";
+        stubFor(get(urlPathEqualTo("/api/attributes/" + eduID))
+                .withHeader("Authorization", equalTo("Basic " + encodeBase64String("api-user:secret".getBytes())))
+                .willReturn(aResponse().withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
+
+        List<UserAttribute> userAttributes = given()
+                .auth().preemptive().basic("eb", "secret")
+                .body(arpAggregationRequest)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post("/aa/api/internal/attribute/aggregation")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(1, userAttributes.size());
+        UserAttribute userAttribute = userAttributes.getFirst();
+        assertEquals(EDU_PERSON_PRINCIPAL_NAME, userAttribute.getName());
+        assertEquals(1, userAttribute.getValues().size());
+        assertEquals("admin@example.com", userAttribute.getValues().getFirst());
+    }
+
+
 }
