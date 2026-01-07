@@ -138,6 +138,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setConnectionManager(connManager)
+                .disableCookieManagement()
                 .build();
 
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
