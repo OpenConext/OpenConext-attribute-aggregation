@@ -67,8 +67,12 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
             body = restTemplate.getForEntity(url, Map.class).getBody();
         } catch (RuntimeException e) {
             String msg = String.format("InstitutionEndpoint %s configured for: %s, returned an error", institutionEndpoint, spEntityID);
-            LOG.error(msg, e);
-            return errorResponse(input);
+            // A 404 if the user wasn't found is not an error
+            if (e.getStatusCode().value() == 404) {
+                LOG.info(msg + " 404 Not Found");
+            } else {
+                LOG.error(msg, e);
+            }
         }
 
         LOG.debug("Received response {} from {} for SP {}", body, institutionEndpoint.getBaseURL(), spEntityID);
