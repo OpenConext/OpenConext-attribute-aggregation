@@ -11,7 +11,6 @@ Starting from version 5.0.0, we note changes and new features per release in thi
 - Change the paths for the info and health endpoints to support removal of the (url-rewriting) client
   Specifically, `/aa/api/internal/health` has been renamed to `/internal/health`,
   and `/aa/api/internal/info` has been renamed to `/internal/info`
-  TODO: check
 - Fix dockerfile in order for the aa-server component to expose port 8080 (was previously handled by aa-client)
 - Maintenance:
   - Update Readme to remove references to aa-gui
