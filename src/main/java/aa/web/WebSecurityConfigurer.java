@@ -60,15 +60,15 @@ public class WebSecurityConfigurer {
                                                 AuthenticationManager authenticationManager,
                                                 Environment environment) throws Exception {
         http
-                .securityMatcher("/aa/api/redirect", "/aa/api/client/**")
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new ShibbolethPreAuthenticatedProcessingFilter(authenticationManager),
-                        AbstractPreAuthenticatedProcessingFilter.class)
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest()
-                        .authenticated()
-                );
+            .securityMatcher("/aa/api/redirect", "/aa/api/client/**")
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+            .csrf(AbstractHttpConfigurer::disable)
+            .addFilterBefore(new ShibbolethPreAuthenticatedProcessingFilter(authenticationManager),
+                AbstractPreAuthenticatedProcessingFilter.class)
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest()
+                .authenticated()
+            );
         if (environment.acceptsProfiles(Profiles.of("test", "mock"))) {
             //we can't use @Profile, because we need to add it before the real filter
             http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
@@ -80,38 +80,38 @@ public class WebSecurityConfigurer {
     @Bean
     public SecurityFilterChain lifeCycleFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/aa/api/deprovision/**")
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(
-                        new BasicAuthenticationFilter(
-                                new BasicAuthenticationManager(lifeCycleUserName, lifeCyclePassword)
-                        ), BasicAuthenticationFilter.class
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest()
-                        .authenticated()
-                )
-                .build();
+            .securityMatcher("/aa/api/deprovision/**")
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .csrf(AbstractHttpConfigurer::disable)
+            .addFilterBefore(
+                new BasicAuthenticationFilter(
+                    new BasicAuthenticationManager(lifeCycleUserName, lifeCyclePassword)
+                ), BasicAuthenticationFilter.class
+            )
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest()
+                .authenticated()
+            )
+            .build();
 
     }
 
     @Bean
     public SecurityFilterChain attributeAggregationFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/aa/api/internal/**")
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new BasicAuthenticationFilter(new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
-                        BasicAuthenticationFilter.class)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/internal/health", "/internal/info")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-                )
-                .build();
+            .securityMatcher("/aa/api/internal/**")
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .csrf(AbstractHttpConfigurer::disable)
+            .addFilterBefore(new BasicAuthenticationFilter(new BasicAuthenticationManager(attributeAggregationUserName, attributeAggregationPassword)),
+                BasicAuthenticationFilter.class)
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/internal/health", "/internal/info")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+            )
+            .build();
     }
 
     @Configuration
