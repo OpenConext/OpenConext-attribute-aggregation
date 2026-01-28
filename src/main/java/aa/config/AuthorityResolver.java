@@ -33,16 +33,6 @@ public class AuthorityResolver {
 
     private void parse(ResourceLoader resourceLoader, String configFileLocation) throws IOException {
         Constructor constructor = new Constructor(AuthorityConfiguration.class, new LoaderOptions());
-        TypeDescription authorityConfigurationDescription = new TypeDescription(AuthorityConfiguration.class);
-        authorityConfigurationDescription.addPropertyParameters("authorities", AttributeAuthorityConfiguration.class);
-
-        TypeDescription attributeAuthorityDescription = new TypeDescription(AttributeAuthorityConfiguration.class);
-        authorityConfigurationDescription.addPropertyParameters("attributes", Attribute.class);
-        authorityConfigurationDescription.addPropertyParameters("requiredInputAttributes", RequiredInputAttribute.class);
-
-        constructor.addTypeDescription(authorityConfigurationDescription);
-        constructor.addTypeDescription(attributeAuthorityDescription);
-
         this.configuration = new Yaml(constructor).load(resourceLoader.getResource(configFileLocation).getInputStream());
     }
 

@@ -38,6 +38,7 @@ spring:
     properties:
       hibernate:
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    open-in-view: false
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mysql://localhost/aaserver?autoReconnect=true&useSSL=false&permitMysqlScheme=true&allowPublicKeyRetrieval=true
