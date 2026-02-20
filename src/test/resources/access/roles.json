@@ -1,8 +1,14 @@
 [
-  {
-    "id": "urn:mace:surf.nl:test.surfaccess.nl:bb"
-  },
-  {
-    "id": "urn:mace:surf.nl:test.surfaccess.nl:aa"
-  }
+    {
+        "id": "urn:mace:surf.nl:test.surfaccess.nl:bb"
+    },
+    {
+        "id": "urn:mace:surf.nl:test.surfaccess.nl:aa"
+    },
+    {
+        "autorisatie": "urn:mace:surfnet.nl:surfnet.nl:sab:organizationGUID:ad93daef-0911-e511-80d0-005056956c1a"
+    },
+    {
+        "autorisatie": "urn:mace:surfnet.nl:surfnet.nl:sab:role:DNS-Beheerder"
+    }
 ]

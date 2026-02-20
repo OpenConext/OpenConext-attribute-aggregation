@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InviteAttributeAggregatorTest {
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private RestAttributeAggregator subject;
@@ -43,7 +44,10 @@ public class InviteAttributeAggregatorTest {
         configuration.setRequiredInputAttributes(List.of(new RequiredInputAttribute(NAME_ID), new RequiredInputAttribute(SP_ENTITY_ID)));
         configuration.setPathParams(Arrays.asList(new PathParam(1, NAME_ID)));
         configuration.setRequestParams(List.of(new RequestParam("SPentityID","SPentityID")));
-        configuration.setMappings(List.of(new Mapping("id", IS_MEMBER_OF, null)));
+        configuration.setMappings(List.of(
+            new Mapping("id", IS_MEMBER_OF, null),
+            new Mapping("autorisatie", SURF_AUTORISATIES, null)
+        ));
         subject = new RestAttributeAggregator(configuration, objectMapper);
     }
 
@@ -52,14 +56,22 @@ public class InviteAttributeAggregatorTest {
         String response = read("access/roles.json");
         stubForAccess(response, 200);
         List<UserAttribute> userAttributes = subject.aggregate(input, Collections.emptyMap());
-        assertEquals(1, userAttributes.size());
-        UserAttribute userAttribute = userAttributes.get(0);
-        assertEquals(IS_MEMBER_OF, userAttribute.getName());
+        assertEquals(2, userAttributes.size());
+        UserAttribute userAttribute = userAttributes.stream()
+            .filter(attr -> attr.getName().equals(IS_MEMBER_OF)).findFirst().get();
 
         List<String> values = userAttribute.getValues();
         assertEquals(2, values.size());
         assertEquals(List.of("aa", "bb"), values.stream().map(s -> s.substring(s.lastIndexOf(":") + 1)).toList());
         values.forEach(value -> assertTrue(value.startsWith("urn:mace:surf.nl:test.surfaccess.nl")));
+
+        UserAttribute autorisatieUserAttribute = userAttributes.stream()
+            .filter(attr -> attr.getName().equals(SURF_AUTORISATIES)).findFirst().get();
+        assertEquals(IS_MEMBER_OF, userAttribute.getName());
+
+        values = autorisatieUserAttribute.getValues();
+        assertEquals(2, values.size());
+        values.forEach(value -> assertTrue(value.startsWith("urn:mace:surfnet.nl:surfnet.nl:sab:")));
     }
 
     @Test
