@@ -77,3 +77,9 @@ info:
   build:
     artifact: "@project.artifactId@"
     version: "@project.version@"
+
+# Logging settings to enable logging in JSON format (e.g. for usage in Graylog or Elastic Stack)
+# logging:
+#   config: classpath:logback-spring.xml
+#   file:
+#     path: logs/
