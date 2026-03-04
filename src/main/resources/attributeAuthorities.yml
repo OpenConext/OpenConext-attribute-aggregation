@@ -16,10 +16,10 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:mace:dir:attribute-def:mail",
+          name: "urn:mace:dir:attribute-def:mail"
         },
         {
-        name: "SPentityID"
+          name: "SPentityID"
         }
       ],
       validationRegExp: "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$"
@@ -41,7 +41,7 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+          name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
         }
       ],
       validationRegExp: "^(https?://orcid\\.org/|)([0-9]{4}-){3}[0-9]{3}[0-9X]$"
@@ -63,7 +63,7 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+          name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
         }
       ],
       validationRegExp: "^urn:mace:surfnet.nl:(surfnet\\.nl|surfmarket\\.nl|surfsara\\.nl|surf\\.nl):sab:(role|organizationCode|organizationGUID|mobile):[A-Z0-9+-]+$"
@@ -85,7 +85,7 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+          name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
         }
       ],
       validationRegExp: "^urn:collab:group:.*$"
@@ -107,41 +107,85 @@ authorities:
       ],
       requiredInputAttributes: [
         {
-        name: "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+          name: "urn:mace:dir:attribute-def:eduPersonPrincipalName"
         }
       ],
       validationRegExp: "^urn:mace:surfnet.nl:surfmarket.nl:.*$"
     }
   - {
-    id: "sabrest",
-    description: "SURF Autorisatie Beheer - REST",
-    endpoint: "https://sab-ng.surfnet.nl",
-    user: "",
-    password: "",
-    timeOut: 1000,
-    attributes: [
-      {
-        name: "urn:mace:dir:attribute-def:eduPersonEntitlement",
-        description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
-        type: "string",
-        example: "urn:mace:surfnet.nl:surfnet.nl:sab:role:Instellingsbevoegde"
-      },
-      {
-        name: "urn:mace:surf.nl:attribute-def:surf-autorisaties",
-        description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
-        type: "string",
-        example: "urn:mace:surfnet.nl:surfnet.nl:sab:role:Instellingsbevoegde"
-      }
-
-    ],
-    requiredInputAttributes: [
-      {
-        name: "urn:mace:dir:attribute-def:uid",
-      },
-      {
-        name: "urn:mace:terena.org:attribute-def:schacHomeOrganization",
-      }
-
-    ],
-    validationRegExp: "^urn:mace:surfnet.nl:(surfnet\\.nl|surfmarket\\.nl|surfsara\\.nl|surf\\.nl):sab:(role|organizationCode|organizationGUID|mobile):[A-Z0-9+-]+$"
-  }
+      id: "sabrest",
+      description: "SURF Autorisatie Beheer - REST",
+      endpoint: "https://sab-ng.surfnet.nl",
+      user: "",
+      password: "",
+      timeOut: 1000,
+      attributes: [
+        {
+          name: "urn:mace:dir:attribute-def:eduPersonEntitlement",
+          description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
+          type: "string",
+          example: "urn:mace:surfnet.nl:surfnet.nl:sab:role:Instellingsbevoegde"
+        },
+        {
+          name: "urn:mace:surf.nl:attribute-def:surf-autorisaties",
+          description: "URI (either URN or URL) that indicates a set of rights to specific resources.",
+          type: "string",
+          example: "urn:mace:surfnet.nl:surfnet.nl:sab:role:Instellingsbevoegde"
+        }
+      ],
+      requiredInputAttributes: [
+        {
+          name: "urn:mace:dir:attribute-def:uid"
+        },
+        {
+          name: "urn:mace:terena.org:attribute-def:schacHomeOrganization"
+        }
+      ],
+      validationRegExp: "^urn:mace:surfnet.nl:(surfnet\\.nl|surfmarket\\.nl|surfsara\\.nl|surf\\.nl):sab:(role|organizationCode|organizationGUID|mobile):[A-Z0-9+-]+$"
+    }
+  - {
+      id: "invite",
+      description: "Openconext Invite",
+      endpoint: "https://invite.openconext/api/external/v1/aa/%s",
+      user: "",
+      password: "",
+      timeOut: 5000,
+      type: "rest",
+      requestMethod: "GET",
+      pathParams: [
+        { index: 1, sourceAttribute: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified" }
+      ],
+      requestParams: [
+        {
+          sourceAttribute: "SPentityID",
+          name: "SPentityID"
+        }
+      ],
+      mappings: [
+        { responseKey: "id", targetAttribute: "urn:mace:dir:attribute-def:isMemberOf" },
+        { responseKey: "autorisatie", targetAttribute: "urn:mace:surf.nl:attribute-def:surf-autorisaties" }
+      ],
+      attributes: [
+        {
+          name: "urn:mace:dir:attribute-def:isMemberOf",
+          description: "Lists the roles the user is a member of",
+          type: "string",
+          example: "urn:mace:surf.nl:test.surfinvite.nl:77a273cf-6f0a-480a-991e-ada8e89e1d74:scim_mock_test_role"
+        },
+        {
+          name: "urn:mace:surf.nl:attribute-def:surf-autorisaties",
+          description: "Lists the surf-autorisaties for the user",
+          type: "string",
+          example: "urn:mace:surfnet.nl:surfnet.nl:sab:role:DNS-Beheerder"
+        }
+      ],
+      requiredInputAttributes: [
+        {
+          name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+        },
+        {
+          name: "SPentityID"
+        }
+      ],
+      validationRegExp: "^urn:(collab:group|mace:surf.nl|mace:surfnet.nl):.*$"
+    }
