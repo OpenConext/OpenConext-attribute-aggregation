@@ -21,7 +21,7 @@ public class AuthorityResolverTest {
     @Test
     public void testGetConfiguration() throws Exception {
         AuthorityResolver subject = new AuthorityResolver(new DefaultResourceLoader(), "classpath:/attributeAuthorities.yml");
-        testConfiguration(subject, 6);
+        testConfiguration(subject, 7);
     }
 
     private void testConfiguration(AuthorityResolver subject, int expectedAuthorities) {
