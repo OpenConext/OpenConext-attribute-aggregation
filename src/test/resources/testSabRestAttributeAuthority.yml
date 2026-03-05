@@ -2,7 +2,7 @@ authorities:
   - {
     id: "sabrest",
     description: "SURF Autorisatie Beheer",
-    endpoint: "http://localhost:8889",
+    endpoint: "http://localhost:8889/api/profile",
     user: "user",
     password: "secret",
     timeOut: 1000,

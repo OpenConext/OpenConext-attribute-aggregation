@@ -42,7 +42,7 @@ public class SabRestAttributeAggregatorTest {
         AttributeAuthorityConfiguration configuration = new AttributeAuthorityConfiguration("sab");
         configuration.setUser("user");
         configuration.setPassword("password");
-        configuration.setEndpoint("http://localhost:8889");
+        configuration.setEndpoint("http://localhost:8889/api/profile");
         configuration.setRequiredInputAttributes(List.of(new RequiredInputAttribute(UID), new RequiredInputAttribute(IDP_ENTITY_ID)));
         configuration.setValidationRegExp("^urn:mace:surfnet.nl:(surfnet\\.nl|surf\\.nl):sab:(role|organizationCode|organizationGUID|mobile):[A-Z0-9_+-]+$");
         subject = new SabRestAttributeAggregator(configuration);

@@ -21,12 +21,7 @@ public class SabRestAttributeAggregator extends AbstractAttributeAggregator {
     public SabRestAttributeAggregator(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         super(attributeAuthorityConfiguration);
         //https://sab-ng.surfnet.nl/api/profile?uid=henny&idp=surfnet.nl
-        String endpointSab = getAttributeAuthorityConfiguration().getEndpoint();
-        if (!endpointSab.endsWith("/")) {
-            endpointSab += "/";
-        }
-        endpointSab += "api/profile?uid={uid}&idp={idp}";
-        sabRestEndpoint = endpointSab;
+        sabRestEndpoint = getAttributeAuthorityConfiguration().getEndpoint() + "?uid={uid}&idp={idp}";
     }
 
     @Override
