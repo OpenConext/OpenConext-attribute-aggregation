@@ -2,6 +2,27 @@
 
 Starting from version 5.0.0, we note changes and new features per release in this file.
 
+## 5.2.0
+
+- Performance improvement: Attribute aggregation from multiple sources now runs fully in parallel, reducing response times when multiple attribute authorities are consulted
+- Support for logging in JSON format for Elastic/Graylog (#148)
+- Added additional monitoring information to the info actuator (#148):
+  - Added application version, artifact, java_version, name, time, spring_boot_version, and group to the build info
+  - Added `days_since_release` to help determine when to build a new release
+- Added OpenConext Invite configuration to YAML
+- Added regression tests for Invite aggregator with SURF authorizations
+- Maintenance:
+  - Configuration of full path in the application.yml for SAB REST attribute aggregator (#149)
+
+## 5.1.2
+
+- Fix for YAML configuration parsing of attribute authorities (#147), resolving annoying snakeyaml warnings during startup
+- Support for ARM64 Docker images
+
+## 5.1.1
+
+- Moved static content (logos, fonts, HTML) to `/aa/api` to ensure they are accessible under the new API path structure
+
 ## 5.1.0
 
 - Bugfixes for the instituion aggregator:
