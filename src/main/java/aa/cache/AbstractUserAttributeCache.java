@@ -1,7 +1,7 @@
 package aa.cache;
 
 import aa.model.UserAttribute;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -44,7 +44,7 @@ public abstract class AbstractUserAttributeCache implements UserAttributeCache {
     }
 
     //may return null as only used internally
-    protected abstract void doPut(String cacheKey, List<UserAttribute> userAttributes) throws JsonProcessingException;
+    protected abstract void doPut(String cacheKey, List<UserAttribute> userAttributes) throws JacksonException;
 
     public long getCacheDuration() {
         return cacheDuration;

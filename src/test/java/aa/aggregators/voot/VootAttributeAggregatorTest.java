@@ -3,7 +3,7 @@ package aa.aggregators.voot;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.RequiredInputAttribute;
 import aa.model.UserAttribute;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import lombok.SneakyThrows;

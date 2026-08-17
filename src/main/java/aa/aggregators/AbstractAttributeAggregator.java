@@ -12,7 +12,6 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
@@ -126,9 +125,11 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
     private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration
                                                                attributeAuthorityConfiguration) {
+        int timeOut = attributeAuthorityConfiguration.getTimeOut();
         ConnectionConfig connectionConfig = ConnectionConfig
                 .custom()
                 .setTimeToLive(60, TimeUnit.SECONDS)
+                .setConnectTimeout(timeOut, TimeUnit.MILLISECONDS)
                 .build();
 
         PoolingHttpClientConnectionManager connManager =
@@ -144,8 +145,6 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
         // Set the connectionRequestTimeout value to 10 seconds
         requestFactory.setConnectionRequestTimeout(10000);
-        int timeOut = attributeAuthorityConfiguration.getTimeOut();
-        requestFactory.setConnectTimeout(timeOut);
         requestFactory.setReadTimeout(timeOut);
         return requestFactory;
     }

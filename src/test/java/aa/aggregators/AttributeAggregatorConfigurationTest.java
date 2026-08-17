@@ -5,7 +5,7 @@ import aa.config.AuthorityResolver;
 import aa.repository.AccountRepository;
 import aa.repository.PseudoEmailRepository;
 import aa.service.AttributeAggregatorService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

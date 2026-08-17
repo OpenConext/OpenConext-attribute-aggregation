@@ -4,6 +4,11 @@ import aa.aggregators.AbstractAttributeAggregator;
 import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class EntitlementsAggregator extends AbstractAttributeAggregator {
@@ -33,9 +39,19 @@ public class EntitlementsAggregator extends AbstractAttributeAggregator {
     @Override
     protected RestTemplate initializeRestTemplate(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         int timeOut = attributeAuthorityConfiguration.getTimeOut();
-        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        ConnectionConfig connectionConfig = ConnectionConfig
+                .custom()
+                .setConnectTimeout(timeOut, TimeUnit.MILLISECONDS)
+                .build();
+        PoolingHttpClientConnectionManager connManager =
+                PoolingHttpClientConnectionManagerBuilder.create()
+                        .setDefaultConnectionConfig(connectionConfig)
+                        .build();
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(connManager)
+                .build();
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
         httpRequestFactory.setConnectionRequestTimeout(timeOut);
-        httpRequestFactory.setConnectTimeout(timeOut);
         httpRequestFactory.setReadTimeout(timeOut);
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
         return restTemplate;

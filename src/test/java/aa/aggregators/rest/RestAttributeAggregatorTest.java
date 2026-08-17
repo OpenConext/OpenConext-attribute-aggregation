@@ -1,16 +1,16 @@
 package aa.aggregators.rest;
 
 import aa.model.*;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.*;
 
@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
 public class RestAttributeAggregatorTest {
 
@@ -614,7 +614,7 @@ public class RestAttributeAggregatorTest {
     }
 
     @Test
-    void aggregateEmptyResultOnFetchErrorAndEmptyCache() throws IOException {
+    void aggregateEmptyResultOnFetchErrorAndEmptyCache() {
         configuration.setRootListName("records");
         configuration.setRequestParams(new ArrayList<>(List.of(
                 new RequestParam("param1", "attribute1"),
@@ -637,13 +637,8 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        JsonNode apiResponse = objectMapper
-                .readValue(new ClassPathResource("rest/multiple_result.json").getInputStream(), JsonNode.class);
-        String stringResponse = objectMapper.writeValueAsString(apiResponse);
         when(restTemplate.exchange(eq("https://domain1.com?param1=value1&param2=value2"), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new RestClientException("error"));
-        when(restTemplate.exchange(eq("https://cache.com"), any(), any(), any(ParameterizedTypeReference.class)))
-                .thenReturn(ResponseEntity.ok(stringResponse));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 

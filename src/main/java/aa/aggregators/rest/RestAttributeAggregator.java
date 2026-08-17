@@ -2,8 +2,8 @@ package aa.aggregators.rest;
 
 import aa.aggregators.AbstractAttributeAggregator;
 import aa.model.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import io.restassured.path.json.JsonPath;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -197,7 +197,7 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator impleme
             } else {
                 rootList = List.of((Map<String, Object>) obj);
             }
-        } catch (JsonProcessingException | IllegalArgumentException | NullPointerException exception) {
+        } catch (JacksonException | IllegalArgumentException | NullPointerException exception) {
             LOG.warn("Can not parse response from REST endpoint of {}, treating as empty response", configuration.getId(), exception);
             return Collections.emptyList();
         }

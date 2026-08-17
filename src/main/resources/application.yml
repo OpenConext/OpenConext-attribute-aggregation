@@ -35,9 +35,6 @@ pseudo:
 
 spring:
   jpa:
-    properties:
-      hibernate:
-        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     open-in-view: false
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
