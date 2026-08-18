@@ -39,14 +39,13 @@ spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mysql://localhost/aaserver?autoReconnect=true&useSSL=false&permitMysqlScheme=true&allowPublicKeyRetrieval=true
-    username: root
-    password:
+    username: aaserver
+    password: secret
+  flyway:
+    locations: classpath:db/migration
+    fail-on-missing-locations: true
   main:
     banner-mode: "off"
-  flyway:
-    validate-on-migrate: false
-    table: schema_version
-    enabled: true
 # In a multi master database setup toggle which machine is reponsible for cron jobs
 cron_job_responsible: true
 pseudo_emails_retention_days_period: 90

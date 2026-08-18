@@ -23,10 +23,21 @@ jobs:
         distribution: 'adopt'
         cache: 'maven'
 
-    - uses: shogo82148/actions-setup-mysql@v1
+    - name: Set up MySQL
+      uses: shogo82148/actions-setup-mysql@v1
       with:
-        mysql-version: '8.0'
-    - run: mysql -uroot -h127.0.0.1 -e 'CREATE DATABASE aaserver CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci'
+        distribution: "mariadb"
+        mysql-version: "10.6"
+    - run: |
+        mysql -uroot -h127.0.0.1 -e \
+        "CREATE DATABASE aaserver CHARACTER SET utf8mb4 \
+        COLLATE utf8mb4_unicode_520_ci;"
+    - run: |
+        mysql -uroot -h127.0.0.1 -e \
+        "CREATE USER 'aaserver'@'localhost' IDENTIFIED BY 'secret';";
+    - run: |
+        mysql -uroot -h127.0.0.1 -e \
+        "GRANT ALL privileges ON aaserver.* TO 'aaserver'@'localhost';"
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml

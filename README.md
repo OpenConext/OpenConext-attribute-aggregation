@@ -25,8 +25,10 @@ Connect to your local mysql database: `mysql -uroot`
 Execute the following:
 
 ```sql
-CREATE DATABASE aaserver;
-grant all on aaserver.* to 'root'@'localhost';
+DROP DATABASE IF EXISTS aaserver;
+CREATE DATABASE aaserver CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE USER 'aaserver'@'%' IDENTIFIED BY 'secret';
+GRANT ALL privileges ON `aaserver`.* TO 'aaserver'@'%';
 ```
 
 ## [Building and running](#building-and-running)
@@ -154,9 +156,9 @@ Below is an example of the full configuration with explanations for the options:
         {
             "responseKey": "myResponseKey",
             "targetAttribute": "myTargetAttribute"
-            // Optional: filter to search for specific node relative to the node used as root 
-            // (after applying rootListName if present). Useful in case of searching for value 
-            // where other field equals another value. 
+            // Optional: filter to search for specific node relative to the node used as root
+            // (after applying rootListName if present). Useful in case of searching for value
+            // where other field equals another value.
             "filter": {
                 "key": "<key>",
                 "value": "<value>"
@@ -182,11 +184,11 @@ Below is an example of the full configuration with explanations for the options:
                   "value": "<value>",
                 }
             ],
-            // Specify path to relevant record. Caution: if an entire list is retrieved then it is advised to 
+            // Specify path to relevant record. Caution: if an entire list is retrieved then it is advised to
             // define a filter to the relevant record e.g. findAll{record->record.%s == \"%s\"}[0]. In this example
             // attributes are used from the 'filters' section so that it is possible to filter by properties. Filters
             // are optional. Path navigations and filter are possible from GPath
-            rootListName: "<node name>", 
+            rootListName: "<node name>",
             filters: {
                 index: 0,
                 key: "<key>",
