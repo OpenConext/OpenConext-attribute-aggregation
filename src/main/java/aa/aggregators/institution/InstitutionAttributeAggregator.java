@@ -43,6 +43,11 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
     }
 
     @Override
+    protected boolean requiresRestTemplate() {
+        return true;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<UserAttribute> aggregate(List<UserAttribute> input, Map<String, List<ArpValue>> arpAttributes) {
         //This is by contract. The spEntityID is always present

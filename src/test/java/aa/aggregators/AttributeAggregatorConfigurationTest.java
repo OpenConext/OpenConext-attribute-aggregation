@@ -35,12 +35,14 @@ public class AttributeAggregatorConfigurationTest {
             "http://localhost:8889/oauth/token",
             "surfconext.nl",
             new ClassPathResource("/serviceProviderConfig.json"),
+            "2.3.1",
+            "userAgentExtra",
             new AuthorityResolver(new DefaultResourceLoader(), configFileLocation),
             new NoopUserAttributeCache(),
             Mockito.mock(AccountRepository.class),
             Mockito.mock(PseudoEmailRepository.class),
             Mockito.mock(TaskScheduler.class),
-                objectMapper
+            objectMapper
 
         );
     }
@@ -53,7 +55,7 @@ public class AttributeAggregatorConfigurationTest {
 
         assertEquals(5, aggregators.size());
         asList("pseudo_email", "orcid", "voot", "idin", "test:mock")
-                .forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
+            .forEach(authorityId -> assertEquals(authorityId, aggregators.get(authorityId).getAttributeAuthorityId()));
     }
 
     @Test(expected = IllegalArgumentException.class)

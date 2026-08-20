@@ -53,9 +53,13 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
         this.attributeAuthorityConfiguration = attributeAuthorityConfiguration;
         this.attributeKeysRequired = attributeAuthorityConfiguration.getRequiredInputAttributes().stream().map
                 (RequiredInputAttribute::getName).collect(toList());
-        if (StringUtils.hasText(attributeAuthorityConfiguration.getEndpoint())) {
+        if (StringUtils.hasText(attributeAuthorityConfiguration.getEndpoint()) || requiresRestTemplate()) {
             this.restTemplate = initializeRestTemplate(attributeAuthorityConfiguration);
         }
+    }
+
+    protected boolean requiresRestTemplate() {
+        return false;
     }
 
     protected RestTemplate initializeRestTemplate(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
@@ -69,6 +73,13 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
     protected boolean useBasicAuthInterceptor() {
         return true;
+    }
+
+    @Override
+    public void setUserAgent(String userAgent) {
+        if (this.restTemplate != null) {
+            this.restTemplate.getInterceptors().add(new UserAgentInterceptor(userAgent));
+        }
     }
 
     @Override

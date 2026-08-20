@@ -39,4 +39,5 @@ public interface AttributeAggregator {
 
     boolean cachingEnabled();
 
+    void setUserAgent(String userAgent);
 }

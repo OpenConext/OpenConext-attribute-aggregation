@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -49,11 +50,16 @@ public class AttributeAggregatorConfiguration {
     private final TaskScheduler taskScheduler;
     private final Resource serviceProviderConfigPath;
     private final ObjectMapper objectMapper;
+    private final String userAgent;
+
+    private static final String APPLICATION_NAME = "attribute-aggregation";
 
     @Autowired
     public AttributeAggregatorConfiguration(@Value("${authorization_access_token_url}") String authorizationAccessTokenUrl,
                                             @Value("${pseudo.mail_postfix}") String pseudoMailPostfix,
                                             @Value("${institution.service_provider_config_path}") Resource serviceProviderConfigPath,
+                                            @Value("${version}") String version,
+                                            @Value("${USER_AGENT_EXTRA:}") String userAgentExtra,
                                             AuthorityResolver authorityResolver,
                                             UserAttributeCache userAttributeCache,
                                             AccountRepository accountRepository,
@@ -69,6 +75,7 @@ public class AttributeAggregatorConfiguration {
         this.taskScheduler = taskScheduler;
         this.serviceProviderConfigPath = serviceProviderConfigPath;
         this.objectMapper = objectMapper;
+        this.userAgent = APPLICATION_NAME + "/" + version + (StringUtils.hasText(userAgentExtra) ? "/" + userAgentExtra : "");
     }
 
     @Bean
@@ -88,6 +95,7 @@ public class AttributeAggregatorConfiguration {
         List<AttributeAggregator> attributeAggregators = configuration.getAuthorities().stream()
                 .map(aggregatorFunction)
                 .filter(Objects::nonNull)
+                .peek(aggregator -> aggregator.setUserAgent(userAgent))
                 .collect(toList());
         return new AttributeAggregatorService(attributeAggregators, configuration, userAttributeCache);
     }

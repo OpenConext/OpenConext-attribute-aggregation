@@ -96,6 +96,37 @@ public class InstitutionAttributeAggregatorTest {
 
     @SneakyThrows
     @Test
+    public void aggregateSendsApplicationUserAgent() {
+        String eduID = UUID.randomUUID().toString();
+        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(
+                List.of(
+                        new UserAttribute(SP_ENTITY_ID, List.of("https://mock-sp")),
+                        new UserAttribute(EDU_ID, List.of(eduID)),
+                        new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, List.of("admin@example.com"))
+                ),
+                Map.of(EDU_PERSON_PRINCIPAL_NAME, List.of(new ArpValue("*", "institution"))));
+
+        String response = IOUtils.toString(new ClassPathResource("institution/response.json").getInputStream(), Charset.defaultCharset());
+        stubFor(get(urlPathEqualTo("/api/attributes/" + eduID))
+                .withHeader("Authorization", equalTo("Basic " + encodeBase64String("api-user:secret".getBytes())))
+                .willReturn(aResponse().withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
+
+        given()
+                .auth().preemptive().basic("eb", "secret")
+                .body(arpAggregationRequest)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post("/aa/api/internal/attribute/aggregation");
+
+        verify(getRequestedFor(urlPathEqualTo("/api/attributes/" + eduID))
+                .withHeader("User-Agent", matching("^attribute-aggregation/.*$")));
+    }
+
+    @SneakyThrows
+    @Test
     public void aggregateWithTrailingSlash() {
         String eduID = UUID.randomUUID().toString();
         ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(
