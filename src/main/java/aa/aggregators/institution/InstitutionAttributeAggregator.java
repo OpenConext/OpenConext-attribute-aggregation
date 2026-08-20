@@ -4,6 +4,7 @@ import aa.aggregators.AbstractAttributeAggregator;
 import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -52,11 +53,17 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
             LOG.error("No InstitutionEndpoint configured for: {}", spEntityID);
             return errorResponse(input);
         }
-        RestTemplate restTemplate = super.initializeRestTemplate(super.getAttributeAuthorityConfiguration());
-        BasicAuthenticationInterceptor interceptor = new BasicAuthenticationInterceptor(
+        //We need to replace the interceptor
+        RestTemplate restTemplate = super.getRestTemplate();
+        BasicAuthenticationInterceptor basicAuthenticationInterceptor = new BasicAuthenticationInterceptor(
                 institutionEndpoint.getUserName(),
                 institutionEndpoint.getPassword());
-        restTemplate.getInterceptors().add(interceptor);
+        //Needs to be interceptable
+        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(restTemplate.getInterceptors().stream()
+            .filter(interceptor -> !(interceptor instanceof BasicAuthenticationInterceptor))
+            .toList());
+        interceptors.add(basicAuthenticationInterceptor);
+        restTemplate.setInterceptors(interceptors);
 
         //This is by contract. The eduID attribute is present, otherwise this aggregator is not called
         String eduID = input.stream().filter(attribute -> attribute.getName().equals(EDU_ID))

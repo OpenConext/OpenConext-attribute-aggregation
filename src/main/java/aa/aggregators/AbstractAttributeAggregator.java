@@ -60,11 +60,15 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
 
     protected RestTemplate initializeRestTemplate(AttributeAuthorityConfiguration attributeAuthorityConfiguration) {
         RestTemplate restTemplate = new RestTemplate(getRequestFactory(attributeAuthorityConfiguration));
-        if (StringUtils.hasText(attributeAuthorityConfiguration.getUser())) {
+        if (StringUtils.hasText(attributeAuthorityConfiguration.getUser()) && useBasicAuthInterceptor()) {
             BasicAuthenticationInterceptor interceptor = new BasicAuthenticationInterceptor(attributeAuthorityConfiguration.getUser(), attributeAuthorityConfiguration.getPassword());
             restTemplate.getInterceptors().add(interceptor);
         }
         return restTemplate;
+    }
+
+    protected boolean useBasicAuthInterceptor() {
+        return true;
     }
 
     @Override
@@ -123,7 +127,7 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
                 getAttributeAuthorityId()));
     }
 
-    private ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration
+    protected ClientHttpRequestFactory getRequestFactory(AttributeAuthorityConfiguration
                                                                attributeAuthorityConfiguration) {
         int timeOut = attributeAuthorityConfiguration.getTimeOut();
         ConnectionConfig connectionConfig = ConnectionConfig

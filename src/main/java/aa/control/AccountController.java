@@ -52,7 +52,7 @@ public class AccountController {
     @Value("${orcid.redirect_uri}")
     private String orcidRedirectUri;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private final RestTemplate restTemplate = new RestTemplate();
 
