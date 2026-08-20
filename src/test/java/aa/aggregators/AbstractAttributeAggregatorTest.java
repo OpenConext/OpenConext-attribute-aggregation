@@ -4,8 +4,15 @@ import aa.config.AuthorityResolver;
 import aa.model.ArpValue;
 import aa.model.AttributeAuthorityConfiguration;
 import aa.model.UserAttribute;
+import org.apache.hc.client5.http.impl.routing.DefaultProxyRoutePlanner;
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.http.client.AbstractClientHttpRequestFactoryWrapper;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -15,6 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AbstractAttributeAggregatorTest {
 
@@ -71,6 +79,38 @@ public class AbstractAttributeAggregatorTest {
         List<UserAttribute> filtered = entitlements.filterInvalidResponses(
             userAttributes("urn:mace:surfnet.nl:surfmarket.nl:admin12@#", "invalid"));
         assertEquals(1, filtered.get(0).getValues().size());
+    }
+
+    @After
+    public void after() {
+        System.clearProperty("http.proxyHost");
+    }
+
+    @Test
+    public void proxyConfiguredWiresRoutePlanner() {
+        System.setProperty("http.proxyHost", "proxy.example.com");
+
+        Object routePlanner = routePlannerFor(attributeAggregator("voot"));
+
+        assertTrue(routePlanner instanceof DefaultProxyRoutePlanner);
+    }
+
+    @Test
+    public void noProxyConfiguredNoRoutePlanner() {
+        Object routePlanner = routePlannerFor(attributeAggregator("voot"));
+
+        assertTrue(routePlanner == null || !(routePlanner instanceof DefaultProxyRoutePlanner));
+    }
+
+    private Object routePlannerFor(AttributeAggregator aggregator) {
+        RestTemplate restTemplate = ((AbstractAttributeAggregator) aggregator).getRestTemplate();
+        ClientHttpRequestFactory requestFactory = restTemplate.getRequestFactory();
+        while (requestFactory instanceof AbstractClientHttpRequestFactoryWrapper wrapper) {
+            requestFactory = wrapper.getDelegate();
+        }
+        HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory =
+            (HttpComponentsClientHttpRequestFactory) requestFactory;
+        return ReflectionTestUtils.getField(httpComponentsClientHttpRequestFactory.getHttpClient(), "routePlanner");
     }
 
     private AttributeAggregator attributeAggregator(String key) {
