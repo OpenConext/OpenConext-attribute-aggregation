@@ -70,9 +70,18 @@ public class InstitutionAttributeAggregator extends AbstractAttributeAggregator 
         interceptors.add(basicAuthenticationInterceptor);
         restTemplate.setInterceptors(interceptors);
 
-        //This is by contract. The eduID attribute is present, otherwise this aggregator is not called
-        String eduID = input.stream().filter(attribute -> attribute.getName().equals(EDU_ID))
-                .findFirst().get().getValues().getFirst();
+        //The eduID attribute is optional. Without it we can't call the institution endpoint and we
+        //return the original input values with the institution as source
+        //See https://github.com/OpenConext/OpenConext-attribute-aggregation/issues/158
+        Optional<String> optionalEduID = input.stream()
+                .filter(attribute -> attribute.getName().equals(EDU_ID))
+                .findFirst()
+                .flatMap(attribute -> attribute.getValues().stream().findFirst());
+        if (optionalEduID.isEmpty()) {
+            LOG.debug("No {} attribute present for SP {}, returning the input attributes", EDU_ID, spEntityID);
+            return errorResponse(input);
+        }
+        String eduID = optionalEduID.get();
         String url = String.format("%s/api/attributes/%s", removeTrailingSlash(institutionEndpoint.getBaseURL()), eduID);
         //Use try / catch, and in case of error, default to the input user attributes.
         //See https://github.com/OpenConext/OpenConext-attribute-aggregation/issues/144

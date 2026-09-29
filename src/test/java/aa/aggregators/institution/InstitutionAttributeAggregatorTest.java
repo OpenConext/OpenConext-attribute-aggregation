@@ -162,6 +162,32 @@ public class InstitutionAttributeAggregatorTest {
 
     @SneakyThrows
     @Test
+    public void aggregateWithoutEduID() {
+        ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(
+                List.of(
+                        new UserAttribute(SP_ENTITY_ID, List.of("https://mock-sp")),
+                        new UserAttribute(EDU_PERSON_PRINCIPAL_NAME, List.of("admin@example.com"))
+                ),
+                Map.of(EDU_PERSON_PRINCIPAL_NAME, List.of(new ArpValue("*", "institution"))));
+
+        List<UserAttribute> userAttributes = given()
+                .auth().preemptive().basic("eb", "secret")
+                .body(arpAggregationRequest)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post("/aa/api/internal/attribute/aggregation")
+                .as(new TypeRef<>() {
+                });
+        //The original value is returned, with the institution as source
+        assertEquals(1, userAttributes.size());
+        assertEquals(EDU_PERSON_PRINCIPAL_NAME, userAttributes.getFirst().getName());
+        assertEquals(List.of("admin@example.com"), userAttributes.getFirst().getValues());
+        assertEquals("institution", userAttributes.getFirst().getSource());
+    }
+
+    @SneakyThrows
+    @Test
     public void aggregateNotConfiguredServiceProvider() {
         String eduID = UUID.randomUUID().toString();
         ArpAggregationRequest arpAggregationRequest = new ArpAggregationRequest(
