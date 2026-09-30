@@ -2,6 +2,10 @@
 
 Starting from version 5.0.0, we note changes and new features per release in this file.
 
+## 5.3.1
+
+- Fix proxy-host lookup in resolveProxyHttpHost
+
 ## 5.3.0
 
 - Migrated to Spring Boot 4.1.0
