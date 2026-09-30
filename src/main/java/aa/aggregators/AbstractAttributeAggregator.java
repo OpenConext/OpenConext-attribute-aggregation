@@ -176,7 +176,8 @@ public abstract class AbstractAttributeAggregator implements AttributeAggregator
             return Optional.empty();
         }
         try {
-            return HttpHostProvider.resolveHttpHost(new URI(endpoint).toURL());
+            // Endpoints can be format templates (e.g. .../aa/%s), which are not valid URIs
+            return HttpHostProvider.resolveHttpHost(new URI(endpoint.replace("%s", "placeholder")).toURL());
         } catch (Exception e) {
             LOG.warn("Unable to resolve proxy host for endpoint {}", endpoint, e);
             return Optional.empty();
