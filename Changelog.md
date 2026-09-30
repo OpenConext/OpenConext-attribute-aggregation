@@ -5,6 +5,7 @@ Starting from version 5.0.0, we note changes and new features per release in thi
 ## 5.3.0
 
 - Migrated to Spring Boot 4.1.0
+- Institution aggregator responds with original attributes if required parameter is missing
 
 ## 5.2.0
 
