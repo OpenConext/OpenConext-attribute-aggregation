@@ -77,24 +77,32 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator impleme
         if (user != null && password != null) {
             headers.setBasicAuth(user, password);
         }
+        // Path values are passed as URI variables, so they are strictly encoded exactly once (e.g. ';' becomes %3B)
+        Map<String, Object> uriVariables = new HashMap<>();
         // Process path parameters
         if (null != pathParams) {
             pathParams.sort(Comparator.comparing(PathParam::getIndex));
-            Object[] pathParamValues = pathParams.stream()
+            Object[] placeholders = pathParams.stream()
                     .map(pathParam -> attributes.stream()
                             .filter(attribute -> attribute.getName().equals(pathParam.getSourceAttribute()))
-                            .map(attribute -> attribute.getValues().get(0))
+                            .map(attribute -> attribute.getValues().getFirst())
                             .collect(Collectors.toList())
                     )
-                    .flatMap(List::stream).toArray();
-            endpoint = String.format(endpoint, pathParamValues);
+                    .flatMap(List::stream)
+                    .map(value -> {
+                        String name = "p" + uriVariables.size();
+                        uriVariables.put(name, value);
+                        return "{" + name + "}";
+                    })
+                    .toArray();
+            endpoint = String.format(endpoint, placeholders);
         }
         // Process request parameters
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(endpoint);
         if (null != requestParams) {
             requestParams.forEach(requestParam -> attributes.stream()
                     .filter(attribute -> attribute.getName().equals(requestParam.getSourceAttribute())).findFirst()
-                    .ifPresent(param -> builder.queryParam(requestParam.getName(), param.getValues().get(0)))
+                    .ifPresent(param -> builder.queryParam(requestParam.getName(), param.getValues().getFirst()))
             );
         }
         HttpMethod method;
@@ -107,7 +115,7 @@ public class RestAttributeAggregator extends AbstractAttributeAggregator impleme
         }
 
 
-        return getRestTemplate().exchange(builder.toUriString(), method,
+        return getRestTemplate().exchange(builder.encode().buildAndExpand(uriVariables).toUri(), method,
                 new HttpEntity<>(null, headers), new ParameterizedTypeReference<>() {
                 });
     }

@@ -15,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.*;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +23,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +56,7 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok("response"));
 
         assertThrows(IllegalArgumentException.class, () -> subject.aggregate(input, Collections.emptyMap()));
@@ -68,7 +68,7 @@ public class RestAttributeAggregatorTest {
                 new Header("headerKey1", "headerValue1"),
                 new Header("headerKey2", "headerValue2")
         ));
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok("response"));
 
         HttpHeaders expectedHeaders = new HttpHeaders();
@@ -80,7 +80,7 @@ public class RestAttributeAggregatorTest {
         subject.aggregate(Collections.emptyList(), Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com"),
+                eq(URI.create("https://domain1.com")),
                 eq(HttpMethod.GET),
                 eq(new HttpEntity<>(null, expectedHeaders)),
                 any(ParameterizedTypeReference.class)
@@ -98,13 +98,53 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok("response"));
 
         subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com/value1/sub/value2"),
+                eq(URI.create("https://domain1.com/value1/sub/value2")),
+                eq(HttpMethod.GET),
+                any(),
+                any(ParameterizedTypeReference.class)
+        );
+    }
+
+    @Test
+    void aggregateRequestWithPathParamContainingSemicolon() {
+        configuration.setPathParams(new ArrayList<>(List.of(new PathParam(0, "attribute1"))));
+        configuration.setEndpoint("https://domain1.com/%s/sub");
+        List<UserAttribute> input = List.of(
+                new UserAttribute("attribute1", Collections.singletonList("val;ue1;"))
+        );
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
+                .thenReturn(ResponseEntity.ok("response"));
+
+        subject.aggregate(input, Collections.emptyMap());
+
+        verify(restTemplate, times(1)).exchange(
+                eq(URI.create("https://domain1.com/val%3Bue1%3B/sub")),
+                eq(HttpMethod.GET),
+                any(),
+                any(ParameterizedTypeReference.class)
+        );
+    }
+
+    @Test
+    void aggregateRequestWithPathParamUsesOnlyFirstValue() {
+        configuration.setPathParams(new ArrayList<>(List.of(new PathParam(0, "attribute1"))));
+        configuration.setEndpoint("https://domain1.com/%s");
+        List<UserAttribute> input = List.of(
+                new UserAttribute("attribute1", List.of("first;value", "second;value"))
+        );
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
+                .thenReturn(ResponseEntity.ok("response"));
+
+        subject.aggregate(input, Collections.emptyMap());
+
+        verify(restTemplate, times(1)).exchange(
+                eq(URI.create("https://domain1.com/first%3Bvalue")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -122,13 +162,13 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok("response"));
 
         subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -138,13 +178,13 @@ public class RestAttributeAggregatorTest {
     @Test
     void aggregateRequestDefaultToGet() {
         configuration.setRequestMethod(null);
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok("response"));
 
         subject.aggregate(Collections.emptyList(), Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com"),
+                eq(URI.create("https://domain1.com")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -169,13 +209,13 @@ public class RestAttributeAggregatorTest {
         JsonNode apiResponse = objectMapper
                 .readValue(new ClassPathResource("rest/result.json").getInputStream(), JsonNode.class);
         String stringResponse = objectMapper.writeValueAsString(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok(stringResponse));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -205,13 +245,13 @@ public class RestAttributeAggregatorTest {
         JsonNode apiResponse = objectMapper
                 .readValue(new ClassPathResource("rest/multiple_result.json").getInputStream(), JsonNode.class);
         String stringResponse = objectMapper.writeValueAsString(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok(stringResponse));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -240,13 +280,13 @@ public class RestAttributeAggregatorTest {
         JsonNode apiResponse = objectMapper
                 .readValue(new ClassPathResource("rest/multiple_result.json").getInputStream(), JsonNode.class);
         String stringResponse = objectMapper.writeValueAsString(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok(stringResponse));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -277,13 +317,13 @@ public class RestAttributeAggregatorTest {
         JsonNode apiResponse = objectMapper
                 .readValue(new ClassPathResource("rest/multiple_result.json").getInputStream(), JsonNode.class);
         String stringResponse = objectMapper.writeValueAsString(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok(stringResponse));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -312,13 +352,13 @@ public class RestAttributeAggregatorTest {
         JsonNode apiResponse = objectMapper
                 .readValue(new ClassPathResource("rest/nested_result.json").getInputStream(), JsonNode.class);
         String stringResponse = objectMapper.writeValueAsString(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok(stringResponse));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -343,13 +383,13 @@ public class RestAttributeAggregatorTest {
         JsonNode apiResponse = objectMapper
                 .readValue(new ClassPathResource("rest/result.json").getInputStream(), JsonNode.class);
         String stringResponse = objectMapper.writeValueAsString(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok(stringResponse));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -371,13 +411,13 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok("invalid"));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -403,7 +443,7 @@ public class RestAttributeAggregatorTest {
         JsonNode apiResponse = objectMapper
                 .readValue(new ClassPathResource("rest/result.json").getInputStream(), JsonNode.class);
         String stringResponse = objectMapper.writeValueAsString(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new HttpStatusCodeException(HttpStatus.NOT_FOUND, "", stringResponse.getBytes(), StandardCharsets.UTF_8) {
                     @Override
                     public HttpStatusCode getStatusCode() {
@@ -414,7 +454,7 @@ public class RestAttributeAggregatorTest {
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -441,7 +481,7 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new HttpStatusCodeException(HttpStatus.NOT_FOUND, "", "".getBytes(), StandardCharsets.UTF_8) {
                     @Override
                     public HttpStatusCode getStatusCode() {
@@ -468,7 +508,7 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new HttpStatusCodeException(HttpStatus.NOT_FOUND, "", "".getBytes(), StandardCharsets.UTF_8) {
                     @Override
                     public HttpStatusCode getStatusCode() {
@@ -479,7 +519,7 @@ public class RestAttributeAggregatorTest {
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -506,13 +546,13 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new RestClientException("error"));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -539,13 +579,13 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok("[]"));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -584,22 +624,22 @@ public class RestAttributeAggregatorTest {
         JsonNode apiResponse = objectMapper
                 .readValue(new ClassPathResource("rest/multiple_result.json").getInputStream(), JsonNode.class);
         String stringResponse = objectMapper.writeValueAsString(apiResponse);
-        when(restTemplate.exchange(eq("https://domain1.com?param1=value1&param2=value2"), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(eq(URI.create("https://domain1.com?param1=value1&param2=value2")), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new RestClientException("error"));
-        when(restTemplate.exchange(eq("https://cache.com"), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(eq(URI.create("https://cache.com")), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(ResponseEntity.ok(stringResponse));
 
         subject.run();
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://domain1.com?param1=value1&param2=value2"),
+                eq(URI.create("https://domain1.com?param1=value1&param2=value2")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
         );
         verify(restTemplate, times(1)).exchange(
-                eq("https://cache.com"),
+                eq(URI.create("https://cache.com")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
@@ -637,7 +677,7 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(eq("https://domain1.com?param1=value1&param2=value2"), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(eq(URI.create("https://domain1.com?param1=value1&param2=value2")), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new RestClientException("error"));
 
         List<UserAttribute> result = subject.aggregate(input, Collections.emptyMap());
@@ -669,7 +709,7 @@ public class RestAttributeAggregatorTest {
                 new UserAttribute("attribute1", Collections.singletonList("value1")),
                 new UserAttribute("attribute2", Collections.singletonList("value2"))
         );
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new RestClientException("error"));
 
         subject.run();
@@ -696,13 +736,13 @@ public class RestAttributeAggregatorTest {
                 "records",
                 Collections.singletonList(new CacheFilter(0, "field1", "attribute1"))
         ));
-        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(any(URI.class), any(), any(), any(ParameterizedTypeReference.class)))
                 .thenThrow(new RestClientException("error"));
 
         subject.run();
 
         verify(restTemplate, times(1)).exchange(
-                eq("https://cache.com"),
+                eq(URI.create("https://cache.com")),
                 eq(HttpMethod.GET),
                 any(),
                 any(ParameterizedTypeReference.class)
